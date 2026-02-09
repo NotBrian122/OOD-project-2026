@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOD_project_2026
 {
-    internal class Cards :Deck
+    internal class Cards :Deck 
     {
         //obvs name
         public string CardName { get; set; }

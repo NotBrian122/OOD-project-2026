@@ -10,8 +10,9 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -20,17 +21,24 @@
                 <ColumnDefinition Width=".5*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="Bolatro" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="0" Grid.Column="2"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Background="#FF165A0C"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" />
-            <TextBlock Grid.Row="1" Grid.Column="1" />
-            <TextBlock Grid.Row="1" Grid.Column="2" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Bolatro" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="Joker Cards" Background="#330088FF"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Arcana cards"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="0"/>
-            <Button x:Name="StartGame" Grid.Row="2" Grid.Column="1" Content="Start Game " Margin="50,40,50,40" FontSize="36"/>
-            <TextBlock Grid.Row="2" Grid.Column="2"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,5,0,0" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Grid.RowSpan="2"/>
+            <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
+            <TextBlock Grid.Column="1" Grid.Row="2" Margin="0,218,0,81" Text="Cards" Background="#330088FF" Grid.RowSpan="2"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD" Margin="0,5,0,0" Text="BlindNo"/>
+            <Button Grid.Row="3" Grid.Column="1" Content="PlayHand" Margin="360,185,393,0"></Button>
+
 
         </Grid>
     </Grid>

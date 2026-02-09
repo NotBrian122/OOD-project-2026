@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace OOD_project_2026
 {
-    internal class Deck
+    internal class Deck <Icomparable><Cards>
     {
+
         public Deck() { }
         
+    
     }
 }
