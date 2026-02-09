@@ -1,12 +1,11 @@
-﻿<Window x:Class="OOD_project_2026.MainWindow"
+﻿<Window x:Class="OOD_project_2026.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOD_project_2026"
         mc:Ignorable="d"
-        Title="StartWindow" Height="1080" Width="1920">
-    
+        Title="bindWindow" Height="1080" Width="1920">
     <Grid ShowGridLines="true">
         <Grid>
             <Grid.RowDefinitions>
@@ -30,7 +29,7 @@
             <TextBlock Grid.Row="1" Grid.Column="2" />
 
             <TextBlock Grid.Row="2" Grid.Column="0"/>
-            <Button x:Name="StartGame" Grid.Row="2" Grid.Column="1" Content="Start Game " Margin="50,40,50,40" Click="StartGame_Click" FontSize="36"/>
+            <Button x:Name="StartGame" Grid.Row="2" Grid.Column="1" Content="Start Game " Margin="50,40,50,40" FontSize="36"/>
             <TextBlock Grid.Row="2" Grid.Column="2"/>
 
         </Grid>
