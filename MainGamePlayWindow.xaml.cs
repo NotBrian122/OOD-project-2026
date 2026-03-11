@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace OOD_project_2026
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for MainGamePlayWindow.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class MainGamePlayWindow : Page
     {
-        public Window1()
+        public MainGamePlayWindow()
         {
             InitializeComponent();
         }

@@ -10,18 +10,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace OOD_project_2026
 {
     /// <summary>
-    /// Interaction logic for Window2.xaml
+    /// Interaction logic for Start.xaml
     /// </summary>
-    public partial class Window2 : Window
+    public partial class Start : Page
     {
-        public Window2()
+        public Start()
         {
             InitializeComponent();
+        }
+
+        private void StartGame_Click(object sender, RoutedEventArgs e)
+        {
+          NavigationService.Navigate(new MainGamePlayWindow());
         }
     }
 }
