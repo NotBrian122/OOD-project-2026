@@ -8,29 +8,47 @@ namespace OOD_project_2026
 {
     internal class JokerCards
     {
-        public int Weight { get; set; }
-        //the weight sets the spesific value for joker cards
-        //heaver the weight the more powerful the card is
-        public string Name { get; set; }//all joker cards have names
+        public string Name { get; set; }
+        public string Affect { get; set; }
 
-        public string ModifierDiscription { get; set; }//they all have a modifier discription that will be used in the game as a hover effect
+        public double gameAffect { get; set; }
 
-        public string JokerEffect { get; set; }//Joker cards can have buffs and defuffs randomly, ie negetive allows for another position 
+        public double additionalModifiers { get; set; }
+        public int price { get; set; }
+        JokerCards() { }
 
-        public double GameModifier { get; set; }//this is the value that will be used to calculate the effect of the joker card in the game
-
-        public JokerCards() { }
-        public JokerCards(int Weight, string Name, string ModifierDiscription, string JokerEffect, double GameModifier)
+        public JokerCards(string Name, string Affect, double gameAffect, double additionalModifiers, int price)
         {
-            this.Weight = Weight;
             this.Name = Name;
-            this.ModifierDiscription = ModifierDiscription;
-            this.JokerEffect = JokerEffect;
-            this.GameModifier = GameModifier;
+            this.Affect = Affect;
+            this.gameAffect = gameAffect;
+            this.additionalModifiers = additionalModifiers;
+
+            this.price = price;
         }
         override public string ToString()
         {
-            return $"{Name} (Weight: {Weight}, Effect: {JokerEffect}, Modifier: {ModifierDiscription}, Game Modifier: {GameModifier})";
+            return $"CardName {Name} - Effect {Affect} - Chance modifiers {additionalModifiers} - Price{price:c2}";
+        }
+
+        public static List<JokerCards> GenerateJokerCards()
+        {
+            //this is where the joker cards will be generated.
+            List<JokerCards> JokerCards = new List<JokerCards>();
+            //hardcoded names 
+            string[] JokerCardNames = { "Joker of Chaos", "Joker of Order", "Joker of Luck", "Joker of Misfortune", "Joker of Power" };
+            double[] cardAffect = { 0, 2, 0.5, 20, 100 };//mult effect
+            double[] additionalAffect = { 0, 1, 1, 0.05, 0.2 };//chance effect
+            int[] price = { 5, 3, 5, 9, 2 };//preset price for each card
+
+            //this just adds them all to the list of joker cards inside the player class. I could have done this in the constructor but I wanted to keep it separate for ease of use and readability.
+            for (int i = 0; i < JokerCardNames.Length; i++)
+            {
+                JokerCards.Add(new JokerCards(JokerCardNames[i], $"This is the effect of the card {cardAffect[i]}mult", cardAffect[i], additionalAffect[i], price[i]));
+            }
+
+            return JokerCards;
+
         }
     }
 }

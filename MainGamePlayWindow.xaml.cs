@@ -18,11 +18,28 @@ namespace OOD_project_2026
     /// <summary>
     /// Interaction logic for MainGamePlayWindow.xaml
     /// </summary>
+    /// 
+
+
+
     public partial class MainGamePlayWindow : Page
     {
         public MainGamePlayWindow()
         {
             InitializeComponent();
+        }
+
+        private void CardGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //so this is the section in which the random cards are given from the deck.
+            //The grid is loaded. 
+
+
+        }
+
+        private void MainGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //This is where I want to load my cards. 
         }
     }
 }

@@ -60,6 +60,7 @@
     <Compile Include="MainGamePlayWindow.xaml.cs">
       <DependentUpon>MainGamePlayWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Player.cs" />
     <Compile Include="Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
     </Compile>
