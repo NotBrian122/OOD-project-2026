@@ -58,6 +58,7 @@
             <Grid Grid.Column="1" Grid.Row="3">
                 <Grid x:Name="CardGrid" Background="#3F377D8A" Loaded="CardGrid_Loaded">
 
+                    
                     <!--Im going to leave it with 8 cards as its easier to do-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
