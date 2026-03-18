@@ -25,7 +25,7 @@
 
             <TextBlock Grid.Row="0" Grid.Column="0" Background="#FF165A0C"/>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Bolatro" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="0" Text="Bolatro" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150"/>
             <TextBlock Grid.Column="1" Grid.Row="0" Text="Joker Cards" Background="#330088FF"/>
             <TextBlock Grid.Row="0" Grid.Column="2" Text="Arcana cards"/>
 
@@ -40,12 +40,12 @@
             <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD" Text="BlindNo"/>
 
-<!--#region JokerCards-->
+            <!--#region JokerCards-->
             <Grid Grid.Row="0" Grid.Column="1">
 
                 <Grid x:Name="JokerCardsOwned">
-                    
-                    
+
+
                     <Grid.ColumnDefinitions >
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
@@ -53,7 +53,7 @@
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <TextBlock Grid.Column="0" Text="Joker Card 1"/>
                     <TextBlock Grid.Column="1" Text="Joker Card 2"/>
                     <TextBlock Grid.Column="2" Text="Joker Card 3"/>
@@ -61,16 +61,16 @@
                     <TextBlock Grid.Column="4" Text="Joker Card 5"/>
 
                 </Grid>
-                
-                
+
+
             </Grid>
 
-<!--#endregion-->
+            <!--#endregion-->
 
 
 
             <!--#region Main card selection -->
-            
+
             <!-- this is the content for the cards given to the player
             I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing 
             -->
@@ -78,7 +78,7 @@
             <Grid Grid.Column="1" Grid.Row="3">
                 <Grid x:Name="CardGrid" Background="#3F377D8A" Loaded="CardGrid_Loaded">
 
-                    
+
                     <!--Im going to leave it with 8 cards as its easier to do-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -125,20 +125,20 @@
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    
-                 <TextBlock Grid.Column="0" Text="Played Card 1"/>
-                 <TextBlock Grid.Column="1" Text="Played Card 2"/>
-                 <TextBlock Grid.Column="2" Text="Played Card 3"/>
-                 <TextBlock Grid.Column="3" Text="Played Card 4"/>
-                 <TextBlock Grid.Column="4" Text="Played Card 5"/>
 
-                    
-                    
+                    <TextBlock Grid.Column="0" Text="Played Card 1"/>
+                    <TextBlock Grid.Column="1" Text="Played Card 2"/>
+                    <TextBlock Grid.Column="2" Text="Played Card 3"/>
+                    <TextBlock Grid.Column="3" Text="Played Card 4"/>
+                    <TextBlock Grid.Column="4" Text="Played Card 5"/>
+
+
+
                 </Grid>
-               
+
             </Grid>
 
-            
+
 
         </Grid>
     </Grid>

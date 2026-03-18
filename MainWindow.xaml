@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:OOD_project_2026"
         mc:Ignorable="d"
         Title="StartWindow" Height="1080" Width="1920">
+    
     <Grid Loaded="Grid_Loaded">
         <Frame x:Name="Main" NavigationUIVisibility="Hidden"></Frame>
     </Grid>
