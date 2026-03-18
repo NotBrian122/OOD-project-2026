@@ -20,6 +20,7 @@ namespace OOD_project_2026
     /// </summary>
     /// 
 
+    //want to load deck and do card gen outside of the main page so everything can work together
 
 
     public partial class MainGamePlayWindow : Page
@@ -40,6 +41,11 @@ namespace OOD_project_2026
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
         {
             //This is where I want to load my cards. 
+            
+
+            //load deck 
+
+           
         }
     }
 }

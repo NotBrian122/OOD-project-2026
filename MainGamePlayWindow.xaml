@@ -40,20 +40,40 @@
             <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD" Text="BlindNo"/>
 
+<!--#region JokerCards-->
             <Grid Grid.Row="0" Grid.Column="1">
-                
-                
+
+                <Grid x:Name="JokerCardsOwned">
+                    
+                    
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0" Text="Joker Card 1"/>
+                    <TextBlock Grid.Column="1" Text="Joker Card 2"/>
+                    <TextBlock Grid.Column="2" Text="Joker Card 3"/>
+                    <TextBlock Grid.Column="3" Text="Joker Card 4"/>
+                    <TextBlock Grid.Column="4" Text="Joker Card 5"/>
+
+                </Grid>
                 
                 
             </Grid>
 
-
+<!--#endregion-->
 
 
 
             <!--#region Main card selection -->
             
-            <!-- this is the content for the cards given to the player-->
+            <!-- this is the content for the cards given to the player
+            I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing 
+            -->
             <TextBlock Grid.Column="1" Grid.Row="2" Text="Cards Played" Background="#330088FF" Grid.RowSpan="1"/>
             <Grid Grid.Column="1" Grid.Row="3">
                 <Grid x:Name="CardGrid" Background="#3F377D8A" Loaded="CardGrid_Loaded">
@@ -76,14 +96,14 @@
                         <RowDefinition Height=".3*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0"  Text="Card1"/>
-                    <TextBlock Grid.Column="1"  Text="Card2"/>
-                    <TextBlock Grid.Column="2"  Text="Card3"/>
-                    <TextBlock Grid.Column="3"  Text="Card4"/>
-                    <TextBlock Grid.Column="4"  Text="Card5"/>
-                    <TextBlock Grid.Column="5" Text="Card6"/>
-                    <TextBlock Grid.Column="6" Text="Card7"/>
-                    <TextBlock Grid.Column="7" Text="Card8"/>
+                    <TextBlock x:Name="HandCard1" Grid.Column="0" Text="Card1"/>
+                    <TextBlock x:Name="HandCard2" Grid.Column="1" Text="Card2"/>
+                    <TextBlock x:Name="HandCard3" Grid.Column="2" Text="Card3"/>
+                    <TextBlock x:Name="HandCard4" Grid.Column="3" Text="Card4"/>
+                    <TextBlock x:Name="HandCard5" Grid.Column="4" Text="Card5"/>
+                    <TextBlock x:Name="HandCard6" Grid.Column="5" Text="Card6"/>
+                    <TextBlock x:Name="HandCard7" Grid.Column="6" Text="Card7"/>
+                    <TextBlock x:Name="HandCard8" Grid.Column="7" Text="Card8"/>
 
 
                     <Button Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00"/>
@@ -96,9 +116,29 @@
             <!--#endregion-->
             <!-- This is a new grid inside of the main one-->
 
+            <Grid x:Name="CardsPlayed" Grid.Column="1" Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                 <TextBlock Grid.Column="0" Text="Played Card 1"/>
+                 <TextBlock Grid.Column="1" Text="Played Card 2"/>
+                 <TextBlock Grid.Column="2" Text="Played Card 3"/>
+                 <TextBlock Grid.Column="3" Text="Played Card 4"/>
+                 <TextBlock Grid.Column="4" Text="Played Card 5"/>
 
+                    
+                    
+                </Grid>
+               
+            </Grid>
 
-
+            
 
         </Grid>
     </Grid>
