@@ -43,7 +43,7 @@ namespace OOD_project_2026
             double[] cardAffect = { 2, 2, 0.5, 20, 100 };//mult effect
             double[] additionalAffect = { 0, 1, 1, 0.05, 0.2 };//chance effect
             int[] price = { 5, 3, 5, 9, 2 };//preset price for each card
-            bool[] affectFaceCards = { true, false, false, false };
+            bool[] affectFaceCards = { true, false, false, false,false };
 
             //this just adds them all to the list of joker cards inside the player class. I could have done this in the constructor but I wanted to keep it separate for ease of use and readability.
             for (int i = 0; i < JokerCardNames.Length; i++)

@@ -98,14 +98,14 @@
                         <RowDefinition Height=".3*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="HandCard1" Grid.Column="0" Text="Card1" KeyDown="HandCard1_KeyDown"/>
-                    <TextBlock x:Name="HandCard2" Grid.Column="1" Text="Card2"/>
-                    <TextBlock x:Name="HandCard3" Grid.Column="2" Text="Card3"/>
-                    <TextBlock x:Name="HandCard4" Grid.Column="3" Text="Card4"/>
-                    <TextBlock x:Name="HandCard5" Grid.Column="4" Text="Card5"/>
-                    <TextBlock x:Name="HandCard6" Grid.Column="5" Text="Card6"/>
-                    <TextBlock x:Name="HandCard7" Grid.Column="6" Text="Card7"/>
-                    <TextBlock x:Name="HandCard8" Grid.Column="7" Text="Card8"/>
+                    <Button x:Name="HandCard1" Grid.Column="0" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard2" Grid.Column="1" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard3" Grid.Column="2" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard4" Grid.Column="3" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard5" Grid.Column="4" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard6" Grid.Column="5" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard7" Grid.Column="6" Content="Card1" Click="Card_Click"/>
+                    <Button x:Name="HandCard8" Grid.Column="8" Content="Card1" Click="Card_Click"/>
 
 
                     <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>

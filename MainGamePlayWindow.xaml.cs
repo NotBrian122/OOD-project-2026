@@ -29,6 +29,8 @@ namespace OOD_project_2026
         int handsLeft = 3;
         int disguardsLeft = 3;
         int selectedCards = 0;
+        string score = "";
+        int maxCardsInHand = 5;
 
         //genereating a new deck
         Deck deck = new Deck();
@@ -65,7 +67,7 @@ namespace OOD_project_2026
             List<Cards> hand = new List<Cards>();
 
             //this is for adding random numbers to your hand
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 8; i++)
             {
                 randomNUmber = random.Next(0, deck.FullDeck.Count);
                 hand.Add(deck.FullDeck[randomNUmber]);
@@ -81,19 +83,52 @@ namespace OOD_project_2026
 
             //load deck 
             deck.CreateDeck();
+            for (int i = 0; i < 8; i++)
+            {
+
+            }
 
         }
         //heres the akward part. I have to create it so that you can click on other hands then ask to play or remove them .
-        private void HandCard1_KeyDown(object sender, KeyEventArgs e)
+        private void Card_Click(object sender, RoutedEventArgs e)
         {
+            Button clickedCard = sender as Button;
+
+            Cards card = clickedCard.Tag as Cards;
+
+            if (hand.Contains(card))
+            {
+                hand.Remove(card);
+
+                clickedCard.Background = Brushes.White;
+            }
+            else
+            {
+                if (hand.Count < maxCardsInHand)
+                {
+                    hand.Add(card);
+
+                    clickedCard.Background = Brushes.Gold;
+                }
+            }
+            clickedCard.Margin = new Thickness(0, -20, 0, 0);
+
+            foreach (Cards cards in hand)
+            {
+                // move to played area
+                hand.Remove(card);
+            }
+
+            hand.Clear();
 
         }
 
         private void PlayHand_Click(object sender, RoutedEventArgs e)
         {
+       
 
             //this is where the hand will be played and the effects of the cards will be applied.
-            string score = "";
+
             double chipScore = 0;
             double multScore = 0;
             int handNumber = 0;
