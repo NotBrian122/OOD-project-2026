@@ -24,6 +24,6 @@
                 </LinearGradientBrush>
             </TextBlock.Foreground>
         </TextBlock>
-        <Button x:Name="StartGame" Background="#FFEAE21D" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Start Game" Margin="0,0,0,20" Click="StartGame_Click"/>
+        <Button x:Name="StartGame" Background="#FFEAE21D" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Start Game" Margin="0,381,0,0" Click="StartGame_Click" Height="34" Width="97"/>
     </Grid>
 </Page>

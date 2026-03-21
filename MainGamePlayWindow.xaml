@@ -38,7 +38,9 @@
             <TextBlock Grid.Row="3" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Quit Game"/>
             <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Hands Left"/>
             <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD" Text="BlindNo"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
             <!--#region JokerCards-->
             <Grid Grid.Row="0" Grid.Column="1">
@@ -96,7 +98,7 @@
                         <RowDefinition Height=".3*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="HandCard1" Grid.Column="0" Text="Card1"/>
+                    <TextBlock x:Name="HandCard1" Grid.Column="0" Text="Card1" KeyDown="HandCard1_KeyDown"/>
                     <TextBlock x:Name="HandCard2" Grid.Column="1" Text="Card2"/>
                     <TextBlock x:Name="HandCard3" Grid.Column="2" Text="Card3"/>
                     <TextBlock x:Name="HandCard4" Grid.Column="3" Text="Card4"/>
@@ -106,7 +108,7 @@
                     <TextBlock x:Name="HandCard8" Grid.Column="7" Text="Card8"/>
 
 
-                    <Button Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00"/>
+                    <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>
                     <Button Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00"/>
                 </Grid>
 

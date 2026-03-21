@@ -85,10 +85,7 @@ namespace OOD_project_2026
             //you cant use the operand sign for strings so im leaving it here 
             else if (this.SuitName == other.SuitName)
             {
-                {
-                    return 0;
-                }
-
+                return 0;
             }
             else //the values are equal to the card chip value.
                 return 0;
