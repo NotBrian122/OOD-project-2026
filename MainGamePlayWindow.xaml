@@ -39,7 +39,7 @@
             <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Hands Left"/>
             <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
             <!--#region JokerCards-->
@@ -78,7 +78,7 @@
             -->
             <TextBlock Grid.Column="1" Grid.Row="2" Text="Cards Played" Background="#330088FF" Grid.RowSpan="1"/>
             <Grid Grid.Column="1" Grid.Row="3">
-                <Grid x:Name="CardGrid" Background="#3F377D8A" Loaded="CardGrid_Loaded">
+                <Grid x:Name="CardGrid" Background="#3F377D8A">
 
 
                     <!--Im going to leave it with 8 cards as its easier to do-->
@@ -109,7 +109,7 @@
 
 
                     <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>
-                    <Button Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00"/>
+                    <Button x:Name="Disguard" Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="Disguard_Click"/>
                 </Grid>
 
 

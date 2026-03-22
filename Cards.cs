@@ -61,10 +61,10 @@ namespace OOD_project_2026
         {
             if (Effect == "")
             {
-                return $"{CardName} of {SuitName} with a chip value of {CardChipValue}";
+                return $"{CardName}\n{SuitName}\n{CardChipValue}";
             }
             else
-                return $"{CardName} of {SuitName} with a chip value of {CardChipValue} and an effect of {Effect}";
+                return $"{CardName}\n{SuitName}\n{CardChipValue}\n{Effect}";
         }
         public void CardEffectAdd()
         {

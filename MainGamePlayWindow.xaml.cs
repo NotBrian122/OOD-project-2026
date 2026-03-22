@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -24,215 +25,251 @@ namespace OOD_project_2026
 
     public partial class MainGamePlayWindow : Page
     {
-        //Declaring the hands that are there /left
-
+        //hands and disguards left 
         int handsLeft = 3;
         int disguardsLeft = 3;
-        int selectedCards = 0;
-        string score = "";
         int maxCardsInHand = 5;
 
-        //genereating a new deck
+        //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
-        //generating hands 
         List<Cards> hand = new List<Cards>();
-        //records the hands played
+        List<Cards> selectedHand = new List<Cards>();
         List<Cards> HandPlayed = new List<Cards>();
-        //records the hands disguarded
         List<Cards> HandDiscarded = new List<Cards>();
-        //generates a list of joker cards with spesific modifiers and effects.
         List<JokerCards> Jokers = JokerCards.GenerateJokerCards();
-        //this is the base list for the joker Cards that need to be played.
         List<JokerCards> JokerCardsInPlay = new List<JokerCards>();
-        //generates blank player class - this should be initialzed once 
-        Player Player = new Player();
-        //creating the deck - all good here. 
+        Player Player = new Player();//I want to add a player class to write to a file. This will track your best score.
+        Random random = new Random();
 
 
         public MainGamePlayWindow()
         {
             InitializeComponent();
-
-        }
-
-        private void CardGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            //so this is the section in which the random cards are given from the deck.
-            //The grid is loaded. 
-
-
-            Random random = new Random();
-            int randomNUmber = random.Next(0, deck.FullDeck.Count);
-            //this is the hand list that the player will get. Completely random.
-            List<Cards> hand = new List<Cards>();
-
-            //this is for adding random numbers to your hand
-            for (int i = 0; i < 8; i++)
-            {
-                randomNUmber = random.Next(0, deck.FullDeck.Count);
-                hand.Add(deck.FullDeck[randomNUmber]);
-                //this is to remove from the deck so we dont get duplicates in our hand
-                deck.FullDeck.RemoveAt(randomNUmber);
-            }
         }
 
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            //This is where I want to load my cards. 
-
-
-            //load deck 
+            //creating the deck. it works. 
             deck.CreateDeck();
-            for (int i = 0; i < 8; i++)
-            {
-
-            }
-
+            //drawing the cards 
+            DrawCards(8);
+            //refreshing the ui before we start the game. 
+            RefreshHandUI();
         }
-        //heres the akward part. I have to create it so that you can click on other hands then ask to play or remove them .
+
+        private void DrawCards(int amount)
+        {
+            //this is handy for modular design as it allows me to draw cards
+            //and pass a simple parameter into them to take a certian amount. 
+            for (int i = 0; i < amount; i++)
+            {
+                if (deck.FullDeck.Count == 0)
+                    return;
+                //checking for a new random number inside of the deck
+                int newCards = random.Next(0,deck.FullDeck.Count);
+                //adding the drawn cards to the deck. 
+                Cards drawnCard = deck.FullDeck[newCards];
+                hand.Add(drawnCard);
+                deck.FullDeck.RemoveAt(newCards);
+            }
+        }
+
+        //I created a method that Refreshes the card slots once a hand was played.
+        private void RefreshHandUI()
+        {
+            //this is the list of cards that are in the grid. refresing the list when called. 
+         List<Button> cardSlots = new List<Button>()
+        {HandCard1,HandCard2,HandCard3,HandCard4,HandCard5,HandCard6,HandCard7,HandCard8};
+
+            //this is to add the content to the displayed hand.
+            for (int i = 0; i < cardSlots.Count; i++)
+            {
+                if (i < hand.Count)//created a hand that gives the player 10 cards. 
+                {
+                    cardSlots[i].Content = hand[i].ToString();//simple display of 
+                    cardSlots[i].Tag = hand[i];
+                    //found a yt tutorial that just shows you how to to do this.
+                    cardSlots[i].Background = Brushes.White;
+
+                    //and call these which is wild I spent a good while looking for this. 
+                    //when clicking the card it adds it to the clicked method. 
+                    cardSlots[i].Click -= Card_Click;
+                    cardSlots[i].Click += Card_Click;
+                }
+                else
+                {
+                    //this is the edge case if you run out of cards. This is for later in the project. 
+                    cardSlots[i].Content = "";
+                    cardSlots[i].Tag = null;
+                }
+            }
+        }
+
+        //playing cards method. 
         private void Card_Click(object sender, RoutedEventArgs e)
         {
+            //this was a pain to get working. Didnt know that tags were a thing yet they are so helpful.
             Button clickedCard = sender as Button;
-
             Cards card = clickedCard.Tag as Cards;
 
-            if (hand.Contains(card))
+            //just in case you try and click on nothing the decide to playsomething. 
+            if (card == null)
+                return;
+            //this is the method to add to you hand. 
+            if (selectedHand.Contains(card))
             {
-                hand.Remove(card);
-
+                selectedHand.Remove(card);
                 clickedCard.Background = Brushes.White;
+                clickedCard.Margin = new Thickness(0, 0, 0, 0);
             }
             else
             {
-                if (hand.Count < maxCardsInHand)
+                if (selectedHand.Count < maxCardsInHand)
                 {
-                    hand.Add(card);
-
-                    clickedCard.Background = Brushes.Gold;
+                    selectedHand.Add(card);
+                    clickedCard.Background = Brushes.AntiqueWhite;
+                    clickedCard.Margin = new Thickness(0, -20, 0, 0);
                 }
             }
-            clickedCard.Margin = new Thickness(0, -20, 0, 0);
+        }
+        private void Disguard_Click(object sender, RoutedEventArgs e)
+        {
+            //more edgecasing. 
+            if (selectedHand.Count == 0)
+                return;
 
-            foreach (Cards cards in hand)
+            //this adds the cards to the disguard pile that will be dumped back into the main deck at the end of round. 
+            foreach (var card in selectedHand)
             {
-                // move to played area
                 hand.Remove(card);
+                HandDiscarded.Add(card);
             }
 
-            hand.Clear();
+            DrawCards(selectedHand.Count);
 
+            foreach (Button btn in CardGrid.Children.OfType<Button>())
+            {
+                btn.Background = Brushes.White;
+                btn.Margin = new Thickness(0,0,0,0);
+            }
+
+            selectedHand.Clear();
+            RefreshHandUI();
+
+            disguardsLeft--;
+        
         }
-
         private void PlayHand_Click(object sender, RoutedEventArgs e)
         {
-       
-
-            //this is where the hand will be played and the effects of the cards will be applied.
+            //just in case you try and waste a hand. 
+            if (selectedHand.Count == 0)
+                return;
 
             double chipScore = 0;
             double multScore = 0;
             int handNumber = 0;
-            string[] cardsPlayed = new string[hand.Count];
             bool isStraight = false;
 
+            //had to remove cardsPlayed as im not passing the method into this 
+            selectedHand.Sort();
 
-            hand.Sort();
-            //first I want to compare chip values and suits, done in this here.
-            for (int i = 0; i < hand.Count; i++)
+            for (int i = 0; i < selectedHand.Count; i++)
             {
-                if (i != 0 && hand[i].CompareTo(hand[i - 1]) == 0)
+                if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
                     handNumber++;
-                    Console.WriteLine(hand[i].ToString());
                 }
-                chipScore += hand[i].CardChipValue;
+
+                chipScore += selectedHand[i].CardChipValue;
             }
 
-            //this is for figuring out if there is a 
-            for (int i = 0; i < hand.Count; i++)
+            if (selectedHand.Count == 5)
             {
-                if (i != 0 && hand.Count == 5)//checks if the handcount is 5 
+                isStraight = true;
+
+                for (int i = 1; i < selectedHand.Count; i++)
                 {
-                    if(hand[i].CardChipValue == hand[i-1].CardChipValue + 1)//comparing the previous chip value to current one 
-                    {                                                       //if the score previous is larger by 1 then we keep the stright true
-                        isStraight = true;
-                    }
-                    else
+                    if (selectedHand[i].CardChipValue != selectedHand[i - 1].CardChipValue + 1)
                     {
-                        isStraight = false; //if not then we check to see if the straight is true or not. returning a false bool and ignoring it. 
+                        isStraight = false;
+
                         break;
                     }
                 }
-             
             }
 
-
-            if (isStraight)//if the straight method worked. else use regualr switch statement 
+            if (isStraight)
             {
                 chipScore += 55;
+
                 multScore = 5;
             }
             else
             {
-                //finding the base mult for the hand. 
-                //I have to place some if statements in here to check for the different types of arrrangements in spesific hands.
                 switch (handNumber)
                 {
                     case 0:
-                        Console.WriteLine("High Card");
                         chipScore += 10;
                         multScore = 1;
                         break;
+
                     case 1:
-                        //highcard
-                        Console.WriteLine("Pair");
                         chipScore += 20;
                         multScore = 2;
                         break;
+
                     case 2:
-                        //three of a kind or full house
-                        Console.WriteLine("Three of a Kind");
                         chipScore += 30;
                         multScore = 3;
                         break;
+
                     case 3:
-                        //three of a kind
-                        Console.WriteLine("Two Pair");
                         chipScore += 40;
                         multScore = 4;
                         break;
+
                     case 4:
-                        //flush 
-                        Console.WriteLine("flush");
                         chipScore += 50;
                         multScore = 5;
                         break;
-
                 }
-
             }
-                
 
-            //next here is going to be a section for the joker cards and how they affect the score.
-
-            if (JokerCardsInPlay != null)
+            foreach (var joker in JokerCardsInPlay)
             {
-                foreach (var card in JokerCardsInPlay)
-                {
-                    //this is where the joker card effects will be applied to the score. 
-                    multScore *= card.gameAffect;
-                    chipScore += card.additionalModifiers;
-                }
+                multScore *= joker.gameAffect;
+
+                chipScore += joker.additionalModifiers;
             }
 
+            foreach (var card in selectedHand)
+            {
+                hand.Remove(card);
 
-            //finally returning the score for the hand. Outputting it to the window. 
-            string finalScore = string.Format($"Score:{score}  #{chipScore * multScore}");
+                HandPlayed.Add(card);
+            }
+
+            DrawCards(selectedHand.Count);
+            //this is here to reset all of the cards that have been played or disguarded. 
+            //making the gameplay smoother. I had to scrounge for this .OFTYPE for a bit. 
+            foreach (Button btn in CardGrid.Children.OfType<Button>())
+            {
+                btn.Background = Brushes.White;
+                btn.Margin = new Thickness(0, 0, 0, 0);
+            }
+
+            selectedHand.Clear();
+
+            RefreshHandUI();
+
+            string finalScore = $"Score: {chipScore * multScore}";
+
             PlayerChipScore.Text = finalScore;
         }
 
 
-    
     }
-}
 
+
+
+}
