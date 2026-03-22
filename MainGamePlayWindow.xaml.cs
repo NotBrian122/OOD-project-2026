@@ -25,10 +25,12 @@ namespace OOD_project_2026
 
     public partial class MainGamePlayWindow : Page
     {
+        #region setting variables for the game
         //hands and disguards left 
         int handsLeft = 3;
         int disguardsLeft = 3;
         int maxCardsInHand = 5;
+        double playersCurrentScore = 0;
 
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
@@ -41,7 +43,7 @@ namespace OOD_project_2026
         Player Player = new Player();//I want to add a player class to write to a file. This will track your best score.
         Random random = new Random();
 
-
+        #endregion
         public MainGamePlayWindow()
         {
             InitializeComponent();
@@ -56,24 +58,8 @@ namespace OOD_project_2026
             //refreshing the ui before we start the game. 
             RefreshHandUI();
         }
-
-        private void DrawCards(int amount)
-        {
-            //this is handy for modular design as it allows me to draw cards
-            //and pass a simple parameter into them to take a certian amount. 
-            for (int i = 0; i < amount; i++)
-            {
-                if (deck.FullDeck.Count == 0)
-                    return;
-                //checking for a new random number inside of the deck
-                int newCards = random.Next(0,deck.FullDeck.Count);
-                //adding the drawn cards to the deck. 
-                Cards drawnCard = deck.FullDeck[newCards];
-                hand.Add(drawnCard);
-                deck.FullDeck.RemoveAt(newCards);
-            }
-        }
-
+       
+        #region Updating ui/ clard clicking 
         //I created a method that Refreshes the card slots once a hand was played.
         private void RefreshHandUI()
         {
@@ -132,6 +118,9 @@ namespace OOD_project_2026
                 }
             }
         }
+        #endregion
+        //disguard cards method. 
+        #region Playing or disguarding hands
         private void Disguard_Click(object sender, RoutedEventArgs e)
         {
             //more edgecasing. 
@@ -149,6 +138,7 @@ namespace OOD_project_2026
 
             foreach (Button btn in CardGrid.Children.OfType<Button>())
             {
+                //this refreshes the children of the grid.
                 btn.Background = Brushes.White;
                 btn.Margin = new Thickness(0,0,0,0);
             }
@@ -164,77 +154,92 @@ namespace OOD_project_2026
             //just in case you try and waste a hand. 
             if (selectedHand.Count == 0)
                 return;
-
+            //this is for the score, they are doubles as the alrger scores and some other cards
+            //can fuck with intagers so Ive started with this. 
             double chipScore = 0;
             double multScore = 0;
             int handNumber = 0;
+            string handPlayed = "";
+            //checking for staights. 
             bool isStraight = false;
 
-            //had to remove cardsPlayed as im not passing the method into this 
+           //Wanted to sort the hand before hand as it would make it easier to score. 
             selectedHand.Sort();
 
+            //this for loop is to compare if the selected hands suits a the same. 
             for (int i = 0; i < selectedHand.Count; i++)
             {
                 if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
                     handNumber++;
                 }
-
+                //adding the chip score from each of the hands to this. 
                 chipScore += selectedHand[i].CardChipValue;
             }
-
+            #region check for straights
+            //checking if the hand count is 5 for straights. 
             if (selectedHand.Count == 5)
             {
+                //setting this true before checking as it makes it easier. 
                 isStraight = true;
 
                 for (int i = 1; i < selectedHand.Count; i++)
                 {
+                    //comparing chip value and if broken at least once then its set to false. 
                     if (selectedHand[i].CardChipValue != selectedHand[i - 1].CardChipValue + 1)
                     {
                         isStraight = false;
-
                         break;
                     }
                 }
             }
 
+            //this makes straights so much easier to keep a track of. 
             if (isStraight)
             {
                 chipScore += 55;
-
                 multScore = 5;
             }
+            #endregion
             else
             {
+                //else based off of the tallied hand number it chooses what type of hand you played. 
                 switch (handNumber)
                 {
+                    //each of these are hands that have been played. 
                     case 0:
+                        //High card
+                        handPlayed = "high card";
                         chipScore += 10;
                         multScore = 1;
                         break;
 
                     case 1:
+                        handPlayed = "Pair";
                         chipScore += 20;
                         multScore = 2;
                         break;
 
                     case 2:
+                        handPlayed = "3 of a kind";
                         chipScore += 30;
                         multScore = 3;
                         break;
 
                     case 3:
+                        handPlayed = "Two pair ";
                         chipScore += 40;
                         multScore = 4;
                         break;
 
                     case 4:
+                        handPlayed = "Flush";
                         chipScore += 50;
                         multScore = 5;
                         break;
                 }
             }
-
+            //this takes the jokers that are played into effect but for now they are unused. 
             foreach (var joker in JokerCardsInPlay)
             {
                 multScore *= joker.gameAffect;
@@ -261,15 +266,29 @@ namespace OOD_project_2026
             selectedHand.Clear();
 
             RefreshHandUI();
+            playersCurrentScore += chipScore * multScore;
 
-            string finalScore = $"Score: {chipScore * multScore}";
+            string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
 
             PlayerChipScore.Text = finalScore;
         }
 
-
+        #endregion 
+        private void DrawCards(int amount)
+        {
+            //this is handy for modular design as it allows me to draw cards
+            //and pass a simple parameter into them to take a certian amount. 
+            for (int i = 0; i < amount; i++)
+            {
+                if (deck.FullDeck.Count == 0)
+                    return;
+                //checking for a new random number inside of the deck
+                int newCards = random.Next(0,deck.FullDeck.Count);
+                //adding the drawn cards to the deck. 
+                Cards drawnCard = deck.FullDeck[newCards];
+                hand.Add(drawnCard);
+                deck.FullDeck.RemoveAt(newCards);
+            }
+        }
     }
-
-
-
 }
