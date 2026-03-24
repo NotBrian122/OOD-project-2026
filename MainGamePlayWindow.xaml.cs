@@ -31,14 +31,17 @@ namespace OOD_project_2026
         int disguardsLeft = 3;
         int maxCardsInHand = 5;
         double playersCurrentScore = 0;
+        int blindScore = 300;
+        int round = 0;
 
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
+        JokerCards JokerCards = new JokerCards();
         List<Cards> hand = new List<Cards>();
         List<Cards> selectedHand = new List<Cards>();
         List<Cards> HandPlayed = new List<Cards>();
         List<Cards> HandDiscarded = new List<Cards>();
-        List<JokerCards> Jokers = JokerCards.GenerateJokerCards();
+       
         List<JokerCards> JokerCardsInPlay = new List<JokerCards>();
         Player Player = new Player();//I want to add a player class to write to a file. This will track your best score.
         Random random = new Random();
@@ -53,10 +56,15 @@ namespace OOD_project_2026
         {
             //creating the deck. it works. 
             deck.CreateDeck();
+            //Generating a list of jokers.
+             List<JokerCards> Jokers = JokerCards.GenerateJokerCards();
             //drawing the cards 
             DrawCards(8);
             //refreshing the ui before we start the game. 
             RefreshHandUI();
+            //Generating blind score 
+            round++;
+            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
         }
        
         #region Updating ui/ clard clicking 
@@ -89,6 +97,11 @@ namespace OOD_project_2026
                     cardSlots[i].Tag = null;
                 }
             }
+            //updating hands and disguards left
+            HandsLeft.Text = $"Hands Left:{handsLeft}";
+            DisguardsLeft.Text = $"Disguards Left:{disguardsLeft}";
+            //after refreshing the hand ui I do a check for if the player has won or not. 
+            CheckWin(playersCurrentScore,handsLeft,disguardsLeft,blindScore);
         }
 
         //playing cards method. 
@@ -104,15 +117,16 @@ namespace OOD_project_2026
             //this is the method to add to you hand. 
             if (selectedHand.Contains(card))
             {
-                selectedHand.Remove(card);
+                selectedHand.Remove(card);//if not then it removes 
                 clickedCard.Background = Brushes.White;
-                clickedCard.Margin = new Thickness(0, 0, 0, 0);
+                clickedCard.Margin = new Thickness(0, 0, 0, 0);//resorts the thickness
             }
             else
             {
-                if (selectedHand.Count < maxCardsInHand)
+                if (selectedHand.Count < maxCardsInHand)//this adds cards to your hand if your less than the max cards in hand.
                 {
                     selectedHand.Add(card);
+                    //when selecting the card it changes the background colour and the base thickness. 
                     clickedCard.Background = Brushes.AntiqueWhite;
                     clickedCard.Margin = new Thickness(0, -20, 0, 0);
                 }
@@ -159,9 +173,9 @@ namespace OOD_project_2026
             double chipScore = 0;
             double multScore = 0;
             int handNumber = 0;
-            string handPlayed = "";
+            string handPlayed = "";//type of hand played
             //checking for staights. 
-            bool isStraight = false;
+            bool isFlush = false;
 
            //Wanted to sort the hand before hand as it would make it easier to score. 
             selectedHand.Sort();
@@ -169,8 +183,15 @@ namespace OOD_project_2026
             //this for loop is to compare if the selected hands suits a the same. 
             for (int i = 0; i < selectedHand.Count; i++)
             {
+                //this compares the previous card to the current one for the chip value. 
+                //afterwards I have to 
                 if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
+                    //I have to check for aces as 2 is below it it counts as a straight
+                    if(selectedHand[i].CardChipValue == 14 && selectedHand[i+1].CardChipValue == 2)
+                    {
+                        handNumber++;
+                    }
                     handNumber++;
                 }
                 //adding the chip score from each of the hands to this. 
@@ -181,21 +202,21 @@ namespace OOD_project_2026
             if (selectedHand.Count == 5)
             {
                 //setting this true before checking as it makes it easier. 
-                isStraight = true;
+                isFlush = true;
 
                 for (int i = 1; i < selectedHand.Count; i++)
                 {
-                    //comparing chip value and if broken at least once then its set to false. 
-                    if (selectedHand[i].CardChipValue != selectedHand[i - 1].CardChipValue + 1)
+                    //comparing suit names and values to see if you get a flsuh or not 
+                    if (i!=0 && selectedHand[i].SuitName != selectedHand[i-1].SuitName)
                     {
-                        isStraight = false;
+                        isFlush = false;
                         break;
                     }
                 }
             }
 
             //this makes straights so much easier to keep a track of. 
-            if (isStraight)
+            if (isFlush)
             {
                 chipScore += 55;
                 multScore = 5;
@@ -227,13 +248,13 @@ namespace OOD_project_2026
                         break;
 
                     case 3:
-                        handPlayed = "Two pair ";
+                        handPlayed = "Two pair";
                         chipScore += 40;
                         multScore = 4;
                         break;
 
                     case 4:
-                        handPlayed = "Flush";
+                        handPlayed = "Striaght";
                         chipScore += 50;
                         multScore = 5;
                         break;
@@ -246,7 +267,7 @@ namespace OOD_project_2026
 
                 chipScore += joker.additionalModifiers;
             }
-
+            //this removes the card from the hand and puts it in the hand played. 
             foreach (var card in selectedHand)
             {
                 hand.Remove(card);
@@ -264,13 +285,13 @@ namespace OOD_project_2026
             }
 
             selectedHand.Clear();
-
+            handsLeft--;
             RefreshHandUI();
             playersCurrentScore += chipScore * multScore;
-
+            //changing the fronend display for the playerscore 
             string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
-
             PlayerChipScore.Text = finalScore;
+            CheckWin(playersCurrentScore, handsLeft, disguardsLeft, blindScore);
         }
 
         #endregion 
@@ -289,6 +310,38 @@ namespace OOD_project_2026
                 hand.Add(drawnCard);
                 deck.FullDeck.RemoveAt(newCards);
             }
+        }
+        private void CheckWin(double PlayerChipScore,int handsLeft, int disguardsLeft, double BlindScore)
+        {
+            double comparingScore = BlindScore - PlayerChipScore;
+            if( comparingScore <= 0 && handsLeft != 0)
+            {
+                //you win
+                //win window; this will allow you to go to the shop. 
+
+                //resetting current chip score of player.
+                playersCurrentScore = 0;
+                //im going to put the shop menu window into this.
+            }
+            else if (comparingScore > 0 && handsLeft == 0)
+            {
+                //loose as you have no hands left. Restting the game and going back into the game.
+            }
+            else
+            {
+                //continue playing aka nothing happens. 
+            }
+        }
+        //I need to generate a blind score for the player to "Defeat"
+        private int GenerateBlindScore(int roundScore) 
+        {
+           if(roundScore > 1)
+            {
+                blindScore += blindScore * roundScore ;
+                return blindScore;
+            }
+            else 
+                return blindScore;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOD_project_2026
 {
-    internal class JokerCards
+    public class JokerCards
     {
         public string Name { get; set; }
         public string Affect { get; set; }
@@ -16,7 +16,7 @@ namespace OOD_project_2026
         public double additionalModifiers { get; set; }
         public int price { get; set; }
         public bool AffectFaceCards { get; set; }
-        JokerCards() { }
+        public JokerCards() { }
 
         public JokerCards(string Name, string Affect, double gameAffect, double additionalModifiers, int price,bool affectFaceCards)
         {

@@ -82,14 +82,13 @@ namespace OOD_project_2026
             {
                 return -1;//also non matching 
             }
-            //you cant use the operand sign for strings so im leaving it here 
-            else if (this.SuitName == other.SuitName)
+            else if (this.CardChipValue == other.CardChipValue)
             {
-                return 0;
+                return 0;//matching card chip value
             }
-            else //the values are equal to the card chip value.
-                return 0;
 
+            else return -1;//presume non matching in order as it makes it clear what to do
+            //ive removed the suit comparason as I can do that myself for the suits. 
         }
     }
 }
