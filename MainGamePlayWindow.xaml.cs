@@ -176,7 +176,7 @@ namespace OOD_project_2026
             string handPlayed = "";//type of hand played
             //checking for staights. 
             bool isFlush = false;
-            bool isPair = false;
+            int isPair = 0;
 
            //Wanted to sort the hand before hand as it would make it easier to score. 
             selectedHand.Sort();
@@ -188,14 +188,14 @@ namespace OOD_project_2026
                 //afterwards I have to 
                 if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
-                    isPair = true;
-                    //I have to check for aces as 2 is below it it counts as a straight
+                    isPair++;//this counts the amount of pairs in your hand.
                    
                     handNumber++;
+                    //I have to check for aces as 2 is below it it counts as a straight
                 } else if(selectedHand[i].CardChipValue == 14 && selectedHand[i+1].CardChipValue == 2)
-                    {
-                        handNumber++;
-                    }
+                {
+                    handNumber++;
+                }
                 //adding the chip score from each of the hands to this. 
                 chipScore += selectedHand[i].CardChipValue;
             }
@@ -216,7 +216,10 @@ namespace OOD_project_2026
                     }
                 }
             }
-
+            //trying to get 2 pair
+            if(isPair == 2){
+                handNumber = 3;
+            }
             //this makes straights so much easier to keep a track of. 
             if (isFlush)
             {
@@ -236,25 +239,21 @@ namespace OOD_project_2026
                         chipScore += 10;
                         multScore = 1;
                         break;
-
                     case 1:
                         handPlayed = "Pair";
                         chipScore += 20;
                         multScore = 2;
                         break;
-
                     case 2:
                         handPlayed = "3 of a kind";
                         chipScore += 30;
                         multScore = 3;
                         break;
-
                     case 3:
                         handPlayed = "Two pair";
                         chipScore += 40;
                         multScore = 4;
                         break;
-
                     case 4:
                         handPlayed = "Striaght";
                         chipScore += 50;
