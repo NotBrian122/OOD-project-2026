@@ -176,6 +176,7 @@ namespace OOD_project_2026
             string handPlayed = "";//type of hand played
             //checking for staights. 
             bool isFlush = false;
+            bool isPair = false;
 
            //Wanted to sort the hand before hand as it would make it easier to score. 
             selectedHand.Sort();
@@ -187,13 +188,14 @@ namespace OOD_project_2026
                 //afterwards I have to 
                 if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
+                    isPair = true;
                     //I have to check for aces as 2 is below it it counts as a straight
-                    if(selectedHand[i].CardChipValue == 14 && selectedHand[i+1].CardChipValue == 2)
+                   
+                    handNumber++;
+                } else if(selectedHand[i].CardChipValue == 14 && selectedHand[i+1].CardChipValue == 2)
                     {
                         handNumber++;
                     }
-                    handNumber++;
-                }
                 //adding the chip score from each of the hands to this. 
                 chipScore += selectedHand[i].CardChipValue;
             }
