@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -185,16 +186,20 @@ namespace OOD_project_2026
             for (int i = 0; i < selectedHand.Count; i++)
             {
                 //this compares the previous card to the current one for the chip value. 
-                //afterwards I have to 
+                //afterwards I have to check for straights
+                //this is for pairs
                 if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
                 {
-                    isPair++;//this counts the amount of pairs in your hand.
-                   
+                    isPair++;//this counts the amount of pairs in your hand. This can include 2 pair. 
                     handNumber++;
-                    //I have to check for aces as 2 is below it it counts as a straight
-                } else if(selectedHand[i].CardChipValue == 14 && selectedHand[i+1].CardChipValue == 2)
+                    
+                    //this is for edgecases for straights making ace high or low depnding 
+                } else if (CheckStriaght(selectedHand))
                 {
-                    handNumber++;
+                    handNumber = 4;//I have to check for aces as 2 is below it it counts as a straight
+                    break;
+
+
                 }
                 //adding the chip score from each of the hands to this. 
                 chipScore += selectedHand[i].CardChipValue;
@@ -223,7 +228,7 @@ namespace OOD_project_2026
             //this makes straights so much easier to keep a track of. 
             if (isFlush)
             {
-                chipScore += 55;
+                chipScore += 50;
                 multScore = 5;
             }
             #endregion
@@ -256,7 +261,7 @@ namespace OOD_project_2026
                         break;
                     case 4:
                         handPlayed = "Striaght";
-                        chipScore += 50;
+                        chipScore += 55;//its harder to get a straight than it is a flush. 
                         multScore = 5;
                         break;
                 }
@@ -343,6 +348,30 @@ namespace OOD_project_2026
             }
             else 
                 return blindScore;
+        }
+        private bool CheckStriaght(List<Cards>selectedHand)
+        {
+            bool isStraight = false;
+            if(selectedHand.Count == 5)//checking if the hand has 5 cards.
+            {
+                for (int i = 0; i < selectedHand.Count; i++)
+                {
+                    //this is for a regular striaght, as your taking away the previous card chip value from the current one 
+                    if ((i!=0 && selectedHand[i].CardChipValue - selectedHand[i-1].CardChipValue == 1)
+                        // this is to check for a singualr hand as this edgecase is tough to do with a loop 
+                        || (selectedHand[0].CardChipValue == 2 
+                        && selectedHand[1].CardChipValue == 3
+                        && selectedHand[2].CardChipValue == 4
+                        && selectedHand[3].CardChipValue ==5 
+                        && selectedHand[4].CardChipValue == 14))//its a low straight but the chipvalue of the ace is 14 but it also counts as a 1 
+                    {
+                        isStraight = true;
+                        break;
+                    }
+                }
+                return true;
+            }else 
+            return isStraight;
         }
     }
 }
