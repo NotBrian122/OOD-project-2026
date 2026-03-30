@@ -78,7 +78,7 @@
             <!-- this is the content for the cards given to the player
             I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing 
             -->
-            <TextBlock Grid.Column="1" Grid.Row="2" Text="Cards Played" Background="#330088FF" Grid.RowSpan="1"/>
+            <TextBlock Grid.Column="1" Grid.Row="2" Background="#330088FF" Grid.RowSpan="1"/>
             <Grid Grid.Column="1" Grid.Row="3">
                 <Grid x:Name="CardGrid" Background="#3F377D8A">
 
@@ -120,28 +120,32 @@
             <!--#endregion-->
             <!-- This is a new grid inside of the main one-->
 
-            <Grid x:Name="CardsPlayed" Grid.Column="1" Grid.Row="2">
+            <Grid x:Name="CardsPlayedGrid" Grid.Column="1" Grid.Row="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Played Card 1"/>
-                    <TextBlock Grid.Column="1" Text="Played Card 2"/>
-                    <TextBlock Grid.Column="2" Text="Played Card 3"/>
-                    <TextBlock Grid.Column="3" Text="Played Card 4"/>
-                    <TextBlock Grid.Column="4" Text="Played Card 5"/>
-
-
+                    <TextBlock x:Name="CardPlayed1" Grid.Column="1" Text="Played Card 1"/>
+                    <TextBlock x:Name="CardPlayed2" Grid.Column="3" Text="Played Card 2"/>
+                    <TextBlock x:Name="CardPlayed3" Grid.Column="5" Text="Played Card 3"/>
+                    <TextBlock x:Name="CardPlayed4" Grid.Column="7" Text="Played Card 4"/>
+                    <TextBlock x:Name="CardPlayed5" Grid.Column="9" Text="Played Card 5"/>
 
                 </Grid>
 
             </Grid>
-
+            <!--This grid is for gameplay sake. This is for the chips the cards score.-->
 
 
         </Grid>
