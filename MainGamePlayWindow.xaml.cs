@@ -369,7 +369,7 @@ namespace OOD_project_2026
                         break;
                     }
                 }
-                return true;
+                return isStraight;
             }else 
             return isStraight;
         }
