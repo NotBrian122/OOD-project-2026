@@ -186,34 +186,26 @@ namespace OOD_project_2026
 
             //Assinging the card to the CardsPlayedSection 
             List<TextBlock> cardSlotsPlayed = new List<TextBlock>()
-            { CardPlayed1,CardPlayed2,CardPlayed3,CardPlayed3,CardPlayed4,CardPlayed5};
+            { CardPlayed1,CardPlayed2,CardPlayed3,CardPlayed4,CardPlayed5};
            
             //Assinging the chipps scores to be played. 
             List<TextBlock> cardChipSlots = new List<TextBlock>()
             { ChipScore1,ChipScore2,ChipScore3,ChipScore4,ChipScore5};
 
             //adding the 2 string to the cards.  
+            //adding the chip score from each of the hands to this. Adding animations before final scoring 
             for (int i = 0; i < selectedHand.Count; i++)
             {
                 cardSlotsPlayed[i].Text = selectedHand[i].ToString();//this gives an illusion of cards played. 
-                await Task.Delay(80);
+                chipScore += selectedHand[i].CardChipValue;
+                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";
+                await Task.Delay(80);//this is the animation of the chip score being added.
 
             }
             
             //Wanted to sort the hand before hand as it would make it easier to score. 
              selectedHand.Sort();
-
-           //Then adding the chip score. This is where the animation is going to take palce. 
-
-             //adding the chip score from each of the hands to this. Adding animations before final scoring .  
-             for(int i = 0; i < selectedHand.Count; i++)
-             {
-                chipScore += selectedHand[i].CardChipValue;
-                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";//this is the animation of the chip score being added.
-                await Task.Delay(80);
-             }
-               
-               
+             
                 //ive changed this to pass in the main method to call on the other ahand methods. 
              switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
              {   
@@ -384,15 +376,25 @@ namespace OOD_project_2026
         }
         private int CheckPair(List<Cards> selectedHand, int isPair)
         {
-            for (int i = 0; i < selectedHand.Count; i++)
+            //this used to go by my other method but due to so many edgecases 
+            //I had to change it via groups. 
+            //the reason this method returns an int is that I want to be able to check for 
+            //pairs and 2 pairs in the same moethod rather than writing tonnes of code as well. 
+            var groups = selectedHand
+             //this groups the cards by their chip value 
+             .GroupBy(card => card.CardChipValue)
+              .Select(g => g.Count()).ToList();
+            //to see if its a pair or not.
+            if (groups.Contains(2))
             {
-                if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
-                {
-                    isPair++;//this counts the amount of pairs in your hand. This can include 2 pair. 
-                }
+                isPair++;
+                //this was a weird thing to wrap my head around.
+                //this is counting 2 cases of 2 pairs which is 2 pairs. 
+            }else if (groups.Count(x => x == 2) == 2)
+            {
+                isPair += 2;
             }
-          
-            return isPair;
+                return isPair;
         }
         private bool CheckThreeOfAKind(List<Cards> selectedHand)
         {
@@ -424,7 +426,8 @@ namespace OOD_project_2026
              .Select(g => g.Count()).ToList();
 
             bool threeOfAKind = false;
-            if (groups.Contains(3))
+            //had to add the last bit for the edge case of a full house as it also containts 3 of a kind. 
+            if (groups.Contains(3) && !(groups.Contains(3) && groups.Contains(2)))
             {
                 threeOfAKind = true;
             }
