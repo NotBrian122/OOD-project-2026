@@ -167,7 +167,8 @@ namespace OOD_project_2026
             disguardsLeft--;
 
         }
-        private void PlayHand_Click(object sender, RoutedEventArgs e)
+        //I had to change this to an async method for animations. 
+        private async void PlayHand_Click(object sender, RoutedEventArgs e)
         {
             //just in case you try and waste a hand. You have to play something to advance the game.
             if (selectedHand.Count == 0)
@@ -178,7 +179,6 @@ namespace OOD_project_2026
             //this is for the score, they are doubles as the alrger scores and some other cards
             //can fuck with intagers so Ive started with this. 
             double chipScore = 0, multScore = 0;
-            int handNumber = 0;
             string handPlayed = "";//type of hand played
             //checking for staights. 
             bool isFlush = true;
@@ -188,12 +188,18 @@ namespace OOD_project_2026
             List<TextBlock> cardSlotsPlayed = new List<TextBlock>()
             { CardPlayed1,CardPlayed2,CardPlayed3,CardPlayed3,CardPlayed4,CardPlayed5};
            
+            //Assinging the chipps scores to be played. 
+            List<TextBlock> cardChipSlots = new List<TextBlock>()
+            { ChipScore1,ChipScore2,ChipScore3,ChipScore4,ChipScore5};
+
             //adding the 2 string to the cards.  
             for (int i = 0; i < selectedHand.Count; i++)
             {
                 cardSlotsPlayed[i].Text = selectedHand[i].ToString();//this gives an illusion of cards played. 
+                await Task.Delay(80);
 
             }
+            
             //Wanted to sort the hand before hand as it would make it easier to score. 
              selectedHand.Sort();
 
@@ -203,45 +209,52 @@ namespace OOD_project_2026
              for(int i = 0; i < selectedHand.Count; i++)
              {
                 chipScore += selectedHand[i].CardChipValue;
+                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";//this is the animation of the chip score being added.
+                await Task.Delay(80);
              }
                
                
                 //ive changed this to pass in the main method to call on the other ahand methods. 
-                switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
-                {
+             switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
+             {   
                     //each of these are hands that have been played. 
-                    case 0:
+                case 0:
                         //High card
                         handPlayed = "high card";
                         chipScore += 10;
                         multScore += 1;
                         break;
-                    case 1:
+                case 1:
                         handPlayed = "Pair";
                         chipScore += 20;
                         multScore += 2;
                         break;
-                    case 2:
+                case 2:
                         handPlayed = "3 of a kind";
                         chipScore += 30;
                         multScore += 3;
                         break;
-                    case 3:
+                case 3:
                         handPlayed = "Two pair";
                         chipScore += 40;
                         multScore += 4;
                         break;
-                    case 4:
+                case 4:
                         handPlayed = "Striaght";
                         chipScore += 55;//its harder to get a straight than it is a flush. 
                         multScore += 5;
                         break;
-                    case 5:
+                case 5:
                         handPlayed = "Flush";
                         chipScore += 50;
                         multScore += 5;
                         break;
-            }
+                case 6:
+                        handPlayed = "Full house";
+                        chipScore += 40;
+                        multScore += 4; ;
+                    break;
+             }
 
 
             //this takes the jokers that are played into effect but for now they are unused. 
@@ -275,7 +288,9 @@ namespace OOD_project_2026
             //changing the fronend display for the playerscore 
             string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
             PlayerChipScore.Text = finalScore;
-            CheckWin(playersCurrentScore, handsLeft, disguardsLeft, blindScore);
+
+            //this clears the cards played section after the hand is played.
+            cardSlotsPlayed.Clear();
         }
         #endregion 
         private void DrawCards(int amount)
@@ -376,10 +391,14 @@ namespace OOD_project_2026
                     isPair++;//this counts the amount of pairs in your hand. This can include 2 pair. 
                 }
             }
+          
             return isPair;
         }
         private bool CheckThreeOfAKind(List<Cards> selectedHand)
         {
+            //im going to leave the old code here, theres a really cool tutorial on how to 
+            //compare certian hands. Im going to use it for full house 
+            /*
             int isThreeOfAKind = 0;
             for (int i = 0; i < selectedHand.Count; i++)
             {
@@ -395,6 +414,43 @@ namespace OOD_project_2026
             }
             else
                 return false;
+            */
+
+            //this youtuber used groups for clusters of objects comparing hands
+            //from there I applied it to my own work.
+            var groups = selectedHand
+                //this groups the cards by their chip value 
+            .GroupBy(card => card.CardChipValue)
+             .Select(g => g.Count()).ToList();
+
+            bool threeOfAKind = false;
+            if (groups.Contains(3))
+            {
+                threeOfAKind = true;
+            }
+            else
+            {
+                threeOfAKind = false;
+            }
+
+                return threeOfAKind;
+        }
+        private bool CheckFullHouse(List<Cards> selectedHand)
+        {
+            var groups = selectedHand
+            .GroupBy(card => card.CardChipValue)
+            .Select(g => g.Count()).ToList();
+
+            bool fullHouse = false;
+            if (groups.Contains(3) && groups.Contains(2))
+            {
+                fullHouse = true;
+            }
+            else
+            {
+                fullHouse = false;
+            }
+            return fullHouse;
         }
         private int CheckHandTypeMain(List<Cards> selectedHand, bool isFlush,int isPair)
         {
@@ -411,7 +467,7 @@ namespace OOD_project_2026
             else if (CheckPair(selectedHand, isPair) == 2)
             {
                 handNumber = 3;//trying to get 2 pair
-                               //3 of a kind
+                             
             }
             else if (CheckThreeOfAKind(selectedHand))
             {
@@ -427,6 +483,10 @@ namespace OOD_project_2026
             else if (CheckFlush(isFlush, selectedHand))
             {
                 handNumber = 5;
+            }
+            else if (CheckFullHouse(selectedHand))
+            {
+                handNumber = 6;
             }
             else
             {

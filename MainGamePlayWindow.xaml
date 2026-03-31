@@ -147,7 +147,32 @@
             </Grid>
             <!--This grid is for gameplay sake. This is for the chips the cards score.-->
 
+            <Grid x:Name="ChipScoreGrid" Grid.Column ="1" Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".5*"/>
+                    </Grid.ColumnDefinitions>
 
+                    <TextBlock x:Name="ChipScore1" Grid.Column="1" Text="" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="ChipScore2" Grid.Column="3" Text="" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="ChipScore3" Grid.Column="5" Text="" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="ChipScore4" Grid.Column="7" Text="" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="ChipScore5" Grid.Column="9" Text="" VerticalAlignment="Bottom"/>
+
+                </Grid>
+            </Grid>
+            
+            
         </Grid>
     </Grid>
 </Page>
