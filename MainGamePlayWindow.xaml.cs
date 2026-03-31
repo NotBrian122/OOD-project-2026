@@ -181,13 +181,13 @@ namespace OOD_project_2026
             int handNumber = 0;
             string handPlayed = "";//type of hand played
             //checking for staights. 
-            bool isFlush = false;
+            bool isFlush = true;
             int isPair = 0;
 
             //Assinging the card to the CardsPlayedSection 
             List<TextBlock> cardSlotsPlayed = new List<TextBlock>()
             { CardPlayed1,CardPlayed2,CardPlayed3,CardPlayed3,CardPlayed4,CardPlayed5};
-
+           
             //adding the 2 string to the cards.  
             for (int i = 0; i < selectedHand.Count; i++)
             {
@@ -195,102 +195,55 @@ namespace OOD_project_2026
 
             }
             //Wanted to sort the hand before hand as it would make it easier to score. 
-            selectedHand.Sort();
+             selectedHand.Sort();
 
-            //im going to change these sections here 
+           //Then adding the chip score. This is where the animation is going to take palce. 
 
-            //pair
-            if (CheckPair(selectedHand, isPair) == 1)
-            {
-                handNumber = 1;//this is for a pair 
-            }
-            // 2 pair 
-            else if (CheckPair(selectedHand,isPair) == 2)
-            {
-                handNumber = 3;//trying to get 2 pair
-            //3 of a kind
-            }else if (CheckThreeOfAKind(selectedHand)){
-
-                handNumber = 2;//this is for 3 of a kind.
-            }
-            //stright     
-            else if (CheckStriaght(selectedHand))
-            {
-                handNumber = 4;//I have to check for aces as 2 is below it previously counts as a straight
-            }
-            //flush.  
-
-            //Then adding the chip score. This is where the animation is going to take palce. 
-                
-
+             //adding the chip score from each of the hands to this. Adding animations before final scoring .  
+             for(int i = 0; i < selectedHand.Count; i++)
+             {
+                chipScore += selectedHand[i].CardChipValue;
+             }
                
-
-
-                //this for loop is to compare if the selected hands suits a the same. 
-                for (int i = 0; i < selectedHand.Count; i++)
-                {
-                    //this compares the previous card to the current one for the chip value. 
-                    //afterwards I have to check for straights
-                    //this is for pairs
-                    if (i != 0 && selectedHand[i].CompareTo(selectedHand[i - 1]) == 0)
-                    {
-                        isPair++;//this counts the amount of pairs in your hand. This can include 2 pair. 
-
-                        //this is for edgecases for straights making ace high or low depnding 
-                    }
-                    
-                    //adding the chip score from each of the hands to this. 
-                    chipScore += selectedHand[i].CardChipValue;
-                }
-            #region check for flushes
-            //checking if the hand count is 5 for flushes. 
-            if (selectedHand.Count == 5)
-            {   
-                isFlush = true;
-                CheckFlush(isFlush, selectedHand);
-            }
-          
-            //this makes straights so much easier to keep a track of. 
-            if (isFlush)
-            {
-                chipScore += 50;
-                multScore = 5;
-            }
-            #endregion
-            else
-            {
-                //else based off of the tallied hand number it chooses what type of hand you played. 
-                switch (handNumber)
+               
+                //ive changed this to pass in the main method to call on the other ahand methods. 
+                switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
                 {
                     //each of these are hands that have been played. 
                     case 0:
                         //High card
                         handPlayed = "high card";
                         chipScore += 10;
-                        multScore = 1;
+                        multScore += 1;
                         break;
                     case 1:
                         handPlayed = "Pair";
                         chipScore += 20;
-                        multScore = 2;
+                        multScore += 2;
                         break;
                     case 2:
                         handPlayed = "3 of a kind";
                         chipScore += 30;
-                        multScore = 3;
+                        multScore += 3;
                         break;
                     case 3:
                         handPlayed = "Two pair";
                         chipScore += 40;
-                        multScore = 4;
+                        multScore += 4;
                         break;
                     case 4:
                         handPlayed = "Striaght";
                         chipScore += 55;//its harder to get a straight than it is a flush. 
-                        multScore = 5;
+                        multScore += 5;
                         break;
-                }
+                    case 5:
+                        handPlayed = "Flush";
+                        chipScore += 50;
+                        multScore += 5;
+                        break;
             }
+
+
             //this takes the jokers that are played into effect but for now they are unused. 
             foreach (var joker in JokerCardsInPlay)
             {
@@ -442,6 +395,44 @@ namespace OOD_project_2026
             }
             else
                 return false;
+        }
+        private int CheckHandTypeMain(List<Cards> selectedHand, bool isFlush,int isPair)
+        {
+            //the point of this method is a main method ot pass into the other hands
+            //checking the hand type and pushing the handNumber out so it makes it easier to 
+            //visually process the hand type. 
+            int handNumber = 0;//this is for high cards.
+            //pair
+            if (CheckPair(selectedHand, isPair) == 1)
+            {
+                handNumber = 1;//this is for a pair 
+            }
+            // 2 pair 
+            else if (CheckPair(selectedHand, isPair) == 2)
+            {
+                handNumber = 3;//trying to get 2 pair
+                               //3 of a kind
+            }
+            else if (CheckThreeOfAKind(selectedHand))
+            {
+
+                handNumber = 2;//this is for 3 of a kind.
+            }
+            //stright     
+            else if (CheckStriaght(selectedHand))
+            {
+                handNumber = 4;//I have to check for aces as 2 is below it previously counts as a straight
+            }
+            //flush.  
+            else if (CheckFlush(isFlush, selectedHand))
+            {
+                handNumber = 5;
+            }
+            else
+            {
+                return handNumber;
+            }
+            return handNumber;
         }
     }
 }
