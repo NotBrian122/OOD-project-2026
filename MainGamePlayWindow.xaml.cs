@@ -397,14 +397,14 @@ namespace OOD_project_2026
              .GroupBy(card => card.CardChipValue)
               .Select(g => g.Count()).ToList();
             //to see if its a pair or not.
-            if (groups.Contains(2) && !(groups.Contains(2) && groups.Contains(3)))
-            {
-                isPair++;
-                //this was a weird thing to wrap my head around.
-                //this is counting 2 cases of 2 pairs which is 2 pairs. 
-            }else if ((groups.Count(x => x == 2) == 2) && !(groups.Contains(2) && groups.Contains(3)))
+            if (groups.Count(x => x == 2) == 2)
             {
                 isPair += 2;
+                //this was a weird thing to wrap my head around.
+                //this is counting 2 cases of 2 pairs which is 2 pairs. 
+            }else if (groups.Contains(2))
+            {
+                isPair++;
             }
                 return isPair;
         }
