@@ -81,55 +81,36 @@ namespace OOD_project_2026
             List<Button> cardSlots = new List<Button>()
             {HandCard1,HandCard2,HandCard3,HandCard4,HandCard5,HandCard6,HandCard7,HandCard8};
 
-
+            
             for (int i = 0; i < cardSlots.Count; i++)
             {
                 if (i < hand.Count)//created a hand that gives the player 10 cards. 
                 {
                     cardSlots[i].Tag = hand[i];
-                  
-                    //I have to check for the facecards first as they will need a different action due to art. 
-                    if (hand[i].FaceCard)
-                    {
+                    cardSlots[i].FontSize = 20;
 
-
-                    }
-                    else
-                    {
                         //ive changed the output to display the suit type in html ascii rather than the oither contentn
-                        switch (hand[i].SuitName)
-                        {
-                            case "Hearts":
-                                cardSlots[i].Foreground = Brushes.Red;
-                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
-                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
-                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
+                    switch (hand[i].SuitName)
+                    {
+                         case "Hearts":
+                            cardSlots[i].Foreground = Brushes.Red;
+                            cardSlots[i].Content = hand[i].ToString();  
+                            break;
+                        case "Diamonds":
+                            cardSlots[i].Foreground = Brushes.Orange;
+                            cardSlots[i].Content = hand[i].ToString();
+                            break;
+                         case "Clubs":
+                            cardSlots[i].Foreground = Brushes.Orchid;
+                            cardSlots[i].Content = hand[i].ToString();
+                            break;
+                         case "Spades":
+                            cardSlots[i].Foreground = Brushes.Black;
+                            cardSlots[i].Content = $"\t\t{Char.ConvertFromUtf32(9824)}";
+                            cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
+                            cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
                                 break;
-                            case "Diamonds":
-                                cardSlots[i].Foreground = Brushes.Orange;
-                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9830)}\t\t{Char.ConvertFromUtf32(9830)}";
-                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
-                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
-                                break;
-                            case "Clubs":
-                                cardSlots[i].Foreground = Brushes.Orchid;
-                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
-                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
-                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
-                                break;
-                            case "Spades":
-                                cardSlots[i].Foreground = Brushes.Black;
-                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9824)}\t\t{Char.ConvertFromUtf32(9824)}";
-                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
-                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
-                                break;
-
-
                         }
-
-
-                    }
-                       
 
                     //and call these which is wild I spent a good while looking for this. 
                     //when clicking the card it adds it to the clicked method. 

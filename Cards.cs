@@ -19,6 +19,8 @@ namespace OOD_project_2026
         public string SuitName { get; set; }
         //Cards can have a modifier so I have to leave this speace clear.
         public string Effect { get; set; }
+        //this is to output the cards in a visual sense. 
+        public string AskiiArt { get; set; }
 
         public Cards() { }
         public Cards(string CardName, int CardChipValue, string SuitName, string Effect)
@@ -60,32 +62,43 @@ namespace OOD_project_2026
         }
         public override string ToString()
         {
-            if (Effect == "")
-            {
-                /*
-                switch (SuitName)
+            string cardString = "";
+            switch (SuitName)
                 {
                     case "Hearts":
-                        SuitName = 
+                        AskiiArt = $"{Char.ConvertFromUtf32(9829)}"; 
                         break;
                     case "Diamonds":
-                       
+                        AskiiArt = $"{Char.ConvertFromUtf32(9830)}";
                         break;
                     case "Clubs":
-                     
+                        AskiiArt = $"{Char.ConvertFromUtf32(9827)}";
                         break;
                     case "Spades":
-                      
-                        break;
-
-
+                      AskiiArt= $"{Char.ConvertFromUtf32(9824)}";
+                    break;
                 }
-                */
-                return $"{CardName}\n{SuitName}\n{CardChipValue}";
+            if (Effect == "" && !FaceCard)
+            {
+                //Ive changed this to dispaly the art natievely and make it genereate easier 
+                // compared ot other strongs. 
+                return cardString = $"{CardName}{AskiiArt}{AskiiArt}"
+                     + $"\n\n\n\t{CardChipValue}"
+                     + $"\n\n\n\n\n{AskiiArt}\t\t{AskiiArt}{CardName}";
+            }
+            else if (Effect !="" && !FaceCard)
+            {
+                return cardString =$"{CardName}\n{SuitName}\n{CardChipValue}\n{Effect}";
             }
             else
-                return $"{CardName}\n{SuitName}\n{CardChipValue}\n{Effect}";
+            {
+                return cardString = $"";
+            }
+            return cardString;
         }
+        
+               
+        
         public void CardEffectAdd()
         {
             string[] effect = { "4Mult", "Glass", "Gold", "Silver", "Lucky" };
