@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace OOD_project_2026
 {
@@ -61,6 +62,25 @@ namespace OOD_project_2026
         {
             if (Effect == "")
             {
+                /*
+                switch (SuitName)
+                {
+                    case "Hearts":
+                        SuitName = 
+                        break;
+                    case "Diamonds":
+                       
+                        break;
+                    case "Clubs":
+                     
+                        break;
+                    case "Spades":
+                      
+                        break;
+
+
+                }
+                */
                 return $"{CardName}\n{SuitName}\n{CardChipValue}";
             }
             else

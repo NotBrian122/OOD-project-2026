@@ -28,6 +28,7 @@ namespace OOD_project_2026
 
     public partial class MainGamePlayWindow : Page
     {
+
         #region setting variables for the game
         //hands and disguards left 
         int handsLeft = 3;
@@ -39,6 +40,7 @@ namespace OOD_project_2026
 
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
+        //initialising joker cards for the shop. 
         JokerCards JokerCards = new JokerCards();
         List<Cards> hand = new List<Cards>();
         List<Cards> selectedHand = new List<Cards>();
@@ -49,7 +51,7 @@ namespace OOD_project_2026
         Player Player = new Player();//I want to add a player class to write to a file. This will track your best score.
         Random random = new Random();
 
-
+        
         #endregion
         public MainGamePlayWindow()
         {
@@ -84,10 +86,50 @@ namespace OOD_project_2026
             {
                 if (i < hand.Count)//created a hand that gives the player 10 cards. 
                 {
-                    cardSlots[i].Content = hand[i].ToString();//simple display of 
                     cardSlots[i].Tag = hand[i];
-                    //found a yt tutorial that just shows you how to to do this.
-                    cardSlots[i].Background = Brushes.White;
+                  
+                    //I have to check for the facecards first as they will need a different action due to art. 
+                    if (hand[i].FaceCard)
+                    {
+
+
+                    }
+                    else
+                    {
+                        //ive changed the output to display the suit type in html ascii rather than the oither contentn
+                        switch (hand[i].SuitName)
+                        {
+                            case "Hearts":
+                                cardSlots[i].Foreground = Brushes.Red;
+                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
+                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
+                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
+                                break;
+                            case "Diamonds":
+                                cardSlots[i].Foreground = Brushes.Orange;
+                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9830)}\t\t{Char.ConvertFromUtf32(9830)}";
+                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
+                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9829)}\t\t{Char.ConvertFromUtf32(9829)}";
+                                break;
+                            case "Clubs":
+                                cardSlots[i].Foreground = Brushes.Orchid;
+                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
+                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
+                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
+                                break;
+                            case "Spades":
+                                cardSlots[i].Foreground = Brushes.Black;
+                                cardSlots[i].Content = $"{Char.ConvertFromUtf32(9824)}\t\t{Char.ConvertFromUtf32(9824)}";
+                                cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
+                                cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
+                                break;
+
+
+                        }
+
+
+                    }
+                       
 
                     //and call these which is wild I spent a good while looking for this. 
                     //when clicking the card it adds it to the clicked method. 
@@ -109,7 +151,7 @@ namespace OOD_project_2026
         }
 
         //playing cards method. 
-        private void Card_Click(object sender, RoutedEventArgs e)
+        private async void Card_Click(object sender, RoutedEventArgs e)
         {
             //this was a pain to get working. Didnt know that tags were a thing yet they are so helpful.
             Button clickedCard = sender as Button;
@@ -123,6 +165,7 @@ namespace OOD_project_2026
             {
                 selectedHand.Remove(card);//if not then it removes 
                 clickedCard.Background = Brushes.White;
+                clickedCard.BorderBrush = Brushes.Black;
                 clickedCard.Margin = new Thickness(0, 0, 0, 0);//resorts the thickness
             }
             else
@@ -131,8 +174,9 @@ namespace OOD_project_2026
                 {
                     selectedHand.Add(card);
                     //when selecting the card it changes the background colour and the base thickness. 
-                    clickedCard.Background = Brushes.AntiqueWhite;
+                    clickedCard.BorderBrush = Brushes.Yellow;
                     clickedCard.Margin = new Thickness(0, -20, 0, 0);
+
                 }
             }
         }
@@ -168,7 +212,7 @@ namespace OOD_project_2026
 
         }
         //I had to change this to an async method for animations. 
-        private async void PlayHand_Click(object sender, RoutedEventArgs e)
+        private void PlayHand_Click(object sender, RoutedEventArgs e)
         {
             //just in case you try and waste a hand. You have to play something to advance the game.
             if (selectedHand.Count == 0)
@@ -191,21 +235,18 @@ namespace OOD_project_2026
             //Assinging the chipps scores to be played. 
             List<TextBlock> cardChipSlots = new List<TextBlock>()
             { ChipScore1,ChipScore2,ChipScore3,ChipScore4,ChipScore5};
-
+             //Wanted to sort the hand before hand as it would make it easier to score. 
+             selectedHand.Sort();
             //adding the 2 string to the cards.  
             //adding the chip score from each of the hands to this. Adding animations before final scoring 
             for (int i = 0; i < selectedHand.Count; i++)
             {
-                cardSlotsPlayed[i].Text = selectedHand[i].ToString();//this gives an illusion of cards played. 
                 chipScore += selectedHand[i].CardChipValue;
-                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";
-                await Task.Delay(80);//this is the animation of the chip score being added.
-
             }
-            
-            //Wanted to sort the hand before hand as it would make it easier to score. 
-             selectedHand.Sort();
-             
+            //I removed the async method from the playhand and brought it into the disguards. 
+           // PlayCardAnimation(cardSlotsPlayed,cardChipSlots,selectedHand, JokerCardsInPlay);
+
+
                 //ive changed this to pass in the main method to call on the other ahand methods. 
              switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
              {   
@@ -276,6 +317,7 @@ namespace OOD_project_2026
             selectedHand.Clear();
             handsLeft--;
             RefreshHandUI();
+            //leaving the players score till the end of the animation to make it more worthwhile. 
             playersCurrentScore += chipScore * multScore;
             //changing the fronend display for the playerscore 
             string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
@@ -496,6 +538,26 @@ namespace OOD_project_2026
                 return handNumber;
             }
             return handNumber;
+        }
+        private async Task PlayCardAnimation(List<TextBlock> cardSlotsPlayed,List<TextBlock> cardChipSlots,List<Cards> selectedHand,List<JokerCards> JokerCardsInPlay)
+        {
+            for (int i = 0; i < selectedHand.Count; i++)
+            {
+                cardSlotsPlayed[i].Text = selectedHand[i].ToString();//this gives an illusion of cards played. 
+                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";
+                await Task.Delay(80);//this is the animation of the chip score being added.
+
+            }
+            await Task.Delay(100);//animation when finished. 
+
+
+            foreach(TextBlock card in CardsPlayedGrid.Children.OfType<TextBlock>())
+            {
+
+            }
+
+
+
         }
     }
 }
