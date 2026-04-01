@@ -100,15 +100,30 @@
                         <RowDefinition Height=".3*"/>
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="HandCard1" Grid.Column="0" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard2" Grid.Column="1" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard3" Grid.Column="2" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard4" Grid.Column="3" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard5" Grid.Column="4" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard6" Grid.Column="5" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard7" Grid.Column="6" Content="Card1" Click="Card_Click"/>
-                    <Button x:Name="HandCard8" Grid.Column="7" Content="Card1" Click="Card_Click" OpacityMask="#FFEFEFEF" Background="#00C7AC2D"/>
-
+                    <Button x:Name="HandCard1" Grid.Column="0" Click="Card_Click">
+                        <Image x:Name="HandImage1"></Image>
+                    </Button>
+                    <Button x:Name="HandCard2" Grid.Column="1" Click="Card_Click">
+                        <Image x:Name="HandImage2"></Image>
+                    </Button>
+                    <Button x:Name="HandCard3" Grid.Column="2" Click="Card_Click">
+                        <Image x:Name="HandImage3"></Image>
+                    </Button>
+                    <Button x:Name="HandCard4" Grid.Column="3" Click="Card_Click">
+                        <Image x:Name="HandImage4"></Image>
+                    </Button>
+                    <Button x:Name="HandCard5" Grid.Column="4" Click="Card_Click">
+                        <Image x:Name="HandImage5"></Image>
+                    </Button>
+                    <Button x:Name="HandCard6" Grid.Column="5" Click="Card_Click">
+                        <Image x:Name="HandImage6"></Image>
+                    </Button>
+                    <Button x:Name="HandCard7" Grid.Column="6" Click="Card_Click">
+                        <Image x:Name="HandImage7"></Image>
+                    </Button>
+                    <Button x:Name="HandCard8" Grid.Column="7" Click="Card_Click">
+                        <Image x:Name="HandImage8"></Image>
+                    </Button>
 
                     <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>
                     <Button x:Name="Disguard" Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="Disguard_Click"/>
@@ -136,12 +151,23 @@
                         <ColumnDefinition Width=".5*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock x:Name="CardPlayed1" Grid.Column="1" Text="Played Card 1"/>
-                    <TextBlock x:Name="CardPlayed2" Grid.Column="3" Text="Played Card 2"/>
-                    <TextBlock x:Name="CardPlayed3" Grid.Column="5" Text="Played Card 3"/>
-                    <TextBlock x:Name="CardPlayed4" Grid.Column="7" Text="Played Card 4"/>
-                    <TextBlock x:Name="CardPlayed5" Grid.Column="9" Text="Played Card 5"/>
-
+                    <Border Grid.Column="1">
+                         <Image x:Name="PlayedImage1"></Image>
+                     </Border>
+                    <Border  x:Name="CardPlayed2" Grid.Column="3">
+                        <Image x:Name="PlayedImage2"></Image>
+                    </Border>
+                    <Border  x:Name="CardPlayed3" Grid.Column="5">
+                        <Image x:Name="PlayedImage3"></Image>
+                    </Border>
+                    <Border  x:Name="CardPlayed4" Grid.Column="7">
+                        <Image x:Name="PlayedImage4"></Image>
+                    </Border>
+                    <Border  x:Name="CardPlayed5" Grid.Column="9">
+                        <Image x:Name="PlayedImage5"></Image>
+                    </Border>
+    
+    
                 </Grid>
 
             </Grid>

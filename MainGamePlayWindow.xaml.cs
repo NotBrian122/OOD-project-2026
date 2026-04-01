@@ -81,37 +81,19 @@ namespace OOD_project_2026
             List<Button> cardSlots = new List<Button>()
             {HandCard1,HandCard2,HandCard3,HandCard4,HandCard5,HandCard6,HandCard7,HandCard8};
 
-            
+            //this is for the card images on said grid. 
+            List<Image> cardImages = new List<Image>() 
+            { HandImage1,HandImage2,HandImage3,HandImage4,HandImage5,HandImage6,HandImage7,HandImage8 };
+
+
             for (int i = 0; i < cardSlots.Count; i++)
             {
                 if (i < hand.Count)//created a hand that gives the player 10 cards. 
                 {
                     cardSlots[i].Tag = hand[i];
-                    cardSlots[i].FontSize = 20;
-
-                        //ive changed the output to display the suit type in html ascii rather than the oither contentn
-                    switch (hand[i].SuitName)
-                    {
-                         case "Hearts":
-                            cardSlots[i].Foreground = Brushes.Red;
-                            cardSlots[i].Content = hand[i].ToString();  
-                            break;
-                        case "Diamonds":
-                            cardSlots[i].Foreground = Brushes.Orange;
-                            cardSlots[i].Content = hand[i].ToString();
-                            break;
-                         case "Clubs":
-                            cardSlots[i].Foreground = Brushes.Orchid;
-                            cardSlots[i].Content = hand[i].ToString();
-                            break;
-                         case "Spades":
-                            cardSlots[i].Foreground = Brushes.Black;
-                            cardSlots[i].Content = $"\t\t{Char.ConvertFromUtf32(9824)}";
-                            cardSlots[i].Content += $"\n\n\n\n\n\t{hand[i].CardChipValue}";
-                            cardSlots[i].Content += $"\n\n\n\n\n{Char.ConvertFromUtf32(9827)}\t\t{Char.ConvertFromUtf32(9827)}";
-                                break;
-                        }
-
+                    //this took ages to load the images n such
+                    cardImages[i].Source = new BitmapImage(new Uri($"pack://application:,,,/Images/Cards/{hand[i].ToString()}"));
+                    cardImages[i].Stretch = Stretch.Fill;
                     //and call these which is wild I spent a good while looking for this. 
                     //when clicking the card it adds it to the clicked method. 
                     cardSlots[i].Click -= Card_Click;
@@ -145,7 +127,7 @@ namespace OOD_project_2026
             if (selectedHand.Contains(card))
             {
                 selectedHand.Remove(card);//if not then it removes 
-                clickedCard.Background = Brushes.White;
+                clickedCard.Background = Brushes.AliceBlue;
                 clickedCard.BorderBrush = Brushes.Black;
                 clickedCard.Margin = new Thickness(0, 0, 0, 0);//resorts the thickness
             }
@@ -193,7 +175,7 @@ namespace OOD_project_2026
 
         }
         //I had to change this to an async method for animations. 
-        private void PlayHand_Click(object sender, RoutedEventArgs e)
+        private async void PlayHand_Click(object sender, RoutedEventArgs e)
         {
             //just in case you try and waste a hand. You have to play something to advance the game.
             if (selectedHand.Count == 0)
@@ -209,13 +191,16 @@ namespace OOD_project_2026
             bool isFlush = true;
             int isPair = 0;
 
-            //Assinging the card to the CardsPlayedSection 
-            List<TextBlock> cardSlotsPlayed = new List<TextBlock>()
-            { CardPlayed1,CardPlayed2,CardPlayed3,CardPlayed4,CardPlayed5};
-           
             //Assinging the chipps scores to be played. 
             List<TextBlock> cardChipSlots = new List<TextBlock>()
             { ChipScore1,ChipScore2,ChipScore3,ChipScore4,ChipScore5};
+
+
+            //creating another list of cards that have been played to moove the png up 
+            List<Image> cardsPlayedImage = new List<Image>()
+            {PlayedImage1 , PlayedImage2 , PlayedImage3 , PlayedImage4 , PlayedImage5};
+
+
              //Wanted to sort the hand before hand as it would make it easier to score. 
              selectedHand.Sort();
             //adding the 2 string to the cards.  
@@ -224,12 +209,13 @@ namespace OOD_project_2026
             {
                 chipScore += selectedHand[i].CardChipValue;
             }
-            //I removed the async method from the playhand and brought it into the disguards. 
-           // PlayCardAnimation(cardSlotsPlayed,cardChipSlots,selectedHand, JokerCardsInPlay);
+            //I removed the async method from the playhand and brought it into the disguards.
+            List<Cards> storedSelectedHand = new List<Cards>(selectedHand);
+            await PlayCardAnimation(selectedHand,cardsPlayedImage,cardChipSlots);
 
 
                 //ive changed this to pass in the main method to call on the other ahand methods. 
-             switch (CheckHandTypeMain(selectedHand,isFlush,isPair))
+             switch (CheckHandTypeMain(storedSelectedHand,isFlush,isPair))
              {   
                     //each of these are hands that have been played. 
                 case 0:
@@ -305,7 +291,7 @@ namespace OOD_project_2026
             PlayerChipScore.Text = finalScore;
 
             //this clears the cards played section after the hand is played.
-            cardSlotsPlayed.Clear();
+            cardsPlayedImage.Clear();
         }
         #endregion 
         private void DrawCards(int amount)
@@ -383,7 +369,7 @@ namespace OOD_project_2026
         }
         private bool CheckFlush(bool isFlush, List<Cards> selectedHand)
         {
-            if (isFlush)
+            if (isFlush && selectedHand.Count == 5)
             {
                 for (int i = 1; i < selectedHand.Count; i++)
                 {
@@ -394,8 +380,11 @@ namespace OOD_project_2026
                        
                     }
                 }
+            }else
+            {
+                isFlush = false;
             }
-            return isFlush;
+                return isFlush;
         }
         private int CheckPair(List<Cards> selectedHand, int isPair)
         {
@@ -408,12 +397,12 @@ namespace OOD_project_2026
              .GroupBy(card => card.CardChipValue)
               .Select(g => g.Count()).ToList();
             //to see if its a pair or not.
-            if (groups.Contains(2))
+            if (groups.Contains(2) && !(groups.Contains(2) && groups.Contains(3)))
             {
                 isPair++;
                 //this was a weird thing to wrap my head around.
                 //this is counting 2 cases of 2 pairs which is 2 pairs. 
-            }else if (groups.Count(x => x == 2) == 2)
+            }else if ((groups.Count(x => x == 2) == 2) && !(groups.Contains(2) && groups.Contains(3)))
             {
                 isPair += 2;
             }
@@ -520,25 +509,19 @@ namespace OOD_project_2026
             }
             return handNumber;
         }
-        private async Task PlayCardAnimation(List<TextBlock> cardSlotsPlayed,List<TextBlock> cardChipSlots,List<Cards> selectedHand,List<JokerCards> JokerCardsInPlay)
+        private async Task PlayCardAnimation(List<Cards> selectedHand, List<Image> cardsPlayedImage, List<TextBlock> cardChipValue)
         {
             for (int i = 0; i < selectedHand.Count; i++)
             {
-                cardSlotsPlayed[i].Text = selectedHand[i].ToString();//this gives an illusion of cards played. 
-                cardChipSlots[i].Text = $"+{selectedHand[i].CardChipValue}";
-                await Task.Delay(80);//this is the animation of the chip score being added.
+                cardChipValue[i].Text = $"+{selectedHand[i].CardChipValue}";
+                cardsPlayedImage[i].Source = new BitmapImage(
+                    new Uri($"pack://application:,,,/Images/Cards/{selectedHand[i].ToString()}")
+                );
 
-            }
-            await Task.Delay(100);//animation when finished. 
-
-
-            foreach(TextBlock card in CardsPlayedGrid.Children.OfType<TextBlock>())
-            {
-
+                await Task.Delay(80);
             }
 
-
-
+            await Task.Delay(100);
         }
     }
 }

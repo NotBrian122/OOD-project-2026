@@ -33,26 +33,26 @@ namespace OOD_project_2026
             switch (CardChipValue)
             {
                 case 1:
-                    this.CardName = "Ace";
-                    this.CardChipValue = CardChipValue;
+                    this.CardName = "A";
+                    this.CardChipValue = 14;
                     break;
                 case 11:
-                    this.CardName = "Jester";
+                    this.CardName = "J";
                     FaceCard = true;
                     this.CardChipValue = CardChipValue;
                     break;
                 case 12:
-                    this.CardName = "Queen";
+                    this.CardName = "Q";
                     FaceCard = true;
                     this.CardChipValue = CardChipValue;
                     break;
                 case 13:
-                    this.CardName = "King";
+                    this.CardName = "K";
                     FaceCard = true;
                     this.CardChipValue = CardChipValue;
                     break;
                 case 14:
-                    this.CardName = "Ace";
+                    this.CardName = "A";
                     this.CardChipValue = CardChipValue;
                     break;
                 default:
@@ -62,43 +62,14 @@ namespace OOD_project_2026
         }
         public override string ToString()
         {
-            string cardString = "";
-            switch (SuitName)
-                {
-                    case "Hearts":
-                        AskiiArt = $"{Char.ConvertFromUtf32(9829)}"; 
-                        break;
-                    case "Diamonds":
-                        AskiiArt = $"{Char.ConvertFromUtf32(9830)}";
-                        break;
-                    case "Clubs":
-                        AskiiArt = $"{Char.ConvertFromUtf32(9827)}";
-                        break;
-                    case "Spades":
-                      AskiiArt= $"{Char.ConvertFromUtf32(9824)}";
-                    break;
-                }
-            if (Effect == "" && !FaceCard)
-            {
-                //Ive changed this to dispaly the art natievely and make it genereate easier 
-                // compared ot other strongs. 
-                return cardString = $"{CardName}{AskiiArt}{AskiiArt}"
-                     + $"\n\n\n\t{CardChipValue}"
-                     + $"\n\n\n\n\n{AskiiArt}\t\t{AskiiArt}{CardName}";
-            }
-            else if (Effect !="" && !FaceCard)
-            {
-                return cardString =$"{CardName}\n{SuitName}\n{CardChipValue}\n{Effect}";
-            }
-            else
-            {
-                return cardString = $"";
-            }
-            return cardString;
+            //ive used the image from the cards folder to generate the 
+            //the card image for each spesific card. 
+            string cardImageString = "";
+            cardImageString = $"{SuitName[0]}{CardName}.png";
+
+
+          return cardImageString;
         }
-        
-               
-        
         public void CardEffectAdd()
         {
             string[] effect = { "4Mult", "Glass", "Gold", "Silver", "Lucky" };
