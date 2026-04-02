@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -51,7 +52,7 @@ namespace OOD_project_2026
         Player Player = new Player();//I want to add a player class to write to a file. This will track your best score.
         Random random = new Random();
 
-        
+
         #endregion
         public MainGamePlayWindow()
         {
@@ -77,102 +78,115 @@ namespace OOD_project_2026
         //I created a method that Refreshes the card slots once a hand was played.
         private void RefreshHandUI()
         {
-            //this is the list of cards that are in the grid. refresing the list when called. 
+            ResetAllCardAnimations();
+
             List<Button> cardSlots = new List<Button>()
-            {HandCard1,HandCard2,HandCard3,HandCard4,HandCard5,HandCard6,HandCard7,HandCard8};
+    {
+        HandCard1, HandCard2, HandCard3, HandCard4,
+        HandCard5, HandCard6, HandCard7, HandCard8
+    };
 
-            //this is for the card images on said grid. 
-            List<Image> cardImages = new List<Image>() 
-            { HandImage1,HandImage2,HandImage3,HandImage4,HandImage5,HandImage6,HandImage7,HandImage8 };
-
+            List<Image> cardImages = new List<Image>()
+    {
+        HandImage1, HandImage2, HandImage3, HandImage4,
+        HandImage5, HandImage6, HandImage7, HandImage8
+    };
 
             for (int i = 0; i < cardSlots.Count; i++)
             {
-                if (i < hand.Count)//created a hand that gives the player 10 cards. 
+                // Always fully reset the slot first
+                cardSlots[i].Click -= Card_Click;
+                cardSlots[i].MouseEnter -= Card_HoverEnter;
+                cardSlots[i].MouseLeave -= Card_HoverLeave;
+
+                cardSlots[i].Tag = null;
+                cardSlots[i].BorderBrush = Brushes.Black;
+                cardSlots[i].Margin = new Thickness(0);
+
+                // IMPORTANT: clear old image
+                cardImages[i].Source = null;
+
+                if (i < hand.Count)
                 {
                     cardSlots[i].Tag = hand[i];
-                    //this took ages to load the images n such
-                    cardImages[i].Source = new BitmapImage(new Uri($"pack://application:,,,/Images/Cards/{hand[i].ToString()}"));
+
+                    cardImages[i].Source = new BitmapImage(
+                        new Uri($"pack://application:,,,/Images/Cards/{hand[i].ToString()}")
+                    );
                     cardImages[i].Stretch = Stretch.Fill;
-                    //and call these which is wild I spent a good while looking for this. 
-                    //when clicking the card it adds it to the clicked method. 
-                    cardSlots[i].Click -= Card_Click;
+
                     cardSlots[i].Click += Card_Click;
+                    cardSlots[i].MouseEnter += Card_HoverEnter;
+                    cardSlots[i].MouseLeave += Card_HoverLeave;
                 }
                 else
                 {
-                    //this is the edge case if you run out of cards. This is for later in the project. 
-                    cardSlots[i].Content = "";
-                    cardSlots[i].Tag = null;
+                    cardImages[i].Source = null;
                 }
             }
-            //updating hands and disguards left
+
             HandsLeft.Text = $"Hands Left:{handsLeft}";
             DisguardsLeft.Text = $"Disguards Left:{disguardsLeft}";
-            //after refreshing the hand ui I do a check for if the player has won or not. 
+
             CheckWin(playersCurrentScore, handsLeft, disguardsLeft, blindScore);
         }
-
         //playing cards method. 
-        private async void Card_Click(object sender, RoutedEventArgs e)
+        private void Card_Click(object sender, RoutedEventArgs e)
         {
-            //this was a pain to get working. Didnt know that tags were a thing yet they are so helpful.
             Button clickedCard = sender as Button;
-            Cards card = clickedCard.Tag as Cards;
+            Cards card = clickedCard?.Tag as Cards;
 
-            //just in case you try and click on nothing the decide to playsomething. 
             if (card == null)
                 return;
-            //this is the method to add to you hand. 
-            if (selectedHand.Contains(card))
+
+            bool isSelected = selectedHand.Contains(card);
+
+            if (isSelected)
             {
-                selectedHand.Remove(card);//if not then it removes 
-                clickedCard.Background = Brushes.AliceBlue;
+                selectedHand.Remove(card);
+
+                AnimateCard(clickedCard, 0);
+
                 clickedCard.BorderBrush = Brushes.Black;
-                clickedCard.Margin = new Thickness(0, 0, 0, 0);//resorts the thickness
+                clickedCard.Margin = new Thickness(0);
             }
             else
             {
-                if (selectedHand.Count < maxCardsInHand)//this adds cards to your hand if your less than the max cards in hand.
-                {
-                    selectedHand.Add(card);
-                    //when selecting the card it changes the background colour and the base thickness. 
-                    clickedCard.BorderBrush = Brushes.Yellow;
-                    clickedCard.Margin = new Thickness(0, -20, 0, 0);
+                if (selectedHand.Count >= maxCardsInHand)
+                    return;
 
-                }
+                selectedHand.Add(card);
+
+                AnimateCard(clickedCard, -25);
+
+                clickedCard.BorderBrush = Brushes.Yellow;
+                clickedCard.Margin = new Thickness(0, -20, 0, 0);
             }
         }
+
         #endregion
         //disguard cards method. 
         #region Playing or disguarding hands
         private void Disguard_Click(object sender, RoutedEventArgs e)
         {
-            //more edgecasing. 
             if (selectedHand.Count == 0)
                 return;
 
-            //this adds the cards to the disguard pile that will be dumped back into the main deck at the end of round. 
+            int cardsToReplace = selectedHand.Count;
+
             foreach (var card in selectedHand)
             {
                 hand.Remove(card);
                 HandDiscarded.Add(card);
             }
 
-            DrawCards(selectedHand.Count);
-
-            foreach (Button btn in CardGrid.Children.OfType<Button>())
-            {
-                //this refreshes the children of the grid.
-                btn.Background = Brushes.White;
-                btn.Margin = new Thickness(0, 0, 0, 0);
-            }
-
             selectedHand.Clear();
-            RefreshHandUI();
+
+            DrawCards(cardsToReplace);
 
             disguardsLeft--;
 
+            RefreshHandUI();
         }
         //I had to change this to an async method for animations. 
         private async void PlayHand_Click(object sender, RoutedEventArgs e)
@@ -211,11 +225,12 @@ namespace OOD_project_2026
             }
             //I removed the async method from the playhand and brought it into the disguards.
             List<Cards> storedSelectedHand = new List<Cards>(selectedHand);
-            await PlayCardAnimation(selectedHand,cardsPlayedImage,cardChipSlots);
+
+            await AnimatePlayedHand(storedSelectedHand);
 
 
-                //ive changed this to pass in the main method to call on the other ahand methods. 
-             switch (CheckHandTypeMain(storedSelectedHand,isFlush,isPair))
+            //ive changed this to pass in the main method to call on the other ahand methods. 
+            switch (CheckHandTypeMain(storedSelectedHand,isFlush,isPair))
              {   
                     //each of these are hands that have been played. 
                 case 0:
@@ -264,15 +279,25 @@ namespace OOD_project_2026
 
                 chipScore += joker.additionalModifiers;
             }
-            //this removes the card from the hand and puts it in the hand played. 
             foreach (var card in selectedHand)
             {
                 hand.Remove(card);
-
                 HandPlayed.Add(card);
             }
 
-            DrawCards(selectedHand.Count);
+            int cardsToReplace = selectedHand.Count;
+            selectedHand.Clear();
+
+            DrawCards(cardsToReplace);
+
+            handsLeft--;
+            RefreshHandUI();
+
+            playersCurrentScore += chipScore * multScore;
+            string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
+            PlayerChipScore.Text = finalScore;
+
+            AnimationCanvas.Children.Clear();
             //this is here to reset all of the cards that have been played or disguarded. 
             //making the gameplay smoother. I had to scrounge for this .OFTYPE for a bit. 
             foreach (Button btn in CardGrid.Children.OfType<Button>())
@@ -287,9 +312,10 @@ namespace OOD_project_2026
             //leaving the players score till the end of the animation to make it more worthwhile. 
             playersCurrentScore += chipScore * multScore;
             //changing the fronend display for the playerscore 
-            string finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
+            finalScore = $"{handPlayed}\nScore: {playersCurrentScore}";
             PlayerChipScore.Text = finalScore;
-
+            ResetAllCardAnimations();
+            AnimationCanvas.Children.Clear();
             //this clears the cards played section after the hand is played.
             cardsPlayedImage.Clear();
         }
@@ -522,6 +548,258 @@ namespace OOD_project_2026
             }
 
             await Task.Delay(100);
+        }
+        private TranslateTransform GetCardTranslate(Button card)
+        {
+            TransformGroup group = card.RenderTransform as TransformGroup;
+
+            if (group == null || group.IsFrozen)
+            {
+                group = new TransformGroup();
+                group.Children.Add(new ScaleTransform());
+                group.Children.Add(new SkewTransform());
+                group.Children.Add(new RotateTransform());
+
+                TranslateTransform translate = new TranslateTransform();
+                group.Children.Add(translate);
+
+                card.RenderTransform = group;
+                return translate;
+            }
+
+            TranslateTransform existing = group.Children
+                .OfType<TranslateTransform>()
+                .FirstOrDefault();
+
+            if (existing == null || existing.IsFrozen)
+            {
+                if (existing != null)
+                    group.Children.Remove(existing);
+
+                TranslateTransform translate = new TranslateTransform();
+                group.Children.Add(translate);
+                return translate;
+            }
+
+            return existing;
+        }
+        private void AnimateCard(Button card, double toY, double? toX = null)
+        {
+            var translate = GetCardTranslate(card);
+
+            var animY = new DoubleAnimation
+            {
+                To = toY,
+                Duration = TimeSpan.FromMilliseconds(200),
+                EasingFunction = new PowerEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            translate.BeginAnimation(TranslateTransform.YProperty, animY);
+
+            if (toX.HasValue)
+            {
+                var animX = new DoubleAnimation
+                {
+                    To = toX.Value,
+                    Duration = TimeSpan.FromMilliseconds(200),
+                    EasingFunction = new PowerEase { EasingMode = EasingMode.EaseOut }
+                };
+
+                translate.BeginAnimation(TranslateTransform.XProperty, animX);
+            }
+        }
+        private void ResetAllCardAnimations()
+        {
+            foreach (Button btn in CardGrid.Children.OfType<Button>())
+            {
+                var translate = GetCardTranslate(btn);
+
+                translate.BeginAnimation(TranslateTransform.XProperty, null);
+                translate.BeginAnimation(TranslateTransform.YProperty, null);
+
+                translate.X = 0;
+                translate.Y = 0;
+
+                btn.BorderBrush = Brushes.Black;
+                btn.Margin = new Thickness(0);
+            }
+        }
+        private void Card_HoverEnter(object sender, MouseEventArgs e)
+        {
+            Button card = sender as Button;
+            Cards c = card?.Tag as Cards;
+
+            if (c == null)
+                return;
+
+            // Don't override selected cards
+            if (selectedHand.Contains(c))
+                return;
+
+            AnimateCard(card, -10); // small lift
+        }
+
+        private void Card_HoverLeave(object sender, MouseEventArgs e)
+        {
+            Button card = sender as Button;
+            Cards c = card?.Tag as Cards;
+
+            if (c == null)
+                return;
+
+            // If selected, keep it raised
+            if (selectedHand.Contains(c))
+                return;
+
+            AnimateCard(card, 0);
+        }
+        private async Task AnimateCardToPlayArea(Button card, Point targetPosition)
+        {
+            var translate = GetCardTranslate(card);
+
+            // Get current position relative to window
+            Point start = card.TranslatePoint(new Point(0, 0), MainGrid);
+
+            double deltaX = targetPosition.X - start.X;
+            double deltaY = targetPosition.Y - (start.Y + 200);
+
+            // X animation
+            var animX = new DoubleAnimation
+            {
+                To = deltaX,
+                Duration = TimeSpan.FromMilliseconds(300),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            // Y animation (slight arc effect)
+            var animY = new DoubleAnimation
+            {
+                To = deltaY - 50, // lift upwards slightly
+                Duration = TimeSpan.FromMilliseconds(300),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            translate.BeginAnimation(TranslateTransform.XProperty, animX);
+            translate.BeginAnimation(TranslateTransform.YProperty, animY);
+
+            await Task.Delay(300);
+
+            // Small "drop" bounce
+            var dropAnim = new DoubleAnimation
+            {
+                To = deltaY,
+                Duration = TimeSpan.FromMilliseconds(120),
+                EasingFunction = new BounceEase
+                {
+                    Bounces = 1,
+                    Bounciness = 2,
+                    EasingMode = EasingMode.EaseOut
+                }
+            };
+
+            translate.BeginAnimation(TranslateTransform.YProperty, dropAnim);
+
+            await Task.Delay(120);
+        }
+        private List<Point> GetPlayTargets()
+        {
+            List<Image> targets = new List<Image>()
+    {
+        PlayedImage1, PlayedImage2, PlayedImage3, PlayedImage4, PlayedImage5
+    };
+
+            List<Point> positions = new List<Point>();
+
+            foreach (var img in targets)
+            {
+                Point pos = img.TranslatePoint(new Point(0, 0), MainGrid);
+                positions.Add(pos);
+            }
+
+            return positions;
+        }
+        private async Task AnimatePlayedHand(List<Cards> selectedCards)
+        {
+            var buttons = CardGrid.Children.OfType<Button>().ToList();
+
+            double spacing = 80;
+            double lift = -150;
+
+            double centerX = MainGrid.ActualWidth / 2;
+            double centerY = MainGrid.ActualHeight / 2;
+
+            double centerOffset = (selectedCards.Count - 1) / 2.0;
+
+            for (int i = 0; i < selectedCards.Count; i++)
+            {
+                Cards card = selectedCards[i];
+
+                Button original = buttons.FirstOrDefault(b => b.Tag == card);
+                if (original == null)
+                    continue;
+
+                // 🔥 Move to canvas
+                Button clone = MoveToCanvas(original);
+
+                var translate = clone.RenderTransform as TranslateTransform;
+
+                double targetX = centerX + (i - centerOffset) * spacing;
+                double targetY = centerY + lift;
+
+                double startX = Canvas.GetLeft(clone);
+                double startY = Canvas.GetTop(clone);
+
+                var animX = new DoubleAnimation
+                {
+                    To = targetX,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                };
+
+                var animY = new DoubleAnimation
+                {
+                    To = targetY,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                };
+
+                clone.BeginAnimation(Canvas.LeftProperty, animX);
+                clone.BeginAnimation(Canvas.TopProperty, animY);
+
+                await Task.Delay(80);
+            }
+        }
+        private Button MoveToCanvas(Button card)
+        {
+            Point pos = card.TranslatePoint(new Point(0, 0), MainGrid);
+
+            Image clonedImage = null;
+
+            if (card.Content is Image originalImage)
+            {
+                clonedImage = new Image
+                {
+                    Source = originalImage.Source,
+                    Stretch = originalImage.Stretch
+                };
+            }
+
+            Button clone = new Button
+            {
+                Width = card.ActualWidth,
+                Height = card.ActualHeight,
+                Content = clonedImage,
+                IsHitTestVisible = false
+            };
+
+            Canvas.SetLeft(clone, pos.X);
+            Canvas.SetTop(clone, pos.Y);
+
+            Panel.SetZIndex(clone, 999);
+
+            AnimationCanvas.Children.Add(clone);
+
+            return clone;
         }
     }
 }
