@@ -94,6 +94,15 @@ namespace OOD_project_2026
             List<Image> cardImages = new List<Image>()
             { HandImage1, HandImage2, HandImage3, HandImage4,HandImage5, HandImage6, HandImage7, HandImage8 };
 
+            //just resetting chipScoreDisplayUi
+            List<TextBlock> chipScoreDisplay = new List<TextBlock>()
+            { ChipScore1, ChipScore2, ChipScore3, ChipScore4, ChipScore5 };
+
+            foreach(var chip in chipScoreDisplay)
+            {
+                chip.Text = "";
+            }
+
             for (int i = 0; i < cardSlots.Count; i++)
             {
                 //this targets each cards, for every click of mousehover It targets them and changes some stuff in the background. 
@@ -125,7 +134,7 @@ namespace OOD_project_2026
             HandsLeft.Text = $"Hands Left:{Player.HandsLeft}";
             DisguardsLeft.Text = $"Disguards Left:{Player.DisguardsLeft}";
 
-            CheckWin(Player.CurrentChips, Player.HandsLeft, Player.DisguardsLeft, blindScore);
+           
         }
         //playing cards method. 
         private void Card_Click(object sender, RoutedEventArgs e)
@@ -309,6 +318,7 @@ namespace OOD_project_2026
             PlayerChipScore.Text = $"{handPlayed}\nScore: {Player.CurrentChips}";
 
             AnimationCanvas.Children.Clear();
+            CheckWin(Player.CurrentChips, Player.HandsLeft, Player.DisguardsLeft, blindScore);
         }
         #endregion 
         private void DrawCards(int amount)
@@ -533,10 +543,12 @@ namespace OOD_project_2026
         }
         #endregion
         #region Cardanimations 
+        //creating a transform group to add some animaitons to the cards. 
         private TranslateTransform GetCardTranslate(Button card)
         {
             TransformGroup group = card.RenderTransform as TransformGroup;
-
+            //I was having a problem with the transform group being frozen
+         //and not being able to add a new translate transform to it so I had to add this check.
             if (group == null || group.IsFrozen)
             {
                 group = new TransformGroup();
@@ -955,6 +967,8 @@ namespace OOD_project_2026
         private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
         {
             ShowShopVerlay();
+            InitialWinScreen.Visibility = Visibility.Collapsed;
+
         }
     }
 

@@ -233,8 +233,8 @@
                 </Grid>
             </Border>
             <!--Shop overlay.-->
-            <Border x:Name="ShopOverLay"  Width="450" Height="450" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
-                    VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="101" Padding="20">
+            <Border x:Name="ShopOverLay"  Width="450" Height="750" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Visibility="Visible" Panel.ZIndex="101" Padding="20">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
