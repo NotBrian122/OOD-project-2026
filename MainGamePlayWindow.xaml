@@ -8,200 +8,271 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MainGamePlayWindow">
 
-    
+
     <Grid ShowGridLines="true">
         <Grid x:Name="MainGrid" Loaded="MainGrid_Loaded">
-            
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="3*"/>
-            </Grid.RowDefinitions>
+            <Grid x:Name="MainGameplayScreen">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".3*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width=".3*"/>
-            </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width=".3*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Background="#FF165A0C"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Background="#FF165A0C"/>
 
-            <TextBlock Grid.Column="0" Text="Bolatro" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150"/>
-            <TextBlock Grid.Column="1" Grid.Row="0" Text="Joker Cards" Background="#330088FF"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Arcana cards"/>
-
-
-            <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" />
-            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,5,0,0" />
-
-            <!--contnet on the main sides-->
-
-            <TextBlock Grid.Row="3" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Quit Game"/>
-            <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0"/>
-            <TextBlock x:Name="HandsLeft" Grid.Row="2" Grid.Column="0" Margin="0,0,0,0" Text="Hands Left" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-            <TextBlock x:Name="DisguardsLeft" Grid.Row="2" Grid.Column="0" Text="Disguards left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-            <TextBlock Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD"/>
-            <TextBlock x:Name="BlindScoreDisplay" Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-
-            <!--#region JokerCards-->
-            <Grid Grid.Row="0" Grid.Column="1">
-
-                <Grid x:Name="JokerCardsOwned">
+                <TextBlock Grid.Column="0" Text="Bolatro" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150"/>
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="Joker Cards" Background="#330088FF"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Arcana cards"/>
 
 
-                    <Grid.ColumnDefinitions >
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" />
+                <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,5,0,0" />
 
-                    <TextBlock Grid.Column="0" Text="Joker Card 1"/>
-                    <TextBlock Grid.Column="1" Text="Joker Card 2"/>
-                    <TextBlock Grid.Column="2" Text="Joker Card 3"/>
-                    <TextBlock Grid.Column="3" Text="Joker Card 4"/>
-                    <TextBlock Grid.Column="4" Text="Joker Card 5"/>
+                <!--contnet on the main sides-->
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Quit Game"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0"/>
+                <TextBlock x:Name="HandsLeft" Grid.Row="2" Grid.Column="0" Margin="0,0,0,0" Text="Hands Left" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="DisguardsLeft" Grid.Row="2" Grid.Column="0" Text="Disguards left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                <TextBlock x:Name ="DeckArea" Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD"/>
+                <TextBlock x:Name="BlindScoreDisplay" Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+                <!--#region JokerCards-->
+                <Grid Grid.Row="0" Grid.Column="1">
+
+                    <Grid x:Name="JokerCardsOwned">
+
+
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Joker Card 1"/>
+                        <TextBlock Grid.Column="1" Text="Joker Card 2"/>
+                        <TextBlock Grid.Column="2" Text="Joker Card 3"/>
+                        <TextBlock Grid.Column="3" Text="Joker Card 4"/>
+                        <TextBlock Grid.Column="4" Text="Joker Card 5"/>
+
+                    </Grid>
+
 
                 </Grid>
 
-
-            </Grid>
-
-            <!--#endregion-->
+                <!--#endregion-->
 
 
 
-            <!--#region Main card selection -->
+                <!--#region Main card selection -->
 
-            <!-- this is the content for the cards given to the player
+                <!-- this is the content for the cards given to the player
             I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing 
             -->
-            <TextBlock Grid.Column="1" Grid.Row="2" Background="#330088FF" Grid.RowSpan="1"/>
-          
-            <Grid Grid.Column="1" Grid.Row="3">
-                <Grid x:Name="CardGrid" Background="#3F377D8A">
+                <TextBlock Grid.Column="1" Grid.Row="2" Background="#330088FF" Grid.RowSpan="1"/>
+
+                <Grid Grid.Column="1" Grid.Row="3">
+                    <Grid x:Name="CardGrid" Background="#3F377D8A">
 
 
-                    <!--Im going to leave it with 8 cards as its easier to do-->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
+                        <!--Im going to leave it with 8 cards as its easier to do-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".7*"/>
+                            <RowDefinition Height=".3*"/>
+                        </Grid.RowDefinitions>
+
+                        <Button x:Name="HandCard1" Grid.Column="0" Click="Card_Click">
+                            <Image x:Name="HandImage1"></Image>
+                        </Button>
+                        <Button x:Name="HandCard2" Grid.Column="1" Click="Card_Click">
+                            <Image x:Name="HandImage2"></Image>
+                        </Button>
+                        <Button x:Name="HandCard3" Grid.Column="2" Click="Card_Click">
+                            <Image x:Name="HandImage3"></Image>
+                        </Button>
+                        <Button x:Name="HandCard4" Grid.Column="3" Click="Card_Click">
+                            <Image x:Name="HandImage4"></Image>
+                        </Button>
+                        <Button x:Name="HandCard5" Grid.Column="4" Click="Card_Click">
+                            <Image x:Name="HandImage5"></Image>
+                        </Button>
+                        <Button x:Name="HandCard6" Grid.Column="5" Click="Card_Click">
+                            <Image x:Name="HandImage6"></Image>
+                        </Button>
+                        <Button x:Name="HandCard7" Grid.Column="6" Click="Card_Click">
+                            <Image x:Name="HandImage7"></Image>
+                        </Button>
+                        <Button x:Name="HandCard8" Grid.Column="7" Click="Card_Click">
+                            <Image x:Name="HandImage8"></Image>
+                        </Button>
+
+                        <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>
+                        <Button x:Name="Disguard" Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="Disguard_Click"/>
+                    </Grid>
+
+
+
+                </Grid>
+                <!--#endregion-->
+                <!-- This is a new grid inside of the main one-->
+
+                <Grid x:Name="CardsPlayedGrid" Grid.Column="1" Grid.Row="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="1">
+                            <Image x:Name="PlayedImage1"></Image>
+                        </Border>
+                        <Border  x:Name="CardPlayed2" Grid.Column="3">
+                            <Image x:Name="PlayedImage2"></Image>
+                        </Border>
+                        <Border  x:Name="CardPlayed3" Grid.Column="5">
+                            <Image x:Name="PlayedImage3"></Image>
+                        </Border>
+                        <Border  x:Name="CardPlayed4" Grid.Column="7">
+                            <Image x:Name="PlayedImage4"></Image>
+                        </Border>
+                        <Border  x:Name="CardPlayed5" Grid.Column="9">
+                            <Image x:Name="PlayedImage5"></Image>
+                        </Border>
+
+
+                    </Grid>
+
+                </Grid>
+                <!--This grid is for gameplay sake. This is for the chips the cards score.-->
+
+                <Grid x:Name="ChipScoreGrid" Grid.Column ="1" Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width=".5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="ChipScore1" Grid.Column="1" Text="" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="ChipScore2" Grid.Column="3" Text="" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="ChipScore3" Grid.Column="5" Text="" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="ChipScore4" Grid.Column="7" Text="" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="ChipScore5" Grid.Column="9" Text="" VerticalAlignment="Bottom"/>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+
+
+            <!-- Darkened background overlay -->
+            <Border x:Name="ShopOverlayBackground" Background="#88000000" Visibility="Collapsed" Panel.ZIndex="100" />
+
+            <!-- Win screen overlay -->
+            <Border x:Name="InitialWinScreen" Width="450" Height="450" Background="#FF17182D" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="140" Padding="20">
+                <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".7*"/>
-                        <RowDefinition Height=".3*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="HandCard1" Grid.Column="0" Click="Card_Click">
-                        <Image x:Name="HandImage1"></Image>
-                    </Button>
-                    <Button x:Name="HandCard2" Grid.Column="1" Click="Card_Click">
-                        <Image x:Name="HandImage2"></Image>
-                    </Button>
-                    <Button x:Name="HandCard3" Grid.Column="2" Click="Card_Click">
-                        <Image x:Name="HandImage3"></Image>
-                    </Button>
-                    <Button x:Name="HandCard4" Grid.Column="3" Click="Card_Click">
-                        <Image x:Name="HandImage4"></Image>
-                    </Button>
-                    <Button x:Name="HandCard5" Grid.Column="4" Click="Card_Click">
-                        <Image x:Name="HandImage5"></Image>
-                    </Button>
-                    <Button x:Name="HandCard6" Grid.Column="5" Click="Card_Click">
-                        <Image x:Name="HandImage6"></Image>
-                    </Button>
-                    <Button x:Name="HandCard7" Grid.Column="6" Click="Card_Click">
-                        <Image x:Name="HandImage7"></Image>
-                    </Button>
-                    <Button x:Name="HandCard8" Grid.Column="7" Click="Card_Click">
-                        <Image x:Name="HandImage8"></Image>
-                    </Button>
-
-                    <Button x:Name="PlayHand" Grid.Row="3" Grid.Column="3" Content="Play Cards" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="PlayHand_Click"/>
-                    <Button x:Name="Disguard" Grid.Row="2" Grid.Column="4" Content="Disguard" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#FFF1FF00" Click="Disguard_Click"/>
-                </Grid>
-
-
-
-            </Grid>
-            <!--#endregion-->
-            <!-- This is a new grid inside of the main one-->
-
-            <Grid x:Name="CardsPlayedGrid" Grid.Column="1" Grid.Row="2">
-                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
                     </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="You Win!" FontSize="28 " FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FFF1E240"/>
+                    <TextBlock Grid.Row="1" Text="Money Earned: " FontSize="18" HorizontalAlignment="Left" Foreground="#FFD0B224" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MoneyEarnedDisplay" Text="0" FontSize="18" HorizontalAlignment="Right" Foreground="#FFE29E0A"/>
 
-                    <Border Grid.Column="1">
-                         <Image x:Name="PlayedImage1"></Image>
-                     </Border>
-                    <Border  x:Name="CardPlayed2" Grid.Column="3">
-                        <Image x:Name="PlayedImage2"></Image>
-                    </Border>
-                    <Border  x:Name="CardPlayed3" Grid.Column="5">
-                        <Image x:Name="PlayedImage3"></Image>
-                    </Border>
-                    <Border  x:Name="CardPlayed4" Grid.Column="7">
-                        <Image x:Name="PlayedImage4"></Image>
-                    </Border>
-                    <Border  x:Name="CardPlayed5" Grid.Column="9">
-                        <Image x:Name="PlayedImage5"></Image>
-                    </Border>
-    
-    
+                    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="Round Score:" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFD0B224"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="RoundScoreDisplay" Text="0" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFE29E0A"/>
+                    <Button Grid.Row="2" Grid.Column="1" Content="Continue" Width="120" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,20,0,0" Click="ContinueFromWinScreen_Click"/>
+
                 </Grid>
-
-            </Grid>
-            <!--This grid is for gameplay sake. This is for the chips the cards score.-->
-
-            <Grid x:Name="ChipScoreGrid" Grid.Column ="1" Grid.Row="1">
+            </Border>
+            <!--Shop overlay.-->
+            <Border x:Name="ShopOverLay"  Width="450" Height="450" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="101" Padding="20">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width=".5*"/>
-                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto" MinHeight="48.757"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="ChipScore1" Grid.Column="1" Text="" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ChipScore2" Grid.Column="3" Text="" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ChipScore3" Grid.Column="5" Text="" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ChipScore4" Grid.Column="7" Text="" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="ChipScore5" Grid.Column="9" Text="" VerticalAlignment="Bottom"/>
+                    <TextBlock Text="Shop" FontSize="28 " FontWeight="Bold" HorizontalAlignment="Center" Width="68" />
 
+                    <StackPanel Margin="0,37,0,44" Grid.RowSpan="3">
+                        <TextBlock Text="Buy Jokers / Upgrades here" FontSize="18" Margin="0,0,0,10"/>
+                        <Grid Background="#FF131321">
+                            <WrapPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+                                <Button Content="Buy Joker 1" Width="140" Height="80" Margin="8"/>
+                                <Button Content="Buy Joker 2" Width="140" Height="80" Margin="8"/>
+                                <Button Content="Buy Joker 3" Width="140" Height="80" Margin="8"/>
+                                <Button Content="Buy Joker 4" Width="140" Height="80" Margin="8"/>
+                            </WrapPanel>
+                        </Grid>
+
+                        <Grid Background="#FF131321">
+
+                            <WrapPanel Margin="0,10,0,-7" HorizontalAlignment="Center">
+                                <Button Content="Buy Pack 1" Width="140" Height="80" Margin="8"/>
+                                <Button Content="Buy Pack 2" Width="140" Height="80" Margin="8"/>
+                            </WrapPanel>
+                            <TextBlock Text="Packs and cards"/>
+                        </Grid>
+
+                    </StackPanel>
+
+                    <Button Grid.Row="2" Content="Continue" Width="120" HorizontalAlignment="Right" Margin="0,20,0,0" Click="ContinueFromShop_Click"/>
+                    <TextBlock Grid.Row="2" x:Name="PlayerMoneyDisplay" Text="Money: " FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="22" Width="57"/>
                 </Grid>
-            </Grid>
+            </Border>
 
-            <!-- 🔥 ANIMATION LAYER (ADD THIS HERE) -->
+            <!--This is the animation layer from the tutorial, this allows all animations to happen on top. -->
             <Canvas x:Name="AnimationCanvas"
         Grid.Row="0"
         Grid.Column="0"
