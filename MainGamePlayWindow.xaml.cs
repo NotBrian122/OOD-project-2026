@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
 using System.Security.AccessControl;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,36 +37,45 @@ namespace OOD_project_2026
       
         int maxCardsInHand = 5;
       
+        //setting the blindscore. 
         int blindScore = 300;
         int round = 0;
+        //passind that into the current field. 
+        double currentChips = 0;
+        int money = 0;
 
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
         //initialising joker cards for the shop. 
-        JokerCards JokerCards = new JokerCards();
+       
         List<Cards> hand = new List<Cards>();
         List<Cards> selectedHand = new List<Cards>();
         List<Cards> HandPlayed = new List<Cards>();
         List<Cards> HandDiscarded = new List<Cards>();
 
         List<JokerCards> JokerCardsInPlay = new List<JokerCards>();
+        //creating a new list for joker cards to be aded. 
+        List<JokerCards> PlayersJokerCardsOwned = new List<JokerCards>();
 
         //I want to add a player class to write to a file. This will track your best score.
         //I removed the hands and disguards left to the ones in the palyer class to make it better. 
-        Player Player = new Player();
-        
-        
-        Random random = new Random();
+         Random random = new Random();
 
+        List<JokerCards> playersJokerCardsOwned = new List<JokerCards>();
+        //its giving out to me for creating the player. 
+        Player player;
 
         #endregion
         public MainGamePlayWindow()
         {
             InitializeComponent();
+            //creating a new player with the default values.
+            player = new Player(money, currentChips, playersJokerCardsOwned, 3, 3);
         }
 
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
         {
+            
             //creating the deck. it works. 
             deck.CreateDeck();
             //Generating a list of jokers.
@@ -130,15 +140,14 @@ namespace OOD_project_2026
                     cardSlots[i].MouseLeave += Card_HoverLeave;
                 }
             }
-
-            HandsLeft.Text = $"Hands Left:{Player.HandsLeft}";
-            DisguardsLeft.Text = $"Disguards Left:{Player.DisguardsLeft}";
-
-           
+            //updaing the disguards and hands left. 
+            HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
+            DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
         }
         //playing cards method. 
         private void Card_Click(object sender, RoutedEventArgs e)
         {
+            //creating a list of cards the same as the previous tutorial, made it easier to work with. 
             Button clickedCard = sender as Button;
             Cards card = clickedCard?.Tag as Cards;
 
@@ -178,7 +187,7 @@ namespace OOD_project_2026
             if (selectedHand.Count == 0)
                 return;
 
-            if (Player.DisguardsLeft <= 0)
+            if (player.DisguardsLeft <= 0)
                 return;
 
             List<Cards> discardedCards = new List<Cards>(selectedHand);
@@ -194,8 +203,8 @@ namespace OOD_project_2026
             int cardsToReplace = discardedCards.Count;
 
             selectedHand.Clear();
-            Player.DisguardsLeft--;
-            DisguardsLeft.Text = $"Disguards Left:{Player.DisguardsLeft}";
+            player.DisguardsLeft--;
+            DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
             DrawCards(cardsToReplace);
             RefreshHandUI();
 
@@ -291,6 +300,7 @@ namespace OOD_project_2026
                     break;
             }
 
+            //adding the basic joker card effects but im going to change this. 
             foreach (var joker in JokerCardsInPlay)
             {
                 multScore *= joker.gameAffect;
@@ -307,20 +317,21 @@ namespace OOD_project_2026
             int cardsToReplace = playedOrderHand.Count;
 
             selectedHand.Clear();
-            Player.HandsLeft--;
+            player.HandsLeft -= 1;
 
-            HandsLeft.Text = $"Hands Left:{Player.HandsLeft}";
-
+            HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
+            //drawing cards and refreshing ui after playing hand.
             DrawCards(cardsToReplace);
             RefreshHandUI();
-
-            Player.CurrentChips += chipScore * multScore;
-            PlayerChipScore.Text = $"{handPlayed}\nScore: {Player.CurrentChips}";
+            //updating player chips and the final score. 
+            player.CurrentChips += chipScore * multScore;
+            PlayerChipScore.Text = $"{handPlayed}\nScore: {player.CurrentChips}";
 
             AnimationCanvas.Children.Clear();
-            CheckWin(Player.CurrentChips, Player.HandsLeft, Player.DisguardsLeft, blindScore);
+            CheckWin(player.CurrentChips, player.HandsLeft, player.DisguardsLeft, blindScore);
         }
-        #endregion 
+        #endregion
+        #region Main checks and looping 
         private void DrawCards(int amount)
         {
             //this is handy for modular design as it allows me to draw cards
@@ -347,7 +358,7 @@ namespace OOD_project_2026
                 //win window; this will allow you to go to the shop. 
                 WinScreen();
                 //resetting current chip score of player.
-                Player.CurrentChips = 0;
+                player.CurrentChips = 0;
                 //im going to put the shop menu window into this.
                 //from the win screen. 
             }
@@ -371,6 +382,7 @@ namespace OOD_project_2026
             else
                 return blindScore;
         }
+        #endregion
         #region checking hands 
         private bool CheckStriaght(List<Cards> selectedHand)
         {
@@ -546,26 +558,31 @@ namespace OOD_project_2026
         //creating a transform group to add some animaitons to the cards. 
         private TranslateTransform GetCardTranslate(Button card)
         {
+            //creatinga  new transofrm gorup 
             TransformGroup group = card.RenderTransform as TransformGroup;
             //I was having a problem with the transform group being frozen
          //and not being able to add a new translate transform to it so I had to add this check.
             if (group == null || group.IsFrozen)
             {
+                //adding the children to said transform group based off of different scaling, rotating and skewing transfomations. 
                 group = new TransformGroup();
                 group.Children.Add(new ScaleTransform());
                 group.Children.Add(new SkewTransform());
                 group.Children.Add(new RotateTransform());
 
+                //new translate transform for animations and adding said children to it. 
                 TranslateTransform translate = new TranslateTransform();
                 group.Children.Add(translate);
 
                 card.RenderTransform = group;
-                return translate;
+                return translate;//returning said group.
             }
-
+            //adding/cloning the exsisting group of children to the transalte transofrm. 
             TranslateTransform existing = group.Children
                 .OfType<TranslateTransform>()
                 .FirstOrDefault();
+
+            //if the exsisting children from said transform gorup exsist then they are added to this. 
 
             if (existing == null || existing.IsFrozen)
             {
@@ -579,6 +596,40 @@ namespace OOD_project_2026
 
             return existing;
         }
+        
+       //so theres 2 groups of animations one for the hover enter and one for the hover leave is to change 
+      
+       //animations to enter card aka mouse hovering over
+        private void Card_HoverEnter(object sender, MouseEventArgs e)
+        {
+            //this created a new group, a youtube tutorial was used for this. 
+            Button card = sender as Button;
+            Cards c = card?.Tag as Cards;
+
+            if (c == null)
+                return;
+
+            //So this wont  override selected cards
+            if (selectedHand.Contains(c))
+                return;
+
+            AnimateCard(card, -10); // small lift
+        }
+        //resettting animations when the card leaves. 
+        private void Card_HoverLeave(object sender, MouseEventArgs e)
+        {
+            Button card = sender as Button;
+            Cards c = card?.Tag as Cards;//its a boolean as I was getting major erros. 
+
+            if (c == null)
+                return;
+
+            // If selected, keep it raised
+            if (selectedHand.Contains(c))
+                return;
+            //then it animattes cards based off of a position. 
+            AnimateCard(card, 0);
+        }
         //this is for the passive animatioins of the cards on the y axis and x axsis when hovering obove them. 
         private void AnimateCard(Button card, double toY, double? toX = null)
         {
@@ -591,7 +642,7 @@ namespace OOD_project_2026
                 EasingFunction = new PowerEase
                 {
                     EasingMode = EasingMode.EaseOut,
-                    Power = 3
+                    Power = 2
                 }
             };
 
@@ -606,44 +657,16 @@ namespace OOD_project_2026
                     EasingFunction = new PowerEase
                     {
                         EasingMode = EasingMode.EaseOut,
-                        Power = 3
+                        Power = 2
                     }
                 };
 
                 translate.BeginAnimation(TranslateTransform.XProperty, animX);
             }
         }
-       
-        private void Card_HoverEnter(object sender, MouseEventArgs e)
-        {
-            Button card = sender as Button;
-            Cards c = card?.Tag as Cards;
-
-            if (c == null)
-                return;
-
-            // Don't override selected cards
-            if (selectedHand.Contains(c))
-                return;
-
-            AnimateCard(card, -10); // small lift
-        }
-        private void Card_HoverLeave(object sender, MouseEventArgs e)
-        {
-            Button card = sender as Button;
-            Cards c = card?.Tag as Cards;
-
-            if (c == null)
-                return;
-
-            // If selected, keep it raised
-            if (selectedHand.Contains(c))
-                return;
-
-            AnimateCard(card, 0);
-        }
         private async Task<List<Button>> AnimatePlayedHand(List<Cards> selectedCards)
         {
+            //creating a list gorup of cards that are chidlren of type buttona nd adding them to a list.  
             var buttons = CardGrid.Children.OfType<Button>().ToList();
             var targets = GetPlayTargets();
             List<Button> clones = new List<Button>();
@@ -654,11 +677,11 @@ namespace OOD_project_2026
             for (int i = 0; i < selectedCards.Count && i < targets.Count; i++)
             {
                 Cards card = selectedCards[i];
-
+                //this is to get the list of origional cards and buttons. 
                 Button original = buttons.FirstOrDefault(b => b.Tag == card);
                 if (original == null)
                     continue;
-
+                //cloning buttons to move to canvas. only if the origional is null aka moved outta hand. 
                 Button clone = MoveToCanvas(original);
                 clones.Add(clone);
 
@@ -711,8 +734,9 @@ namespace OOD_project_2026
 
                 await Task.Delay(90);
             }
-
+           
             return clones;
+           
         }
         //I didnt know that points were a thing. A youtube tutorial helped me with creating a new set posiitons on said main grid 
         //there was a bit of research involved. 
@@ -737,7 +761,7 @@ namespace OOD_project_2026
         //this was created due to the help of a youtube tutroial/
         private async Task PopCardWithRotation(Button card)
         {
-            //
+            //creating a new point in which the cards display their position around. 
             card.RenderTransformOrigin = new Point(0.5, 0.5);
 
             TransformGroup group = new TransformGroup();//this combines the transofrmes. 
@@ -790,8 +814,9 @@ namespace OOD_project_2026
             rotate.BeginAnimation(RotateTransform.AngleProperty, rotateAnim);
             rotate.BeginAnimation(RotateTransform.AngleProperty, rotateAnim2);
      
-
-            await Task.Delay(180);
+            //this is to delay the cards and the animaitons
+            await Task.Delay(80);
+            
         }
         private async Task AnimateDiscardedHand(List<Cards> discardedCards)
         {
@@ -915,26 +940,30 @@ namespace OOD_project_2026
             }
         }
         #endregion
+        #region ShopPopup and logic 
         private async void WinScreen()
         {
             InitialWinScreen.Visibility = Visibility.Visible;
             MainGameplayScreen.IsEnabled = false;
-            //couting money 
-            //based off of how many hands youve given to the player. 
-            for (int i = 0; i < Player.HandsLeft; i++)
+
+            // counting money earned
+            for (int i = 0; i < player.HandsLeft; i++)
             {
-                Player.Money += Player.HandsLeft;
-                PlayerMoneyDisplay.Text = $"Money: {Player.Money}";
+                player.Money += player.HandsLeft;
+                MoneyEarnedDisplay.Text = $"{player.Money}";
                 await Task.Delay(300);
             }
-            PlayerMoneyDisplay.Text = $"Money: {Player.Money}";
 
-            //showing round score 
-            for(int i = 0; i < Player.CurrentChips; i+=10)
+            MoneyEarnedDisplay.Text = $"{player.Money}";
+
+            // showing round score
+            for (int i = 0; i <= player.CurrentChips; i += 10)
             {
-                PlayerChipScore.Text = $"Round Score: {i}";
+                RoundScoreDisplay.Text = $"{i}";
                 await Task.Delay(10);
             }
+
+            RoundScoreDisplay.Text = $"{player.CurrentChips}";
 
         }
         private void ShowShopVerlay()
@@ -944,7 +973,7 @@ namespace OOD_project_2026
             ShopOverLay.Visibility = Visibility.Visible;
 
             MainGameplayScreen.IsEnabled = false;
-
+            //popup animation
             var fade = new DoubleAnimation
             {
                 From = 0,
@@ -958,18 +987,33 @@ namespace OOD_project_2026
             ShopOverlayBackground.Visibility = Visibility.Collapsed;
             ShopOverLay.Visibility = Visibility.Collapsed;
             MainGameplayScreen.IsEnabled = true;
+            //another code block of fading. 
+            var fade = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(150)
+            };
         }
         private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
         {
             HideShopOverlay();
-        }
+            round++;
+            BlindScoreDisplay.Text =$"{GenerateBlindScore(round)}";
+            player = new Player(money, currentChips, playersJokerCardsOwned, 3, 3);
 
+        }
         private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
         {
             ShowShopVerlay();
             InitialWinScreen.Visibility = Visibility.Collapsed;
-
+            //changing the player stats for the next round.
+            player.CurrentChips = 0;
+            player.HandsLeft = 3;
+            player.DisguardsLeft = 3;
+            PlayerChipScore.Text = $"Blind Score: {player.CurrentChips}";
         }
+        #endregion
     }
 
 }
