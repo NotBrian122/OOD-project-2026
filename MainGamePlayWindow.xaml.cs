@@ -266,6 +266,11 @@ namespace OOD_project_2026
             //resetting chip and mult score between hands played.  
             chipScore = 0;
             multScore = 0;
+            //for lucky cards. 
+            Random ranChanceLucky = new Random();
+            int randomChance = 1;
+            int jokerofRollingChance = 2;
+            int faceCardCountLoop = 0;
 
             // Keep click order for animation
             List<Cards> playedOrderHand = new List<Cards>(selectedHand);
@@ -285,7 +290,7 @@ namespace OOD_project_2026
             //creationg a list of jokercards that are owned by the player. 
             List<JokerCards> jokerCardsInEffect = player.JokerCardsOwned.ToList();
              scoringHand.Sort();
-            // Score poker hand using sorted copy -- ive moved 
+            // Score poker hand using sorted copy -- ive moved it as joker cards come after scoring 
             switch (CheckHandTypeMain(scoringHand, isFlush, isPair))
             {
                 case 0:
@@ -331,7 +336,13 @@ namespace OOD_project_2026
                     break;
             }
 
-           
+            //checking if the jokercards you own contain joker of rolling
+            //then doubling said chances. 
+             if(jokerCardsInEffect.Any(jokercards => jokercards.Name =="Joker of Rolling"))
+             {
+                randomChance *= jokerofRollingChance; //this shortens the gap like lucky cards
+                //instead of a 1 in 20 chance its doubeld to a 1 in 10 
+             }
             // Score each card one by one with pop/rotation
             //Ive added jokers to this level instad of a method as I think its easier to compute them 
             //here before checking the hand type. 
@@ -340,22 +351,113 @@ namespace OOD_project_2026
                 chipScore += playedOrderHand[i].CardChipValue;
                 HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
                 //now checking every joker card to see if it affects the card
-               foreach (JokerCards jokerCards in jokerCardsInEffect)
-               {
-                   //checking if the card is a face card. 
-                   if (playedOrderHand[i].FaceCard && jokerCards.Name == "Joker of Masks")
-                   {
-                       //this doubles the mult for each face card in play. 
-                       multScore *= jokerCards.GameAffect;
-                       HandMultScore.Text = $"{multScore}";//updating ui element. 
+                if (player.JokerCardsOwned == null)
+                {
+                     return;//if ther is none then return
+                }
+                else
+                {
+                    //this is going through every single joker card in the deck that you have owned. Currently mind you. 
+                    foreach (JokerCards jokerCards in jokerCardsInEffect)
+                    { 
+                        //checking if the card is a face card. then doubling the mult
+                        if (playedOrderHand[i].FaceCard && (jokerCards.Name == "Joker of Masks"))
+                        {
+                            //this doubles the mult for each face card in play. 
+                            multScore *= jokerCards.GameAffect;
+                            HandMultScore.Text = $"{multScore}";//updating ui element. 
+                            
 
-                   }
-                   else if((playedOrderHand[i].CardChipValue % 2 == 0) && jokerCards.Name == "Joker of Order")
-                   {
-                       multScore += jokerCards.GameAffect;
-                   }
-             
-                  }
+                        }
+                        //adding 4 mult to even cards 
+                        else if ((playedOrderHand[i].CardChipValue % 2 == 0) && (jokerCards.Name == "Joker of Order"))
+                        {
+                            multScore += jokerCards.GameAffect;
+
+                        }
+                        //joker of luck
+                        else if ((jokerCards.Name == "Joker of Luck") && playedOrderHand[i].Effect == "Lucky")
+                        {
+                             //1 in 20 chance.
+                             double activationChance = ranChanceLucky.Next(randomChance, 20);
+
+                            //like rolling a nat 20 for dnd best possible outcome. 
+                            if (activationChance == 20)
+                            {
+                                //adding .5 mult if lucky card activates
+                                jokerCards.GameAffect += .5;
+                                //1 in 10 chance to get 20 money
+                                player.Money += 20;
+                                multScore += activationChance;//adding 20 mult. 
+                                //activating the card again. 
+                                await PopCardWithRotation(playedClones[i]);
+                                await Task.Delay(60);
+                            }
+                            else if (activationChance == 10 || activationChance == 15)
+                            {
+                                //gives player 20 quid
+                                player.Money += 20;
+                                //adding .5 mult if lucky card activates
+                                jokerCards.GameAffect += .5;
+                                await PopCardWithRotation(playedClones[i]);
+                                await Task.Delay(60);
+                            }
+                            else if (activationChance == 14 || activationChance == 16)
+                            {
+                                //giving the palyer 20 mult.
+                                multScore += 20;
+                                //adding .5 mult if lucky card activates
+                                jokerCards.GameAffect += .5;
+                                await PopCardWithRotation(playedClones[i]);
+                                await Task.Delay(60);
+                            }
+                        }
+                        //joker of misfortune
+                        else if(jokerCards.Name == "Joker of Misfortune")
+                        {
+                            multScore += 20;
+                            //this has a 1 in 5 chance of being destroyed every time its played. 
+                            double destructionChance = ranChanceLucky.Next(randomChance, 5);
+                            if (destructionChance == 5) 
+                            { 
+                                player.JokerCardsOwned.Remove(jokerCards);//removes it from the player. 
+                            }
+                        }
+                        //joker of power
+                        else if(jokerCards.Name == "Joker of Power")
+                        {
+                            if(handPlayed == "Flush")
+                            {
+                                multScore += 25;
+                            }else if (handPlayed == "Striaght")
+                            {
+                                multScore += 35;
+                            }else if (handPlayed =="High Card")
+                            {
+                                multScore += 45;
+                            }
+                        }
+                        //so I have a counter for facecard looping to aovid infinate looping. 
+                        else if ((jokerCards.Name == "Fantom of Opera") && (playedOrderHand[i].FaceCard) && (faceCardCountLoop == 0))
+                        {
+                            faceCardCountLoop++;
+                            i--;//creates a loop back on itself. For set card.
+                        }
+                        //bloodstone esc card 
+                        else if (jokerCards.Name == "Joker of Blood" && playedOrderHand[i].SuitName == "Hearts")
+                        {
+                            int bloodCHance =  ranChanceLucky.Next(randomChance, 3);
+                            if(bloodCHance == 3)
+                            {
+                                multScore *= jokerCards.GameAffect;//it increases mult per card
+                            }                        
+                        }
+
+                    }
+                }
+                //after this im going game affects to affect the final mult for multiplicitive cards. 
+
+
 
                 if (i < playedClones.Count)
                 {
@@ -369,14 +471,7 @@ namespace OOD_project_2026
 
             //using a foreach but need to get the index of certian cards. 
        
-            if (player.JokerCardsOwned == null)
-            {
-                return;
-            }
-
            
-
-          
 
             // Remove played cards from actual hand
             foreach (var card in playedOrderHand)

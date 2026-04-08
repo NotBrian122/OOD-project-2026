@@ -32,6 +32,8 @@ namespace OOD_project_2026
 
             switch (CardChipValue)
             {
+                //changed from the ogironal version as I can then append the card faces 
+                //in the txt file. 
                 case 1:
                     this.CardName = "A";
                     this.CardChipValue = 14;
@@ -56,6 +58,7 @@ namespace OOD_project_2026
                     this.CardChipValue = CardChipValue;
                     break;
                 default:
+                    //if not a face card then the name is the chipvalue 
                     this.CardName = CardChipValue.ToString();
                     break;
             }
