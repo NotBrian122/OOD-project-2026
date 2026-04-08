@@ -94,8 +94,8 @@
                     <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF123454"  Grid.ColumnSpan="4"/>
                     <TextBlock x:Name="PlayerChipScore" Grid.Row="2" Grid.Column="1" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                     <TextBlock x:Name="HandName" Grid.Row="2" Grid.Column="0" Text="HandName" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBlock Grid.Row="3" Background="Red"/>
-                    <TextBlock Grid.Row="3" Grid.Column="3"  Background="Blue"/>
+                    <TextBlock Grid.Row="3" Background="Blue"/>
+                    <TextBlock Grid.Row="3" Grid.Column="3"  Background="Red"/>
                     <TextBlock Grid.Row="3" Grid.Column="1" Background="White"/>
                     <TextBlock x:Name="HandChipScore" Grid.Row="3" Grid.Column="0" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" Background="White" Width="50"/>
                     <TextBlock x:Name="HandMultScore" Grid.Row="3" Grid.Column="2" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" Background="White" Width="50"/>

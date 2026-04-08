@@ -169,7 +169,7 @@ namespace OOD_project_2026
                 clickedCard.Margin = new Thickness(0, -20, 0, 0);
             }
 
-            // Score poker hand using sorted copy
+            // Using the same method for scoring  but for updating the hands a player could play in this scenario
             switch (CheckHandTypeMain(selectedHand, isFlush, isPair))
             {
                 case 0:
@@ -253,8 +253,9 @@ namespace OOD_project_2026
         {
             //this is to check if your returning null, I had some problems with playtesting. 
             if (selectedHand.Count == 0)
+            {
                 return;
-
+            }
             //setting up some variables to be used when checking hands, and generating mult. 
             double chipScore = 0;
             double multScore = 0;
@@ -283,9 +284,11 @@ namespace OOD_project_2026
             {
                 chipScore += playedOrderHand[i].CardChipValue;
                 chipScoreDisplay[i].Text = $"+{playedOrderHand[i].CardChipValue}";
+                HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
 
                 if (i < playedClones.Count)
                 {
+                    //this is the animaiton function for playing the hand. 
                     await PopCardWithRotation(playedClones[i]);
                 }
 
@@ -363,9 +366,12 @@ namespace OOD_project_2026
             RefreshHandUI();
             //updating player chips and the final score. 
             player.CurrentChips += chipScore * multScore;
-            PlayerChipScore.Text = $"{handPlayed}\nScore: {player.CurrentChips}";
+            PlayerChipScore.Text = $"{player.CurrentChips}";
 
             AnimationCanvas.Children.Clear();
+            HandName.Text = "";
+            HandChipScore.Text = "0";
+            HandMultScore.Text = "0";
             CheckWin(player.CurrentChips, player.HandsLeft, player.DisguardsLeft, blindScore);
         }
         #endregion
