@@ -28,7 +28,11 @@ namespace OOD_project_2026
         #region setting variables for the game
         //setting up max cards in hands left. 
         int maxCardsInHand = 5;
-      
+      //setting up some variables to be used when checking hands, and generating mult. 
+            double chipScore = 0;
+            double multScore = 0;
+            string handPlayed = "";
+
         //setting the blindscore. 
         int blindScore = 300, round = 0, money = 0;
 
@@ -54,7 +58,7 @@ namespace OOD_project_2026
         //its giving out to me for creating the player. 
         Player player;
 
-        #endregion
+        #endregion  
         public MainGamePlayWindow()
         {
             InitializeComponent();
@@ -256,13 +260,12 @@ namespace OOD_project_2026
             {
                 return;
             }
-            //setting up some variables to be used when checking hands, and generating mult. 
-            double chipScore = 0;
-            double multScore = 0;
-            string handPlayed = "";
-
+            //some nessesiary variabels to be set 
             bool isFlush = true;
             int isPair = 0;
+            //resetting chip and mult score between hands played.  
+            chipScore = 0;
+            multScore = 0;
 
             // Keep click order for animation
             List<Cards> playedOrderHand = new List<Cards>(selectedHand);
@@ -276,26 +279,13 @@ namespace OOD_project_2026
 
             List<TextBlock> chipScoreDisplay = new List<TextBlock>()
             { ChipScore1, ChipScore2, ChipScore3, ChipScore4, ChipScore5 };
-            // Animate cards to play area in clicked order
+            // Animate cards to play area in clicked order to go up to the other gird. 
             List<Button> playedClones = await AnimatePlayedHand(playedOrderHand);
 
-            // Score each card one by one with pop/rotation
-            for (int i = 0; i < playedOrderHand.Count; i++)
-            {
-                chipScore += playedOrderHand[i].CardChipValue;
-                chipScoreDisplay[i].Text = $"+{playedOrderHand[i].CardChipValue}";
-                HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
-
-                if (i < playedClones.Count)
-                {
-                    //this is the animaiton function for playing the hand. 
-                    await PopCardWithRotation(playedClones[i]);
-                }
-
-                await Task.Delay(60);
-            }
-            scoringHand.Sort();
-            // Score poker hand using sorted copy
+            //creationg a list of jokercards that are owned by the player. 
+            List<JokerCards> jokerCardsInEffect = player.JokerCardsOwned.ToList();
+             scoringHand.Sort();
+            // Score poker hand using sorted copy -- ive moved 
             switch (CheckHandTypeMain(scoringHand, isFlush, isPair))
             {
                 case 0:
@@ -341,12 +331,47 @@ namespace OOD_project_2026
                     break;
             }
 
-            //adding the basic joker card effects but im going to change this. 
-            foreach (var joker in JokerCardsInPlay)
+           
+            // Score each card one by one with pop/rotation
+            //Ive added jokers to this level instad of a method as I think its easier to compute them 
+            //here before checking the hand type. 
+            for (int i = 0; i < playedOrderHand.Count; i++)
             {
-                multScore *= joker.gameAffect;
-                chipScore += joker.additionalModifiers;
+                chipScore += playedOrderHand[i].CardChipValue;
+                HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
+                  foreach (JokerCards jokerCards in jokerCardsInEffect)
+                  {
+                         //checking if the card is a face card. 
+                         if (playedOrderHand[i].FaceCard && jokerCards.AffectFaceCards)
+                         {
+                            //this doubles the mult for each face card in play. 
+                            multScore *= jokerCards.gameAffect;
+                             HandMultScore.Text = $"{multScore}";//updating ui element. 
+
+                         }
+             
+                  }
+
+                if (i < playedClones.Count)
+                {
+                    //this is the animaiton function for playing the hand. 
+                    //im going to reuse this for joker cards later. 
+                    await PopCardWithRotation(playedClones[i]);
+                }
+
+                await Task.Delay(60);
             }
+
+            //using a foreach but need to get the index of certian cards. 
+       
+            if (player.JokerCardsOwned == null)
+            {
+                return;
+            }
+
+           
+
+          
 
             // Remove played cards from actual hand
             foreach (var card in playedOrderHand)
@@ -562,7 +587,7 @@ namespace OOD_project_2026
             //pair
             if (CheckFullHouse(selectedHand))
             {
-                 handNumber = 6;//checking full house first 
+                handNumber = 6;//checking full house first 
             }
             // 2 pair 
             else if (CheckPair(selectedHand, isPair) == 2)
@@ -587,7 +612,7 @@ namespace OOD_project_2026
             }
             else if (CheckPair(selectedHand, isPair) == 1)
             {
-               handNumber = 1;//this is for a pair 
+                handNumber = 1;//this is for a pair 
             }
             else
             {
@@ -595,6 +620,10 @@ namespace OOD_project_2026
             }
             return handNumber;
         }
+        #endregion
+        #region JokerCards and caculating affects
+        
+      
         #endregion
         #region Cardanimations 
         //creating a transform group to add some animaitons to the cards. 
