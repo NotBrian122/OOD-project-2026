@@ -75,7 +75,7 @@ namespace OOD_project_2026
             RefreshHandUI();
             //Generating blind score 
             round++;
-            BlindScoreDisplay.Text = $"BlindScore: {GenerateBlindScore(round)}";
+            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
         }
 
         #region Updating ui/ clard clicking 
@@ -139,10 +139,13 @@ namespace OOD_project_2026
             //creating a list of cards the same as the previous tutorial, made it easier to work with. 
             Button clickedCard = sender as Button;
             Cards card = clickedCard?.Tag as Cards;
+            //this is to check the hand and creating varibales for said hand checking. 
+            bool isFlush = true;
+            int isPair = 0;
 
             if (card == null)
                 return;
-
+            //checking if the hand is selected 
             bool isSelected = selectedHand.Contains(card);
 
             if (isSelected)
@@ -165,6 +168,53 @@ namespace OOD_project_2026
 
                 clickedCard.BorderBrush = Brushes.Yellow;
                 clickedCard.Margin = new Thickness(0, -20, 0, 0);
+            }
+
+            // Score poker hand using sorted copy
+            switch (CheckHandTypeMain(selectedHand, isFlush, isPair))
+            {
+                case 0:
+                    HandName.Text = "High card";
+                    HandChipScore.Text= "10";
+                    HandMultScore.Text = "1";
+                    break;
+
+                case 1:
+                    HandName.Text = "Pair";
+                    HandChipScore.Text = "20";
+                    HandMultScore.Text = "2";
+                    break;
+
+                case 2:
+                    HandName.Text = "3 of a kind";
+                    HandChipScore.Text = "30";
+                    HandMultScore.Text = "3";
+                    break;
+
+                case 3:
+                    HandName.Text = "Two pair";
+                    HandChipScore.Text = "40";
+                    HandMultScore.Text = "4";
+                    break;
+
+                case 4:
+                    HandName.Text = "Straight";
+                    HandChipScore.Text = "55";
+                    HandMultScore.Text = "5";
+                    break;
+
+                case 5:
+                    HandName.Text = "Flush";
+                    HandChipScore.Text = "50";
+                    HandMultScore.Text = "5";
+                    break;
+
+                case 6:
+                    HandName.Text = "Full house";
+                    HandChipScore.Text = "40";
+                    HandMultScore.Text = "4";
+                    break;
+            
             }
         }
 
@@ -431,15 +481,13 @@ namespace OOD_project_2026
             //to see if its a pair or not.
             if (groups.Count(x => x == 2) == 2)
             {
-                isPair += 2;
-                //this was a weird thing to wrap my head around.
-                //this is counting 2 cases of 2 pairs which is 2 pairs. 
+                return 2;
             }
             else if (groups.Contains(2))
             {
-                isPair++;
+                return 1;
             }
-            return isPair;
+            return 0;
         }
         private bool CheckThreeOfAKind(List<Cards> selectedHand)
         {
@@ -507,9 +555,9 @@ namespace OOD_project_2026
             //visually process the hand type. 
             int handNumber = 0;//this is for high cards.
             //pair
-            if (CheckPair(selectedHand, isPair) == 1)
+            if (CheckFullHouse(selectedHand))
             {
-                handNumber = 1;//this is for a pair 
+                 handNumber = 6;//checking full house first 
             }
             // 2 pair 
             else if (CheckPair(selectedHand, isPair) == 2)
@@ -532,9 +580,9 @@ namespace OOD_project_2026
             {
                 handNumber = 5;
             }
-            else if (CheckFullHouse(selectedHand))
+            else if (CheckPair(selectedHand, isPair) == 1)
             {
-                handNumber = 6;
+               handNumber = 1;//this is for a pair 
             }
             else
             {

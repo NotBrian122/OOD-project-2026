@@ -71,7 +71,7 @@
                 <TextBlock Grid.Row="1" Grid.Column="0"/>
 
                 <!--TextBlock colouring for the mult-->
-                <Grid Grid.Row="1" Grid.Column="0">
+                <Grid Grid.Row="1" Grid.Column="0" Background="#FF56051F">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -80,32 +80,34 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="3*"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="4*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
 
                     <TextBlock Background="#FF123454" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
-                    <TextBlock x:Name="BlindScoreDisplay" Text="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Foreground="#FFFFEA06" Background="White"/>
+                    <TextBlock x:Name="BlindScoreDisplay" Text="0" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFFFEA06" Background="White" Width="50" FontSize="20"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-                    <TextBlock Grid.Row="3" Grid.ColumnSpan="3"  Background="white"/>
-                    <TextBlock x:Name="HandChipScore" Grid.Row="3" Grid.Column="0" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="18" Background="Red"/>
-                    <TextBlock x:Name="HandMultScore" Grid.Row="3" Grid.Column="2" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Background="Blue"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF123454"  Grid.ColumnSpan="4"/>
+                    <TextBlock x:Name="PlayerChipScore" Grid.Row="2" Grid.Column="1" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="HandName" Grid.Row="2" Grid.Column="0" Text="HandName" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBlock Grid.Row="3" Background="Red"/>
+                    <TextBlock Grid.Row="3" Grid.Column="3"  Background="Blue"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Background="White"/>
+                    <TextBlock x:Name="HandChipScore" Grid.Row="3" Grid.Column="0" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" Background="White" Width="50"/>
+                    <TextBlock x:Name="HandMultScore" Grid.Row="3" Grid.Column="2" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontSize="18" Background="White" Width="50"/>
                     <TextBlock Text="X" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
 
-
                 </Grid>
-                
+
                 <TextBlock Grid.Row="1" Grid.Column="0"/>
-               
+
 
                 <!--#region JokerCards-->
                 <Grid Grid.Row="0" Grid.Column="1">
-
                     <Grid x:Name="JokerCardsOwned">
 
 
@@ -124,14 +126,9 @@
                         <TextBlock Grid.Column="4" Text="Joker Card 5"/>
 
                     </Grid>
-
-
                 </Grid>
 
                 <!--#endregion-->
-
-
-
                 <!--#region Main card selection -->
 
                 <!-- this is the content for the cards given to the player
@@ -258,11 +255,8 @@
                     </Grid>
                 </Grid>
             </Grid>
-
-
             <!-- Darkened background overlay -->
             <Border x:Name="ShopOverlayBackground" Background="#88000000" Visibility="Collapsed" Panel.ZIndex="100" />
-
             <!-- Win screen overlay -->
             <Border x:Name="InitialWinScreen" Width="450" Height="450" Background="#FF17182D" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="140" Padding="20">
                 <Grid>
@@ -328,15 +322,8 @@
                     <TextBlock Grid.Row="2" x:Name="PlayerMoneyDisplay" Text="Money: " FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="22" Width="57"/>
                 </Grid>
             </Border>
-
             <!--This is the animation layer from the tutorial, this allows all animations to happen on top. -->
-            <Canvas x:Name="AnimationCanvas"
-        Grid.Row="0"
-        Grid.Column="0"
-        Grid.RowSpan="4"
-        Grid.ColumnSpan="3"
-        Panel.ZIndex="999"
-        IsHitTestVisible="False"/>
+            <Canvas x:Name="AnimationCanvas" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="999" IsHitTestVisible="False"/>
         </Grid>
     </Grid>
 </Page>
