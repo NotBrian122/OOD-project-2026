@@ -64,7 +64,6 @@ namespace OOD_project_2026
 
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            
             //creating the deck. it works. 
             deck.CreateDeck();
             //Generating a list of jokers.
@@ -415,7 +414,7 @@ namespace OOD_project_2026
         {
             if (roundScore > 1)
             {
-                blindScore += blindScore * roundScore;
+                blindScore += blindScore * (roundScore%2+1);
                 return blindScore;
             }
             else
