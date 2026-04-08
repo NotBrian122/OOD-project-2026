@@ -22,32 +22,21 @@ using System.Windows.Threading;
 
 namespace OOD_project_2026
 {
-    /// <summary>
-    /// Interaction logic for MainGamePlayWindow.xaml
-    /// </summary>
-    /// 
-
     //want to load deck and do card gen outside of the main page so everything can work together
-
     public partial class MainGamePlayWindow : Page
     {
-
         #region setting variables for the game
-        //hands and disguards left 
-      
+        //setting up max cards in hands left. 
         int maxCardsInHand = 5;
       
         //setting the blindscore. 
-        int blindScore = 300;
-        int round = 0;
+        int blindScore = 300, round = 0, money = 0;
+
         //passind that into the current field. 
         double currentChips = 0;
-        int money = 0;
-
+        
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
-        //initialising joker cards for the shop. 
-       
         List<Cards> hand = new List<Cards>();
         List<Cards> selectedHand = new List<Cards>();
         List<Cards> HandPlayed = new List<Cards>();
@@ -943,17 +932,21 @@ namespace OOD_project_2026
         #region ShopPopup and logic 
         private async void WinScreen()
         {
+            //this is to show the win screen when you win.
             InitialWinScreen.Visibility = Visibility.Visible;
             MainGameplayScreen.IsEnabled = false;
 
             // counting money earned
             for (int i = 0; i < player.HandsLeft; i++)
             {
+                //adding the round and how hard it is. 
+                player.Money += round;
+                //then adding hands left as a bonus to the money earned.
                 player.Money += player.HandsLeft;
                 MoneyEarnedDisplay.Text = $"{player.Money}";
                 await Task.Delay(300);
             }
-
+            //showing money earned after the round and the bonus for how many hands you have left.
             MoneyEarnedDisplay.Text = $"{player.Money}";
 
             // showing round score
@@ -1011,6 +1004,7 @@ namespace OOD_project_2026
             player.CurrentChips = 0;
             player.HandsLeft = 3;
             player.DisguardsLeft = 3;
+            //updating player score. 
             PlayerChipScore.Text = $"Blind Score: {player.CurrentChips}";
         }
         #endregion

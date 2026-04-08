@@ -38,13 +38,70 @@
                 <!--contnet on the main sides-->
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0" Text="Quit Game"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Background="#FF165A0C" Margin="0,0,0,0"/>
-                <TextBlock x:Name="HandsLeft" Grid.Row="2" Grid.Column="0" Margin="0,0,0,0" Text="Hands Left" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                <TextBlock x:Name="DisguardsLeft" Grid.Row="2" Grid.Column="0" Text="Disguards left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+
+                <!--Sub groups-->
+                <Grid Grid.Column="0" Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width=".25*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width=".25*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" FontSize="12" FontWeight="Bold" Background="#FF123454"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" FontSize="12" FontWeight="Bold" Background="#FF123454"/>
+
+                    <TextBlock x:Name="HandsLeft" Grid.Row="1" Grid.Column="2" Text="0" VerticalAlignment="Center" Background="White" FontWeight="Bold"/>
+                    <TextBlock x:Name="DisguardsLeft" Grid.Row="3" Grid.Column="2" Text="0" VerticalAlignment="Center" Background="White" FontWeight="Bold"/>
+
+                    <TextBlock Text="Hands left" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FFAD2323" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Text="Disguards left" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF2171BB" FontSize="12" FontWeight="Bold"/>
+
+                </Grid>
+
                 <TextBlock x:Name ="DeckArea" Grid.Row="3" Grid.Column="2" Margin="0,0,0,0" Text="Deck"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Background="#FF1A88AD"/>
-                <TextBlock x:Name="BlindScoreDisplay" Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="1" Grid.Column="0"/>
+
+                <!--TextBlock colouring for the mult-->
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock Background="#FF123454" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="BlindScoreDisplay" Text="0" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Foreground="#FFFFEA06" Background="White"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="BlindScore" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="PlayerChipScore" Grid.Row="1" Grid.Column="0" Text="Score" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="3"  Background="white"/>
+                    <TextBlock x:Name="HandChipScore" Grid.Row="3" Grid.Column="0" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="18" Background="Red"/>
+                    <TextBlock x:Name="HandMultScore" Grid.Row="3" Grid.Column="2" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Background="Blue"/>
+                    <TextBlock Text="X" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
+
+
+                </Grid>
+                
+                <TextBlock Grid.Row="1" Grid.Column="0"/>
+               
 
                 <!--#region JokerCards-->
                 <Grid Grid.Row="0" Grid.Column="1">
@@ -221,7 +278,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <TextBlock Grid.Row="0" Text="You Win!" FontSize="28 " FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FFF1E240"/>
                     <TextBlock Grid.Row="1" Text="Money Earned: " FontSize="18" HorizontalAlignment="Left" Foreground="#FFD0B224" />
                     <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MoneyEarnedDisplay" Text="0" FontSize="18" HorizontalAlignment="Right" Foreground="#FFE29E0A"/>
