@@ -339,16 +339,21 @@ namespace OOD_project_2026
             {
                 chipScore += playedOrderHand[i].CardChipValue;
                 HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
-                  foreach (JokerCards jokerCards in jokerCardsInEffect)
-                  {
-                         //checking if the card is a face card. 
-                         if (playedOrderHand[i].FaceCard && jokerCards.AffectFaceCards)
-                         {
-                            //this doubles the mult for each face card in play. 
-                            multScore *= jokerCards.gameAffect;
-                             HandMultScore.Text = $"{multScore}";//updating ui element. 
+                //now checking every joker card to see if it affects the card
+               foreach (JokerCards jokerCards in jokerCardsInEffect)
+               {
+                   //checking if the card is a face card. 
+                   if (playedOrderHand[i].FaceCard && jokerCards.Name == "Joker of Masks")
+                   {
+                       //this doubles the mult for each face card in play. 
+                       multScore *= jokerCards.GameAffect;
+                       HandMultScore.Text = $"{multScore}";//updating ui element. 
 
-                         }
+                   }
+                   else if((playedOrderHand[i].CardChipValue % 2 == 0) && jokerCards.Name == "Joker of Order")
+                   {
+                       multScore += jokerCards.GameAffect;
+                   }
              
                   }
 
