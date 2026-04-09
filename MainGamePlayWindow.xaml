@@ -119,11 +119,11 @@
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="Joker Card 1"/>
-                        <TextBlock Grid.Column="1" Text="Joker Card 2"/>
-                        <TextBlock Grid.Column="2" Text="Joker Card 3"/>
-                        <TextBlock Grid.Column="3" Text="Joker Card 4"/>
-                        <TextBlock Grid.Column="4" Text="Joker Card 5"/>
+                        <Button Grid.Column="0" Content="Joker Card 1"/>
+                        <Button Grid.Column="1" Content="Joker Card 2"/>
+                        <Button Grid.Column="2" Content="Joker Card 3"/>
+                        <Button Grid.Column="3" Content="Joker Card 4"/>
+                        <Button Grid.Column="4" Content="Joker Card 5"/>
 
                     </Grid>
                 </Grid>
@@ -284,7 +284,7 @@
                 </Grid>
             </Border>
             <!--Shop overlay.-->
-            <Border x:Name="ShopOverLay"  Width="550" Height="550" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
+            <Border x:Name="ShopOverLay"  Width="550" Height="750" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
                     VerticalAlignment="Bottom" Visibility="Collapsed" Panel.ZIndex="101" Padding="20">
                 <Grid>
                     <Grid.RowDefinitions>

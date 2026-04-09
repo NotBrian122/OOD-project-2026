@@ -169,7 +169,7 @@
     <Resource Include="Images\Cards\SQ.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\JokerCards\.Joker of Misfortune.png" />
+    <Resource Include="Images\JokerCards\Joker of Misfortune.png" />
     <Resource Include="Images\JokerCards\Fantom of Opera.png" />
     <Resource Include="Images\JokerCards\Joker of Blood.png" />
     <Resource Include="Images\JokerCards\Joker of Luck.png" />

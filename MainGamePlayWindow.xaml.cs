@@ -2,25 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Security;
-using System.Security.AccessControl;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using System.Xml;
 
 namespace OOD_project_2026
 {
@@ -30,13 +18,13 @@ namespace OOD_project_2026
         #region setting variables for the game
         //setting up max cards in hands left. 
         int maxCardsInHand = 5;
-      //setting up some variables to be used when checking hands, and generating mult. 
+        //setting up some variables to be used when checking hands, and generating mult. 
         double chipScore = 299, multScore = 0, currentChips = 0;
         string handPlayed = "";
         bool faceCardPlayed = false;
         //setting the blindscore. 
         int blindScore = 300, round = 0, money = 0;
-        
+
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
         List<Cards> hand = new List<Cards>();
@@ -50,7 +38,7 @@ namespace OOD_project_2026
 
         //I want to add a player class to write to a file. This will track your best score.
         //I removed the hands and disguards left to the ones in the palyer class to make it better. 
-         Random random = new Random();
+        Random random = new Random();
         List<JokerCards> AllJokers = JokerCards.GenerateJokerCards();
         List<JokerCards> playersJokerCardsOwned = new List<JokerCards>();
         //its giving out to me for creating the player. 
@@ -69,7 +57,7 @@ namespace OOD_project_2026
             //creating the deck. it works. 
             deck.CreateDeck();
             //Generating a list of jokers.
-            
+
             //drawing the cards 
             DrawCards(8);
             //refreshing the ui before we start the game. 
@@ -124,9 +112,10 @@ namespace OOD_project_2026
                     cardGrid.Children.Add(baseImage);
 
                     //addomg card affects to certian cards if they contain said affect. 
-                    AddCardEffectOverlay( cardGrid, currentCard );
+                    AddCardEffectOverlay(cardGrid, currentCard);
                     currentButton.Content = cardGrid;
 
+                    //I moved this down here to make it easier  for comprehension
                     currentButton.Click += Card_Click;
                     currentButton.MouseEnter += Card_HoverEnter;
                     currentButton.MouseLeave += Card_HoverLeave;
@@ -139,7 +128,7 @@ namespace OOD_project_2026
         private void AddCardEffectOverlay(Grid cardGrid, Cards card)
         {
             //this is just for testing 
-            if (true)
+            if (card.Effect == "Lucky")
             {
                 //creating a new overlay image. 
                 Image overlay = new Image
@@ -154,7 +143,8 @@ namespace OOD_project_2026
 
                 cardGrid.Children.Add(overlay);
                 //beyond this its copy and paste. 
-            }else if(card.Effect == "Glass")
+            }
+            else if (card.Effect == "Glass")
             {
                 Image overlay = new Image
                 {
@@ -253,7 +243,7 @@ namespace OOD_project_2026
             {
                 case 0:
                     HandName.Text = "High card";
-                    HandChipScore.Text= "10";
+                    HandChipScore.Text = "10";
                     HandMultScore.Text = "1";
                     break;
 
@@ -292,7 +282,7 @@ namespace OOD_project_2026
                     HandChipScore.Text = "40";
                     HandMultScore.Text = "4";
                     break;
-            
+
             }
         }
 
@@ -348,13 +338,13 @@ namespace OOD_project_2026
 
             //for lucky cards. 
             Random ranChanceLucky = new Random();
-            
+
 
             // Keep click order for animation
             List<Cards> playedOrderHand = new List<Cards>(selectedHand);
             //was having some probolems.copied the scoring hand 
             List<Cards> scoringHand = new List<Cards>(selectedHand);
-            
+
 
             //Tried to use this but gave me errors 
             //List<TextBlock> chipScoreDisplay = ChipScoreGird.Children.OfType<TextBlock>().ToList();
@@ -366,7 +356,7 @@ namespace OOD_project_2026
 
             //creationg a list of jokercards that are owned by the player. 
             List<JokerCards> jokerCardsInEffect = player.JokerCardsOwned.ToList();
-             scoringHand.Sort();
+            scoringHand.Sort();
             // Score poker hand using sorted copy -- ive moved it as joker cards come after scoring 
             switch (CheckHandTypeMain(scoringHand, isFlush, isPair))
             {
@@ -428,17 +418,17 @@ namespace OOD_project_2026
             for (int i = 0; i < playedOrderHand.Count && i < playedClones.Count; i++)
             {
                 //it affects a siungle card 
-                await ReplaySingleCard(playedOrderHand[i], playedClones[i],jokerCardsInEffect,handPlayed,random,true);
+                await ReplaySingleCard(playedOrderHand[i], playedClones[i], jokerCardsInEffect, handPlayed, random, true);
             }
             //after this im going game affects to affect the final mult for multiplicitive cards. 
             // trying to get this joker and its spesific Object. 
             var lukyJokerMultAddon = jokerCardsInEffect.FirstOrDefault(jokercards => jokercards.Name == "Joker of Luck");
-            if(lukyJokerMultAddon != null)
+            if (lukyJokerMultAddon != null)
             {
                 multScore *= lukyJokerMultAddon.GameAffect;//mutiplies it afterwards. Lucky cards are broken. 
             }
 
-           
+
             // Remove played cards from actual hand
             foreach (var card in playedOrderHand)
             {
@@ -483,7 +473,7 @@ namespace OOD_project_2026
                 deck.FullDeck.RemoveAt(newCards);
             }
         }
-      
+
         private void CheckWin(double PlayerChipScore, int handsLeft, int disguardsLeft, double BlindScore)
         {//PlayerChipScore --removing it for testing
             double comparingScore = BlindScore - 399;
@@ -511,7 +501,7 @@ namespace OOD_project_2026
         {
             if (roundScore > 1)
             {
-                blindScore += blindScore * (roundScore%2+1);
+                blindScore += blindScore * (roundScore % 2 + 1);
                 return blindScore;
             }
             else
@@ -685,8 +675,8 @@ namespace OOD_project_2026
         }
         #endregion
         #region JokerCards and caculating affects
-        
-      private async Task ApplyJokerEffects(Cards card,Button playedClones,List<JokerCards> jokers,string handPlayed,Random rng, bool allowOpreaReplay)
+
+        private async Task ApplyJokerEffects(Cards card, Button playedClones, List<JokerCards> jokers, string handPlayed, Random rng, bool allowOpreaReplay)
         {
             int roll = rng.Next(1, 21); // 1..20
             //searching for this joker card, yes it every time but I wanted to make this work
@@ -696,12 +686,12 @@ namespace OOD_project_2026
 
 
             //im creating a copy as everything will be removed later on. 
-            foreach (var joker in jokers.ToList()) 
+            foreach (var joker in jokers.ToList())
             {
                 //ive thought a new solution for how im going to do the chipscores. 
-                switch (joker.Name) 
+                switch (joker.Name)
                 {
-                    case"Joker of Masks":
+                    case "Joker of Masks":
                         if (card.FaceCard && !faceCardPlayed)
                         {
                             //doublind the score
@@ -712,7 +702,7 @@ namespace OOD_project_2026
                         }
                         break;
                     case "Joker of Order":
-                        if(card.CardChipValue %2 == 0)
+                        if (card.CardChipValue % 2 == 0)
                         {
                             multScore += joker.GameAffect;
                             HandMultScore.Text = $"{multScore}";
@@ -722,7 +712,7 @@ namespace OOD_project_2026
                         //checking for a lucky card 
                         if (card.Effect == "Lucky")
                         {
-                            roll = rng.Next(1,maxRoll+1); // 1–20 or could be 1 in 10 
+                            roll = rng.Next(1, maxRoll + 1); // 1–20 or could be 1 in 10 
 
                             if (roll >= luckySucessRoll)//adding the affect as it will change into 1-10 my mistake for chances. 
                             {
@@ -769,11 +759,11 @@ namespace OOD_project_2026
                         else if (handPlayed == "Straight")
                         {
                             multScore += 7;//adds +7 for each card played. therefore 35
-                        }   
+                        }
                         else if (handPlayed == "High card")
                         {
                             multScore += 45;
-                        }                          
+                        }
                         break;
                     case "Fantom of Opera":
                         if (card.FaceCard && allowOpreaReplay)//checking to make sure its true before changing it 
@@ -792,12 +782,12 @@ namespace OOD_project_2026
                         }
                         break;
 
-                
+
                 }
             }
         }
         //this is to replay a single card in the hopes that everything works. 
-        private async Task ReplaySingleCard(Cards card, Button playedClone,List<JokerCards> jokers,string handsPlayed,Random rng,bool allowOpreaReplay)
+        private async Task ReplaySingleCard(Cards card, Button playedClone, List<JokerCards> jokers, string handsPlayed, Random rng, bool allowOpreaReplay)
         {
             // base card scoring
             chipScore += card.CardChipValue;
@@ -812,7 +802,7 @@ namespace OOD_project_2026
             await PopCardWithRotation(playedClone);
             await Task.Delay(60);
         }
-       
+
         #endregion
         #region Cardanimations 
         //creating a transform group to add some animaitons to the cards. 
@@ -821,7 +811,7 @@ namespace OOD_project_2026
             //creatinga  new transofrm gorup 
             TransformGroup group = card.RenderTransform as TransformGroup;
             //I was having a problem with the transform group being frozen
-         //and not being able to add a new translate transform to it so I had to add this check.
+            //and not being able to add a new translate transform to it so I had to add this check.
             if (group == null || group.IsFrozen)
             {
                 //adding the children to said transform group based off of different scaling, rotating and skewing transfomations. 
@@ -856,10 +846,10 @@ namespace OOD_project_2026
 
             return existing;
         }
-        
-       //so theres 2 groups of animations one for the hover enter and one for the hover leave is to change 
-      
-       //animations to enter card aka mouse hovering over
+
+        //so theres 2 groups of animations one for the hover enter and one for the hover leave is to change 
+
+        //animations to enter card aka mouse hovering over
         private void Card_HoverEnter(object sender, MouseEventArgs e)
         {
             //this created a new group, a youtube tutorial was used for this. 
@@ -994,9 +984,9 @@ namespace OOD_project_2026
 
                 await Task.Delay(90);
             }
-           
+
             return clones;
-           
+
         }
         //I didnt know that points were a thing. A youtube tutorial helped me with creating a new set posiitons on said main grid 
         //there was a bit of research involved. 
@@ -1073,10 +1063,10 @@ namespace OOD_project_2026
             //this is roatiting. 
             rotate.BeginAnimation(RotateTransform.AngleProperty, rotateAnim);
             rotate.BeginAnimation(RotateTransform.AngleProperty, rotateAnim2);
-     
+
             //this is to delay the cards and the animaitons
             await Task.Delay(80);
-            
+
         }
         private async Task AnimateDiscardedHand(List<Cards> discardedCards)
         {
@@ -1089,7 +1079,7 @@ namespace OOD_project_2026
 
             // small spread so cards don't stack perfectly
             //much like the game.
-            double spread = 12; 
+            double spread = 12;
 
             //then using a for loop for each card is diguarded cards to create a 
             for (int i = 0; i < discardedCards.Count; i++)
@@ -1179,7 +1169,7 @@ namespace OOD_project_2026
 
                 clonedContent = newGrid;
             }
-            else if (card.Content is Image singleImage)
+            else if (card.Content is Image singleImage)//this is for the origional button and its representetive image. 
             {
                 clonedContent = new Image
                 {
@@ -1188,7 +1178,7 @@ namespace OOD_project_2026
                     IsHitTestVisible = false
                 };
             }
-
+            //creating a base button clone that has the same width height and content. 
             Button clone = new Button
             {
                 Width = card.ActualWidth,
@@ -1258,7 +1248,7 @@ namespace OOD_project_2026
             //this is to show the shop overlay when you win. 
             ShopOverlayBackground.Visibility = Visibility.Visible;
             ShopOverLay.Visibility = Visibility.Visible;
-          
+
             PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
 
             //loading the jokers into teh shop
@@ -1277,20 +1267,20 @@ namespace OOD_project_2026
 
         }
         //loading jokers into the shop.
-        private void LoadJokersIntoShop() 
+        private void LoadJokersIntoShop()
         {
             //creating a veriable of all jokers are loaded into the shop if the player doesnt contain them. 
             var availbeJokers = AllJokers.Where(j => !player.JokerCardsOwned.Any(p => p.Name == j.Name)).ToList();
             //removing jokers from said shop. 
             shopJokers.Clear();
             //loop to populate jokes into the shop where its less than the avaiblke joker section. 
-            while(shopJokers.Count < 4 && availbeJokers.Count > 0)
+            while (shopJokers.Count < 4 && availbeJokers.Count > 0)
             {
                 //getting new index. 
                 int index = random.Next(availbeJokers.Count);
                 shopJokers.Add(availbeJokers[index]);
                 availbeJokers.RemoveAt(index);//removes duplicates.
-              
+
             }
             //assinging jokers to buttons. 
             AssingJokerToButton(Joker1, 0);
@@ -1303,21 +1293,23 @@ namespace OOD_project_2026
         private void AssingJokerToButton(Button button, int index)
         {
             //this is to check if the joker cards arent bought or not. 
-            if(index < shopJokers.Count)
+            if (index < shopJokers.Count)
             {
                 button.Tag = shopJokers[index];
                 button.Content = shopJokers[index].ToString();
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
+                button.Content = BuildJokerCardVisual(shopJokers[index]);
 
-            }else
+            }
+            else
             {
                 button.Tag = null;
                 button.Content = "Sold out";
                 button.IsEnabled = false;
             }
         }
-       
+
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
             //I have to pass in the sender as a button to get said index of the joker card. 
@@ -1342,20 +1334,45 @@ namespace OOD_project_2026
         private void AddJokerToGrid()
         {
             //this is just an edgecase
-            if(player.JokerCardsOwned == null)
+            if (player.JokerCardsOwned == null)
             {
                 return;
             }
 
             //creating a list of joker cards to display. 
-            List<TextBlock> JokerCardDisplay = JokerCardsOwned.Children.OfType<TextBlock>().ToList();
+            List<Button> JokerCardDisplay = JokerCardsOwned.Children.OfType<Button>().ToList();
 
-            //ive changed this as it wont crash if you add too many joker cards. 
-            for (int i = 0; i < player.JokerCardsOwned.Count && i < JokerCardDisplay.Count; i++)
+            for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
-                JokerCardDisplay[i].Text = player.JokerCardsOwned[i].ToString();
+                JokerCardDisplay[i].Content = null;
+                JokerCardDisplay[i].Tag = null;
+
+                if (i < player.JokerCardsOwned.Count)
+                {
+                    JokerCards joker = player.JokerCardsOwned[i];
+                    JokerCardDisplay[i].Tag = joker;
+                    JokerCardDisplay[i].Content = BuildJokerCardVisual(joker);
+                }
             }
 
+        }
+        private Grid BuildJokerCardVisual(JokerCards joker)
+        {
+            Grid jokerGrid = new Grid();
+
+            Image baseImage = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri($"pack://application:,,,/Images/JokerCards/{joker.Name}.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            jokerGrid.Children.Add(baseImage);
+
+
+            return jokerGrid;
         }
         private void HideShopOverlay()
         {
@@ -1375,7 +1392,7 @@ namespace OOD_project_2026
         {
             HideShopOverlay();
             round++;
-            BlindScoreDisplay.Text =$"{GenerateBlindScore(round)}";
+            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
 
             player.HandsLeft = 3;
             player.DisguardsLeft = 3;
