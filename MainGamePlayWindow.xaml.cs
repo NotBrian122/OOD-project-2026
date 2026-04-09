@@ -75,14 +75,14 @@ namespace OOD_project_2026
 
             List<Button> cardSlots = new List<Button>()
             {
-             HandCard1, HandCard2, HandCard3, HandCard4,
-             HandCard5, HandCard6, HandCard7, HandCard8
+                 HandCard1, HandCard2, HandCard3, HandCard4,
+                 HandCard5, HandCard6, HandCard7, HandCard8
             };
 
             for (int i = 0; i < cardSlots.Count; i++)
             {
                 Button currentButton = cardSlots[i];
-
+                //clicking said card. 
                 currentButton.Click -= Card_Click;
                 currentButton.MouseEnter -= Card_HoverEnter;
                 currentButton.MouseLeave -= Card_HoverLeave;
@@ -475,8 +475,8 @@ namespace OOD_project_2026
         }
 
         private void CheckWin(double PlayerChipScore, int handsLeft, int disguardsLeft, double BlindScore)
-        {//PlayerChipScore --removing it for testing
-            double comparingScore = BlindScore - 399;
+        {
+            double comparingScore = BlindScore - PlayerChipScore;
             if (comparingScore <= 0 && player.HandsLeft >= 0)
             {
                 //you win
@@ -1243,14 +1243,29 @@ namespace OOD_project_2026
 
         }
         private void ShowShopVerlay()
-        {
-            Random randomItems = new Random();
+        { 
             //this is to show the shop overlay when you win. 
             ShopOverlayBackground.Visibility = Visibility.Visible;
             ShopOverLay.Visibility = Visibility.Visible;
 
             PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
 
+            List<Button> jokerSlots = new List<Button>()
+            {
+                Joker1, Joker2, Joker3, Joker4,
+            };
+            for (int i = 0; i < jokerSlots.Count; i++)
+            {
+                Button currentJokerButton = jokerSlots[i];
+                currentJokerButton.MouseEnter -= Joker_Shop_Enter;
+                currentJokerButton.MouseLeave -= Joker_Shop_Leave;
+
+                currentJokerButton.MouseEnter += Joker_Shop_Enter;
+                currentJokerButton.MouseLeave += Joker_Shop_Leave;
+
+                currentJokerButton.Visibility = Visibility.Visible;
+
+            }
             //loading the jokers into teh shop
             LoadJokersIntoShop();
 
@@ -1310,6 +1325,49 @@ namespace OOD_project_2026
             }
         }
 
+        //simple animaiton for joker going up and down.
+        private void Joker_Shop_Enter(object sender, MouseEventArgs e)
+        {
+            if (sender is Button jokerCard && jokerCard.Tag is JokerCards joker)
+            {
+                AnimateCard(jokerCard, -10);
+
+                JokerHoverText.Text =
+                    $"{joker.Name}\n\n{joker.Affect}\n\nChance: {joker.ChanceAffect}\nPrice: {joker.Price:c2}";
+
+                Point pos = jokerCard.TranslatePoint(new Point(0, 0), MainGrid);
+
+                JokerHoverPopup.Visibility = Visibility.Visible;
+
+                Canvas.SetLeft(JokerHoverPopup, pos.X + jokerCard.ActualWidth + 10);
+                Canvas.SetTop(JokerHoverPopup, pos.Y);
+            }
+
+            Button JokerCard = sender as Button;
+            JokerCards jc = JokerCard?.Tag as JokerCards;
+
+            if (jc == null) 
+                return;
+
+            AnimateCard(JokerCard, -10);
+        }
+        private void Joker_Shop_Leave(object sender, MouseEventArgs e)
+        {
+            if (sender is Button jokerCard && jokerCard.Tag is JokerCards)
+            {
+                AnimateCard(jokerCard, 0);
+                JokerHoverPopup.Visibility = Visibility.Collapsed;
+            } 
+
+            Button JokerCard = sender as Button;
+            JokerCards jc = JokerCard?.Tag as JokerCards;
+
+            if (jc == null)
+                return;
+
+            AnimateCard(JokerCard, 0);
+        }
+
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
             //I have to pass in the sender as a button to get said index of the joker card. 
@@ -1328,6 +1386,8 @@ namespace OOD_project_2026
                     //updating the player money and ui
                     player.Money -= jokerClicked.Price;
                     PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
+                    //collapse the popup
+                    JokerHoverPopup.Visibility = Visibility.Collapsed;
                 }
             }
         }

@@ -284,8 +284,10 @@
                 </Grid>
             </Border>
             <!--Shop overlay.-->
-            <Border x:Name="ShopOverLay"  Width="550" Height="750" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
+            <Border x:Name="ShopOverLay"  Width="650" Height="750" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
                     VerticalAlignment="Bottom" Visibility="Collapsed" Panel.ZIndex="101" Padding="20">
+                
+                
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -323,7 +325,12 @@
                 </Grid>
             </Border>
             <!--This is the animation layer from the tutorial, this allows all animations to happen on top. -->
-            <Canvas x:Name="AnimationCanvas" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="999" IsHitTestVisible="False"/>
+            <Canvas x:Name="AnimationCanvas" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="800" IsHitTestVisible="False"/>
+            <Canvas x:Name="OverlayCanvas" IsHitTestVisible="False" Panel.ZIndex="1000" >
+                <Border x:Name="JokerHoverPopup" Background="#DD111111" BorderBrush="White" BorderThickness="1" CornerRadius="6" Padding="8" Visibility="Collapsed">
+                    <TextBlock x:Name="JokerHoverText" Foreground="White" TextWrapping="Wrap" Width="180"/>
+                </Border>
+            </Canvas>
         </Grid>
     </Grid>
 </Page>
