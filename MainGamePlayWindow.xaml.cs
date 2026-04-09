@@ -78,53 +78,138 @@ namespace OOD_project_2026
             round++;
             BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
         }
-
+        //updating ui + card clicking
         #region Updating ui/ clard clicking 
         //I created a method that Refreshes the card slots once a hand was played.
         private void RefreshHandUI()
         {
-            //callign this to reset all card animations. 
             ResetAllCardAnimations();
 
-            //creating a new list of card slots to be played so I can target each card. 
             List<Button> cardSlots = new List<Button>()
-            { HandCard1, HandCard2, HandCard3, HandCard4,HandCard5, HandCard6, HandCard7, HandCard8};
+            {
+             HandCard1, HandCard2, HandCard3, HandCard4,
+             HandCard5, HandCard6, HandCard7, HandCard8
+            };
 
-            //this is for  a list of images to target, one fo r each card. 
-            List<Image> cardImages = new List<Image>()
-            { HandImage1, HandImage2, HandImage3, HandImage4,HandImage5, HandImage6, HandImage7, HandImage8 };
-
-           
             for (int i = 0; i < cardSlots.Count; i++)
             {
-                //this targets each cards, for every click of mousehover It targets them and changes some stuff in the background. 
-                cardSlots[i].Click -= Card_Click;
-                cardSlots[i].MouseEnter -= Card_HoverEnter;
-                cardSlots[i].MouseLeave -= Card_HoverLeave;
+                Button currentButton = cardSlots[i];
 
-                cardSlots[i].Visibility = Visibility.Visible;
-                cardSlots[i].Tag = null;
-                cardSlots[i].BorderBrush = Brushes.Black;
-                cardSlots[i].Margin = new Thickness(0);
+                currentButton.Click -= Card_Click;
+                currentButton.MouseEnter -= Card_HoverEnter;
+                currentButton.MouseLeave -= Card_HoverLeave;
 
-                cardImages[i].Source = null;
+                currentButton.Visibility = Visibility.Visible;
+                currentButton.Tag = null;
+                currentButton.BorderBrush = Brushes.Black;
+                currentButton.Margin = new Thickness(0);
+                currentButton.Content = null;
 
-                if (i < hand.Count)//this section tagets cards only when your cards selected is less than the max hand count. 
+                if (i < hand.Count)
                 {
-                    cardSlots[i].Tag = hand[i];
-                    cardImages[i].Source = new BitmapImage(
-                        new Uri($"pack://application:,,,/Images/Cards/{hand[i]}")
-                    );
-                    cardImages[i].Stretch = Stretch.Fill;
+                    Cards currentCard = hand[i];
+                    currentButton.Tag = currentCard;
 
-                    cardSlots[i].Click += Card_Click;
-                    cardSlots[i].MouseEnter += Card_HoverEnter;
-                    cardSlots[i].MouseLeave += Card_HoverLeave;
+                    Grid cardGrid = new Grid();
+
+                    Image baseImage = new Image
+                    {
+                        Source = new BitmapImage(
+                            new Uri($"pack://application:,,,/Images/Cards/{currentCard}")
+                        ),
+                        Stretch = Stretch.Fill,
+                        IsHitTestVisible = false
+                    };
+
+                    cardGrid.Children.Add(baseImage);
+
+                    //addomg card affects to certian cards if they contain said affect. 
+                    AddCardEffectOverlay( cardGrid, currentCard );
+                    currentButton.Content = cardGrid;
+
+                    currentButton.Click += Card_Click;
+                    currentButton.MouseEnter += Card_HoverEnter;
+                    currentButton.MouseLeave += Card_HoverLeave;
                 }
             }
-            //updaing the disguards and hands left. 
+
             HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
             DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
+        }
+        private void AddCardEffectOverlay(Grid cardGrid, Cards card)
+        {
+            //this is just for testing 
+            if (true)
+            {
+                //creating a new overlay image. 
+                Image overlay = new Image
+                {
+                    //mapping a new source. 
+                    Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Lucky.png")
+                    ),
+                    Stretch = Stretch.Fill,//I had to make this stretch like the other card
+                    IsHitTestVisible = false//making it so I can click said card. 
+                };
+
+                cardGrid.Children.Add(overlay);
+                //beyond this its copy and paste. 
+            }else if(card.Effect == "Glass")
+            {
+                Image overlay = new Image
+                {
+                    Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Glass.png")
+                    ),
+                    Stretch = Stretch.Fill,
+                    IsHitTestVisible = false
+                };
+
+                cardGrid.Children.Add(overlay);
+
+            }
+            else if (card.Effect == "Silver")
+            {
+                Image overlay = new Image
+                {
+                    Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Silver.png")
+                    ),
+                    Stretch = Stretch.Fill,
+                    IsHitTestVisible = false
+                };
+
+                cardGrid.Children.Add(overlay);
+
+            }
+            else if (card.Effect == "Gold")
+            {
+                Image overlay = new Image
+                {
+                    Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Gold.png")
+                    ),
+                    Stretch = Stretch.Fill,
+                    IsHitTestVisible = false
+                };
+
+                cardGrid.Children.Add(overlay);
+
+            }
+            else if (card.Effect == "4Mult")
+            {
+                Image overlay = new Image
+                {
+                    Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/4Mult.png")
+                    ),
+                    Stretch = Stretch.Fill,
+                    IsHitTestVisible = false
+                };
+
+                cardGrid.Children.Add(overlay);
+
+            }
         }
         //playing cards method. 
         private void Card_Click(object sender, RoutedEventArgs e)
@@ -342,8 +427,8 @@ namespace OOD_project_2026
 
             for (int i = 0; i < playedOrderHand.Count && i < playedClones.Count; i++)
             {
-                await ReplaySingleCard(playedOrderHand[i], playedClones[i],jokerCardsInEffect,handPlayed,random,true
-                );
+                //it affects a siungle card 
+                await ReplaySingleCard(playedOrderHand[i], playedClones[i],jokerCardsInEffect,handPlayed,random,true);
             }
             //after this im going game affects to affect the final mult for multiplicitive cards. 
             // trying to get this joker and its spesific Object. 
@@ -1066,18 +1151,41 @@ namespace OOD_project_2026
         }
         private Button MoveToCanvas(Button card)
         {
-            //creating a new translate point based off of the main grid. 
+            //had to change this method entierly, this is the creation of a new points based off of the main grid.
             Point pos = card.TranslatePoint(new Point(0, 0), MainGrid);
-            //making the images null, I was told to do this to fix an issue,
-            //I had some problems with the images not showing up on the clones.
-            Image clonedImage = null;
 
-            if (card.Content is Image originalImage)
+            object clonedContent = null;//giving a nulll as then you populate the clones from the origonal grid. 
+
+            if (card.Content is Grid originalGrid)
             {
-                clonedImage = new Image
+                Grid newGrid = new Grid();
+
+                //this is the major change besides the new grid.
+                foreach (UIElement child in originalGrid.Children)//I didnt know this was a thing you could do with a foreach
                 {
-                    Source = originalImage.Source,
-                    Stretch = originalImage.Stretch
+                    //child is the orgional image. 
+                    if (child is Image originalImage)
+                    {
+                        Image clonedImage = new Image
+                        {
+                            Source = originalImage.Source,
+                            Stretch = originalImage.Stretch,
+                            IsHitTestVisible = false
+                        };
+
+                        newGrid.Children.Add(clonedImage);//adding it to the new grid. 
+                    }
+                }
+
+                clonedContent = newGrid;
+            }
+            else if (card.Content is Image singleImage)
+            {
+                clonedContent = new Image
+                {
+                    Source = singleImage.Source,
+                    Stretch = singleImage.Stretch,
+                    IsHitTestVisible = false
                 };
             }
 
@@ -1085,19 +1193,18 @@ namespace OOD_project_2026
             {
                 Width = card.ActualWidth,
                 Height = card.ActualHeight,
-                Content = clonedImage,
+                Content = clonedContent,
                 IsHitTestVisible = false
             };
 
             Canvas.SetLeft(clone, pos.X);
             Canvas.SetTop(clone, pos.Y);
-
             Panel.SetZIndex(clone, 999);
 
             AnimationCanvas.Children.Add(clone);
 
             return clone;
-        } 
+        }
         private void ResetAllCardAnimations()
         {
             foreach (Button btn in CardGrid.Children.OfType<Button>())
@@ -1176,9 +1283,10 @@ namespace OOD_project_2026
             var availbeJokers = AllJokers.Where(j => !player.JokerCardsOwned.Any(p => p.Name == j.Name)).ToList();
             //removing jokers from said shop. 
             shopJokers.Clear();
-            //loop to populate jokes into the shop
+            //loop to populate jokes into the shop where its less than the avaiblke joker section. 
             while(shopJokers.Count < 4 && availbeJokers.Count > 0)
             {
+                //getting new index. 
                 int index = random.Next(availbeJokers.Count);
                 shopJokers.Add(availbeJokers[index]);
                 availbeJokers.RemoveAt(index);//removes duplicates.
@@ -1194,6 +1302,7 @@ namespace OOD_project_2026
         //assinging jokers to buttons. 
         private void AssingJokerToButton(Button button, int index)
         {
+            //this is to check if the joker cards arent bought or not. 
             if(index < shopJokers.Count)
             {
                 button.Tag = shopJokers[index];
@@ -1208,6 +1317,7 @@ namespace OOD_project_2026
                 button.IsEnabled = false;
             }
         }
+       
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
             //I have to pass in the sender as a button to get said index of the joker card. 
