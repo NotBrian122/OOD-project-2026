@@ -28,12 +28,11 @@ namespace OOD_project_2026
            
 
         }
-        /*
         override public string ToString()
         {
-            return $"CardName {Name} - Effect {Affect} - Chance modifiers {ChanceAffect} - Price{Price:c2}";
+            return $"{Name}\nEffect {Affect}\nChance modifiers: {ChanceAffect}\nPrice{Price:c2}";
         }
-        */
+
         public static List<JokerCards> GenerateJokerCards()
         {
             //this is where the joker cards will be generated.

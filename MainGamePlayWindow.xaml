@@ -71,7 +71,7 @@
                 <TextBlock Grid.Row="1" Grid.Column="0"/>
 
                 <!--TextBlock colouring for the mult-->
-                <Grid Grid.Row="1" Grid.Column="0" Background="#FF56051F">
+                <Grid Grid.Row="1" Grid.Column="0" Background="#FF123454">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -284,7 +284,7 @@
                 </Grid>
             </Border>
             <!--Shop overlay.-->
-            <Border x:Name="ShopOverLay"  Width="550" Height="750" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
+            <Border x:Name="ShopOverLay"  Width="550" Height="550" Background="#FF17182D" BorderBrush="Black" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center"
                     VerticalAlignment="Bottom" Visibility="Collapsed" Panel.ZIndex="101" Padding="20">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -300,18 +300,18 @@
                         <TextBlock Text="Buy Jokers / Upgrades here" FontSize="18" Margin="0,0,0,10"/>
                         <Grid Background="#FF131321">
                             <WrapPanel Orientation="Horizontal"  HorizontalAlignment="Center">
-                                <Button Content="Buy Joker 1" Width="80" Height="140" Margin="8"/>
-                                <Button Content="Buy Joker 2" Width="80" Height="140" Margin="8"/>
-                                <Button Content="Buy Joker 3" Width="80" Height="140" Margin="8"/>
-                                <Button Content="Buy Joker 4" Width="80" Height="140" Margin="8"/>
+                                <Button x:Name="Joker1" Content="Buy Joker 1" Width="80" Height="140" Margin="8" Click="ClickedOnJokerShopCard"/>
+                                <Button x:Name="Joker2"  Content="Buy Joker 2" Width="80" Height="140" Margin="8" Click="ClickedOnJokerShopCard"/>
+                                <Button x:Name="Joker3" Content="Buy Joker 3" Width="80" Height="140" Margin="8" Click="ClickedOnJokerShopCard"/>
+                                <Button x:Name="Joker4"  Content="Buy Joker 4" Width="80" Height="140" Margin="8" Click="ClickedOnJokerShopCard"/>
                             </WrapPanel>
                         </Grid>
 
                         <Grid Background="#FF131321">
 
                             <WrapPanel Margin="0,10,0,-7" HorizontalAlignment="Center">
-                                <Button Content="Buy Pack 1" Width="80" Height="140" Margin="8"/>
-                                <Button Content="Buy Pack 2" Width="80" Height="140" Margin="8"/>
+                                <Button x:Name="CardPack1" Content="Buy Pack 1" Width="80" Height="140" Margin="8"/>
+                                <Button x:Name="CardPack2" Content="Buy Pack 2" Width="80" Height="140" Margin="8"/>
                             </WrapPanel>
                             <TextBlock Text="Packs and cards"/>
                         </Grid>
@@ -319,7 +319,7 @@
                     </StackPanel>
 
                     <Button Grid.Row="2" Content="Continue" Width="120" HorizontalAlignment="Right" Margin="0,20,0,0" Click="ContinueFromShop_Click"/>
-                    <TextBlock Grid.Row="2" x:Name="PlayerMoneyDisplay" Text="Money: " FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="22" Width="57"/>
+                    <TextBlock Grid.Row="2" x:Name="PlayerMoneyDisplay" Text="Money: " FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="22" Width="94" Foreground="#FFFFEA00"/>
                 </Grid>
             </Border>
             <!--This is the animation layer from the tutorial, this allows all animations to happen on top. -->
