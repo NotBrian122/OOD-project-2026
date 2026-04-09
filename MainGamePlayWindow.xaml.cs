@@ -94,15 +94,7 @@ namespace OOD_project_2026
             List<Image> cardImages = new List<Image>()
             { HandImage1, HandImage2, HandImage3, HandImage4,HandImage5, HandImage6, HandImage7, HandImage8 };
 
-            //just resetting chipScoreDisplayUi
-            List<TextBlock> chipScoreDisplay = new List<TextBlock>()
-            { ChipScore1, ChipScore2, ChipScore3, ChipScore4, ChipScore5 };
-
-            foreach(var chip in chipScoreDisplay)
-            {
-                chip.Text = "";
-            }
-
+           
             for (int i = 0; i < cardSlots.Count; i++)
             {
                 //this targets each cards, for every click of mousehover It targets them and changes some stuff in the background. 
@@ -262,6 +254,13 @@ namespace OOD_project_2026
             //variabels to be set 
             bool isFlush = true;
             int isPair = 0;
+            //resetting the vars here 
+            chipScore = 0;
+            multScore = 0;
+            handPlayed = "";
+            faceCardPlayed = false;
+            bool allowOpreaReplay = false;
+
             //for lucky cards. 
             Random ranChanceLucky = new Random();
             
@@ -339,27 +338,12 @@ namespace OOD_project_2026
                 Debug.WriteLine($"Active Joker: {j.Name}");
             }
 
+            //ive changed this to make the fantom of opera card to work
 
-            for (int i = 0; i < playedOrderHand.Count; i++)
+            for (int i = 0; i < playedOrderHand.Count && i < playedClones.Count; i++)
             {
-                chipScore += playedOrderHand[i].CardChipValue;
-                HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
-                //now checking every joker card to see if it affects the card
-                if (jokerCardsInEffect.Count > 0)
-                {
-                    await ApplyJokerEffects(playedOrderHand[i],playedClones,i,jokerCardsInEffect,handPlayed,ranChanceLucky);
-                
-                }
-              
-                //this is the animaiton function for playing the hand. 
-                //im going to reuse this for joker cards later.
-                if (i < playedClones.Count)
-                {
-                    
-                    await PopCardWithRotation(playedClones[i]);
-                }
-
-                await Task.Delay(60);
+                await ReplaySingleCard(playedOrderHand[i], playedClones[i],jokerCardsInEffect,handPlayed,random,true
+                );
             }
             //after this im going game affects to affect the final mult for multiplicitive cards. 
             // trying to get this joker and its spesific Object. 
@@ -450,30 +434,27 @@ namespace OOD_project_2026
         }
         #endregion
         #region checking hands 
-        private bool CheckStriaght(List<Cards> selectedHand)
+        private bool CheckStraight(List<Cards> selectedHand)
         {
-            bool isStraight = false;
-            if (selectedHand.Count == 5)//checking if the hand has 5 cards.
+            if (selectedHand.Count != 5)
+                return false;
+
+            var values = selectedHand
+                .Select(c => c.CardChipValue)
+                .OrderBy(v => v)
+                .ToList();
+
+            // A-2-3-4-5
+            if (values.SequenceEqual(new List<int> { 2, 3, 4, 5, 14 }))
+                return true;
+
+            for (int i = 1; i < values.Count; i++)
             {
-                for (int i = 0; i < selectedHand.Count; i++)
-                {
-                    //this is for a regular striaght, as your taking away the previous card chip value from the current one 
-                    if ((i != 0 && selectedHand[i].CardChipValue - selectedHand[i - 1].CardChipValue == 1)
-                        // this is to check for a singualr hand as this edgecase is tough to do with a loop 
-                        || (selectedHand[0].CardChipValue == 2
-                        && selectedHand[1].CardChipValue == 3
-                        && selectedHand[2].CardChipValue == 4
-                        && selectedHand[3].CardChipValue == 5
-                        && selectedHand[4].CardChipValue == 14))//its a low straight but the chipvalue of the ace is 14 but it also counts as a 1 
-                    {
-                        isStraight = true;
-                        break;
-                    }
-                }
-                return isStraight;
+                if (values[i] - values[i - 1] != 1)
+                    return false;
             }
-            else
-                return isStraight;
+
+            return true;
         }
         private bool CheckFlush(bool isFlush, List<Cards> selectedHand)
         {
@@ -598,7 +579,7 @@ namespace OOD_project_2026
                 handNumber = 2;//this is for 3 of a kind.
             }
             //stright     
-            else if (CheckStriaght(selectedHand))
+            else if (CheckStraight(selectedHand))
             {
                 handNumber = 4;//I have to check for aces as 2 is below it previously counts as a straight
             }
@@ -620,13 +601,13 @@ namespace OOD_project_2026
         #endregion
         #region JokerCards and caculating affects
         
-      private async Task ApplyJokerEffects(Cards card,List<Button> playedClones,int i,List<JokerCards> jokers,string handPlayed,Random rng)
+      private async Task ApplyJokerEffects(Cards card,Button playedClones,List<JokerCards> jokers,string handPlayed,Random rng, bool allowOpreaReplay)
         {
             int roll = rng.Next(1, 21); // 1..20
             //searching for this joker card, yes it every time but I wanted to make this work
             bool hasRolling = jokers.Any(j => j.Name == "Joker of Rolling");
-           
-            int maxRoll = hasRolling ? 10 : 20;
+            int luckySucessRoll = hasRolling ? 19 : 20;//can be either 19 or 20
+            int maxRoll = hasRolling ? 10 : 20;//can be either 10 or 20
 
 
             //im creating a copy as everything will be removed later on. 
@@ -658,20 +639,20 @@ namespace OOD_project_2026
                         {
                             roll = rng.Next(1,maxRoll+1); // 1–20 or could be 1 in 10 
 
-                            if (roll == 20)
+                            if (roll >= luckySucessRoll)//adding the affect as it will change into 1-10 my mistake for chances. 
                             {
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
                                 player.Money += 20;
                                 multScore += 20;
 
-                                await PopCardWithRotation(playedClones[i]);
+                                await PopCardWithRotation(playedClones);
                             }
                             else if (roll == 10 || roll == 15)
                             { //just player money
                                 player.Money += 20;
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
 
-                                await PopCardWithRotation(playedClones[i]);
+                                await PopCardWithRotation(playedClones);
                             }
                             else if (roll == 14 || roll == 16)
                             {
@@ -679,7 +660,7 @@ namespace OOD_project_2026
                                 multScore += 20;
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
 
-                                await PopCardWithRotation(playedClones[i]);
+                                await PopCardWithRotation(playedClones);
                             }
                         }
                         break;
@@ -698,11 +679,11 @@ namespace OOD_project_2026
                         //this is for higher palying hands. 
                         if (handPlayed == "Flush")
                         {
-                            multScore += 25;
+                            multScore += 5;//adds +5 for each card. thereofre 25 instead of 125
                         }
                         else if (handPlayed == "Straight")
                         {
-                            multScore += 35;
+                            multScore += 7;//adds +7 for each card played. therefore 35
                         }   
                         else if (handPlayed == "High card")
                         {
@@ -710,10 +691,9 @@ namespace OOD_project_2026
                         }                          
                         break;
                     case "Fantom of Opera":
-                        if (card.FaceCard)
+                        if (card.FaceCard && allowOpreaReplay)//checking to make sure its true before changing it 
                         {
-                            // replay card once
-                            multScore += card.CardChipValue;
+                            await ReplaySingleCard(card, playedClones, jokers, handPlayed, rng, false);
                         }
                         break;
                     case "Joker of Blood":
@@ -731,6 +711,23 @@ namespace OOD_project_2026
                 }
             }
         }
+        //this is to replay a single card in the hopes that everything works. 
+        private async Task ReplaySingleCard(Cards card, Button playedClone,List<JokerCards> jokers,string handsPlayed,Random rng,bool allowOpreaReplay)
+        {
+            // base card scoring
+            chipScore += card.CardChipValue;
+            HandChipScore.Text = $"{chipScore}";
+
+            // normal joker effects for this card
+            if (jokers.Count > 0)
+            {
+                await ApplyJokerEffects(card, playedClone, jokers, handPlayed, rng, allowOpreaReplay);
+            }
+
+            await PopCardWithRotation(playedClone);
+            await Task.Delay(60);
+        }
+       
         #endregion
         #region Cardanimations 
         //creating a transform group to add some animaitons to the cards. 
@@ -1175,11 +1172,8 @@ namespace OOD_project_2026
         //loading jokers into the shop.
         private void LoadJokersIntoShop() 
         {
-            //creating a veriable of all jokers where
-            var availbeJokers = AllJokers
-                .Where(j =>!playersJokerCardsOwned
-                .Any(player => player.Name ==j.Name))
-                .ToList();
+            //creating a veriable of all jokers are loaded into the shop if the player doesnt contain them. 
+            var availbeJokers = AllJokers.Where(j => !player.JokerCardsOwned.Any(p => p.Name == j.Name)).ToList();
             //removing jokers from said shop. 
             shopJokers.Clear();
             //loop to populate jokes into the shop
@@ -1229,7 +1223,9 @@ namespace OOD_project_2026
                     clickedButton.Tag = null;
                     clickedButton.Content = "Bought";
                     clickedButton.IsEnabled = false;
+                    //updating the player money and ui
                     player.Money -= jokerClicked.Price;
+                    PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
                 }
             }
         }
@@ -1244,10 +1240,10 @@ namespace OOD_project_2026
             //creating a list of joker cards to display. 
             List<TextBlock> JokerCardDisplay = JokerCardsOwned.Children.OfType<TextBlock>().ToList();
 
-            for (int i = 0; i < player.JokerCardsOwned.Count; i++)
+            //ive changed this as it wont crash if you add too many joker cards. 
+            for (int i = 0; i < player.JokerCardsOwned.Count && i < JokerCardDisplay.Count; i++)
             {
                 JokerCardDisplay[i].Text = player.JokerCardsOwned[i].ToString();
-
             }
 
         }
@@ -1286,7 +1282,7 @@ namespace OOD_project_2026
             player.DisguardsLeft = 3;
 
             //updating player score. 
-            PlayerChipScore.Text = $"Blind Score: {player.CurrentChips}";
+            PlayerChipScore.Text = $"{player.CurrentChips}";
             HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
             DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
 
