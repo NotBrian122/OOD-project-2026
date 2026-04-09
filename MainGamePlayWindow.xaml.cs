@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Security;
 using System.Security.AccessControl;
@@ -30,15 +31,11 @@ namespace OOD_project_2026
         //setting up max cards in hands left. 
         int maxCardsInHand = 5;
       //setting up some variables to be used when checking hands, and generating mult. 
-            double chipScore = 299;
-            double multScore = 0;
-            string handPlayed = "";
-
+        double chipScore = 299, multScore = 0, currentChips = 0;
+        string handPlayed = "";
+        bool faceCardPlayed = false;
         //setting the blindscore. 
         int blindScore = 300, round = 0, money = 0;
-
-        //passind that into the current field. 
-        double currentChips = 0;
         
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
@@ -261,30 +258,25 @@ namespace OOD_project_2026
             {
                 return;
             }
-            //some nessesiary variabels to be set 
+            //some nessesiary
+            //variabels to be set 
             bool isFlush = true;
             int isPair = 0;
-            //resetting chip and mult score between hands played.  
-            chipScore = 0;
-            multScore = 0;
             //for lucky cards. 
             Random ranChanceLucky = new Random();
-            int randomChance = 1;
-            int jokerofRollingChance = 2;
-            int faceCardCountLoop = 0;
+            
 
             // Keep click order for animation
             List<Cards> playedOrderHand = new List<Cards>(selectedHand);
-
-            // Separate sorted copy for hand scoring logic - making it easier to animatie things and keep it consistant as I 
-            //was having some probolems. 
+            //was having some probolems.copied the scoring hand 
             List<Cards> scoringHand = new List<Cards>(selectedHand);
             
+
             //Tried to use this but gave me errors 
             //List<TextBlock> chipScoreDisplay = ChipScoreGird.Children.OfType<TextBlock>().ToList();
-
             List<TextBlock> chipScoreDisplay = new List<TextBlock>()
             { ChipScore1, ChipScore2, ChipScore3, ChipScore4, ChipScore5 };
+
             // Animate cards to play area in clicked order to go up to the other gird. 
             List<Button> playedClones = await AnimatePlayedHand(playedOrderHand);
 
@@ -294,174 +286,76 @@ namespace OOD_project_2026
             // Score poker hand using sorted copy -- ive moved it as joker cards come after scoring 
             switch (CheckHandTypeMain(scoringHand, isFlush, isPair))
             {
+                //a lot of this is self explanitory 
                 case 0:
                     handPlayed = "High card";
-                    chipScore += 10;
-                    multScore += 1;
+                    chipScore += 10;//changing the chipscore
+                    multScore = 1;//chaning the multscore
                     break;
 
                 case 1:
                     handPlayed = "Pair";
                     chipScore += 20;
-                    multScore += 2;
+                    multScore = 2;
                     break;
 
                 case 2:
                     handPlayed = "3 of a kind";
                     chipScore += 30;
-                    multScore += 3;
+                    multScore = 3;
                     break;
 
                 case 3:
                     handPlayed = "Two pair";
                     chipScore += 40;
-                    multScore += 4;
+                    multScore = 4;
                     break;
 
                 case 4:
                     handPlayed = "Straight";
                     chipScore += 55;
-                    multScore += 5;
+                    multScore = 5;
                     break;
 
                 case 5:
                     handPlayed = "Flush";
                     chipScore += 50;
-                    multScore += 5;
+                    multScore = 5;
                     break;
 
                 case 6:
                     handPlayed = "Full house";
                     chipScore += 40;
-                    multScore += 4;
+                    multScore = 4;
                     break;
             }
-
-            //checking if the jokercards you own contain joker of rolling
-            //then doubling said chances. 
-            int roll = ranChanceLucky.Next(1, 21); // 1..20
-            int luckyThreshold = jokerCardsInEffect.Any(j => j.Name == "Joker of Rolling") ? 19 : 20;
 
             // Score each card one by one with pop/rotation
             //Ive added jokers to this level instad of a method as I think its easier to compute them 
             //here before checking the hand type. 
+
+            foreach (var j in jokerCardsInEffect)
+            {
+                Debug.WriteLine($"Active Joker: {j.Name}");
+            }
+
+
             for (int i = 0; i < playedOrderHand.Count; i++)
             {
                 chipScore += playedOrderHand[i].CardChipValue;
                 HandChipScore.Text = $"{chipScore}";//updating the front end chipscore
                 //now checking every joker card to see if it affects the card
-                if (jokerCardsInEffect.Count == 0)
+                if (jokerCardsInEffect.Count > 0)
                 {
-                     return;//if ther is none then return
+                    await ApplyJokerEffects(playedOrderHand[i],playedClones,i,jokerCardsInEffect,handPlayed,ranChanceLucky);
+                
                 }
-                else
-                {
-                    //this is going through every single joker card in the deck that you have owned. Currently mind you. 
-                    //from here I copy the joker cards as I have to remove one of them if they break
-                    foreach (JokerCards jokerCards in jokerCardsInEffect.ToList())
-                    { 
-                        //checking if the card is a face card. then doubling the mult
-                        if (playedOrderHand[i].FaceCard && (jokerCards.Name == "Joker of Masks"))
-                        {
-                            //this doubles the mult for each face card in play. 
-                            multScore *= jokerCards.GameAffect;
-                            HandMultScore.Text = $"{multScore}";//updating ui element. 
-                        }
-                        //adding 4 mult to even cards 
-                        else if ((playedOrderHand[i].CardChipValue % 2 == 0) && (jokerCards.Name == "Joker of Order"))
-                        {
-                            multScore += jokerCards.GameAffect;
-
-                        }
-                        //joker of luck
-                        else if ((jokerCards.Name == "Joker of Luck") && playedOrderHand[i].Effect == "Lucky")
-                        {
-                           
-
-                            //like rolling a nat 20 for dnd best possible outcome. 
-                            if (roll >= luckyThreshold)
-                            {
-                                //adding .5 mult if lucky card activates
-                                jokerCards.GameAffect += .5;
-                                //1 in 10 chance to get 20 money
-                                player.Money += 20;
-                                multScore += 20;//adding 20 mult. 
-                                //activating the card again. 
-                                await PopCardWithRotation(playedClones[i]);
-                                await Task.Delay(60);
-                            }
-                            /*
-                            else if (activationChance == 10 || activationChance == 15)
-                            {
-                                //gives player 20 quid
-                                player.Money += 20;
-                                //adding .5 mult if lucky card activates
-                                jokerCards.GameAffect += .5;
-                                await PopCardWithRotation(playedClones[i]);
-                                await Task.Delay(60);
-                            }
-                            else if (activationChance == 14 || activationChance == 16)
-                            {
-                                //giving the palyer 20 mult.
-                                multScore += 20;
-                                //adding .5 mult if lucky card activates
-                                jokerCards.GameAffect += .5;
-                                await PopCardWithRotation(playedClones[i]);
-                                await Task.Delay(60);
-                            }
-                            */
-                        }
-                        //joker of misfortune
-                        else if(jokerCards.Name == "Joker of Misfortune")
-                        {
-                            multScore += 20;
-                            //this has a 1 in 5 chance of being destroyed every time its played. 
-                            double destructionChance = ranChanceLucky.Next(randomChance, 6);
-                            if (destructionChance == 5) 
-                            { 
-                                player.JokerCardsOwned.Remove(jokerCards);//removes it from the player. 
-                            }
-                        }
-                        //joker of power
-                        else if(jokerCards.Name == "Joker of Power")
-                        {
-                            if(handPlayed == "Flush")
-                            {
-                                multScore += 25;
-                            }else if (handPlayed == "Straight")
-                            {
-                                multScore += 35;
-                            }else if (handPlayed =="High card")
-                            {
-                                multScore += 45;
-                            }
-                        }
-                        //so I have a counter for facecard looping to aovid infinate looping. 
-                        else if ((jokerCards.Name == "Fantom of Opera") && (playedOrderHand[i].FaceCard) && (faceCardCountLoop == 0))
-                        {
-                            faceCardCountLoop++;
-                            i--;//creates a loop back on itself. For set card.
-                        }
-                        else if (jokerCards.Name == "Fantom of Opera" && faceCardCountLoop == 1)
-                        {
-                            faceCardCountLoop--; //so the card dont loop back on itself. 
-                        }
-                        //bloodstone esc card 
-                        else if (jokerCards.Name == "Joker of Blood" && playedOrderHand[i].SuitName == "Hearts")
-                        {
-                            int bloodCHance = ranChanceLucky.Next(randomChance, 3);
-                            if (bloodCHance == 3)
-                            {
-                                multScore *= jokerCards.GameAffect;//it increases mult per card
-                            }
-                        }
-
-                    }
-                }
+              
+                //this is the animaiton function for playing the hand. 
+                //im going to reuse this for joker cards later.
                 if (i < playedClones.Count)
                 {
-                    //this is the animaiton function for playing the hand. 
-                    //im going to reuse this for joker cards later. 
+                    
                     await PopCardWithRotation(playedClones[i]);
                 }
 
@@ -472,7 +366,7 @@ namespace OOD_project_2026
             var lukyJokerMultAddon = jokerCardsInEffect.FirstOrDefault(jokercards => jokercards.Name == "Joker of Luck");
             if(lukyJokerMultAddon != null)
             {
-                multScore *= lukyJokerMultAddon.GameAffect;
+                multScore *= lukyJokerMultAddon.GameAffect;//mutiplies it afterwards. Lucky cards are broken. 
             }
 
            
@@ -726,7 +620,117 @@ namespace OOD_project_2026
         #endregion
         #region JokerCards and caculating affects
         
-      
+      private async Task ApplyJokerEffects(Cards card,List<Button> playedClones,int i,List<JokerCards> jokers,string handPlayed,Random rng)
+        {
+            int roll = rng.Next(1, 21); // 1..20
+            //searching for this joker card, yes it every time but I wanted to make this work
+            bool hasRolling = jokers.Any(j => j.Name == "Joker of Rolling");
+           
+            int maxRoll = hasRolling ? 10 : 20;
+
+
+            //im creating a copy as everything will be removed later on. 
+            foreach (var joker in jokers.ToList()) 
+            {
+                //ive thought a new solution for how im going to do the chipscores. 
+                switch (joker.Name) 
+                {
+                    case"Joker of Masks":
+                        if (card.FaceCard && !faceCardPlayed)
+                        {
+                            //doublind the score
+                            multScore *= joker.GameAffect;
+                            //updating the dispaly. 
+                            HandMultScore.Text = $"{multScore}";
+                            faceCardPlayed = true;//only repeats for the first face card. 
+                        }
+                        break;
+                    case "Joker of Order":
+                        if(card.CardChipValue %2 == 0)
+                        {
+                            multScore += joker.GameAffect;
+                            HandMultScore.Text = $"{multScore}";
+                        }
+                        break;
+                    case "Joker of Luck":
+                        //checking for a lucky card 
+                        if (card.Effect == "Lucky")
+                        {
+                            roll = rng.Next(1,maxRoll+1); // 1–20 or could be 1 in 10 
+
+                            if (roll == 20)
+                            {
+                                joker.GameAffect += 0.5;//adding .5 to the cards affect. 
+                                player.Money += 20;
+                                multScore += 20;
+
+                                await PopCardWithRotation(playedClones[i]);
+                            }
+                            else if (roll == 10 || roll == 15)
+                            { //just player money
+                                player.Money += 20;
+                                joker.GameAffect += 0.5;//adding .5 to the cards affect. 
+
+                                await PopCardWithRotation(playedClones[i]);
+                            }
+                            else if (roll == 14 || roll == 16)
+                            {
+                                //just player multscore.
+                                multScore += 20;
+                                joker.GameAffect += 0.5;//adding .5 to the cards affect. 
+
+                                await PopCardWithRotation(playedClones[i]);
+                            }
+                        }
+                        break;
+                    case "Joker of Misfortune":
+                        multScore += joker.GameAffect;
+                        HandMultScore.Text = $"{multScore}";
+
+                        //doing the destrying roll as its 1 in 5
+                        int destoyRoll = rng.Next(1, 6);
+                        if (destoyRoll == 5)
+                        {
+                            player.JokerCardsOwned.Remove(joker);//removing this spesific joker card. 
+                        }
+                        break;
+                    case "Joker of Power":
+                        //this is for higher palying hands. 
+                        if (handPlayed == "Flush")
+                        {
+                            multScore += 25;
+                        }
+                        else if (handPlayed == "Straight")
+                        {
+                            multScore += 35;
+                        }   
+                        else if (handPlayed == "High card")
+                        {
+                            multScore += 45;
+                        }                          
+                        break;
+                    case "Fantom of Opera":
+                        if (card.FaceCard)
+                        {
+                            // replay card once
+                            multScore += card.CardChipValue;
+                        }
+                        break;
+                    case "Joker of Blood":
+                        if (card.SuitName == "Hearts")
+                        {
+                            int bloodRoll = rng.Next(1, 4); // 1–3
+                            if (bloodRoll == 3)
+                            {
+                                multScore *= joker.GameAffect;
+                            }
+                        }
+                        break;
+
+                
+                }
+            }
+        }
         #endregion
         #region Cardanimations 
         //creating a transform group to add some animaitons to the cards. 
@@ -1150,16 +1154,10 @@ namespace OOD_project_2026
             //this is to show the shop overlay when you win. 
             ShopOverlayBackground.Visibility = Visibility.Visible;
             ShopOverLay.Visibility = Visibility.Visible;
-            //creating a new lkist of buttoins insid eof the grid for the joker cards
-            List<Button> sellableJokers = new List<Button>()
-            {
-                Joker1, Joker2, Joker3, Joker4,
-            };
-          
           
             PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
 
-
+            //loading the jokers into teh shop
             LoadJokersIntoShop();
 
 
@@ -1192,6 +1190,7 @@ namespace OOD_project_2026
                 availbeJokers.RemoveAt(index);//removes duplicates.
               
             }
+            //assinging jokers to buttons. 
             AssingJokerToButton(Joker1, 0);
             AssingJokerToButton(Joker2, 1);
             AssingJokerToButton(Joker3, 2);
