@@ -72,15 +72,21 @@ namespace OOD_project_2026
         private void RefreshHandUI()
         {
             ResetAllCardAnimations();
-
+            //cardsot list
             List<Button> cardSlots = new List<Button>()
             {
                  HandCard1, HandCard2, HandCard3, HandCard4,
                  HandCard5, HandCard6, HandCard7, HandCard8
             };
+            //jokerslot list. 
+            List<Button> jokerSlots = new List<Button>()
+            {
+                Joker1, Joker2, Joker3, Joker4,
+            };
 
             for (int i = 0; i < cardSlots.Count; i++)
             {
+                //creating a card
                 Button currentButton = cardSlots[i];
                 //clicking said card. 
                 currentButton.Click -= Card_Click;
@@ -1223,7 +1229,7 @@ namespace OOD_project_2026
             for (int i = 0; i < player.HandsLeft; i++)
             {
                 //adding the round and how hard it is. 
-                player.Money += round;
+                player.Money += round+5;
                 //then adding hands left as a bonus to the money earned.
                 player.Money += player.HandsLeft;
                 MoneyEarnedDisplay.Text = $"{player.Money}";
@@ -1337,8 +1343,8 @@ namespace OOD_project_2026
 
                 Point pos = jokerCard.TranslatePoint(new Point(0, 0), MainGrid);
 
+                //this is to show the popup and move it based off of the position of the joker card.
                 JokerHoverPopup.Visibility = Visibility.Visible;
-
                 Canvas.SetLeft(JokerHoverPopup, pos.X + jokerCard.ActualWidth + 10);
                 Canvas.SetTop(JokerHoverPopup, pos.Y);
             }
@@ -1404,22 +1410,62 @@ namespace OOD_project_2026
 
             for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
-                JokerCardDisplay[i].Content = null;
-                JokerCardDisplay[i].Tag = null;
+                Button btn = JokerCardDisplay[i];
 
+                // clear old state just in case. 
+                btn.Content = null;
+                btn.Tag = null;
+
+                //removing old hover events to prevent stacking.
+                btn.MouseEnter -= Joker_Owned_Enter;
+                btn.MouseLeave -= Joker_Owned_Leave;
+
+                //if the index is less than the amount of joker card owned. 
                 if (i < player.JokerCardsOwned.Count)
                 {
                     JokerCards joker = player.JokerCardsOwned[i];
-                    JokerCardDisplay[i].Tag = joker;
-                    JokerCardDisplay[i].Content = BuildJokerCardVisual(joker);
+
+                    btn.Tag = joker;
+                    btn.Content = BuildJokerCardVisual(joker);
+
+                    //attaching hover. 
+                    btn.MouseEnter += Joker_Owned_Enter;
+                    btn.MouseLeave += Joker_Owned_Leave;
                 }
             }
 
+
+        }
+        private void Joker_Owned_Enter(object sender, MouseEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is JokerCards joker)
+            {
+                //animate the card hovered. 
+                AnimateCard(btn, +10);
+
+                JokerHoverText.Text =$"{joker.Name}\n\n{joker.Affect}\n\nChance: {joker.ChanceAffect}";
+
+                Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
+                //making the popup visible and moving it based off of the position of the joker card.
+                JokerHoverPopup.Visibility = Visibility.Visible;
+                Canvas.SetLeft(JokerHoverPopup, pos.X + btn.ActualWidth + 10);
+                Canvas.SetTop(JokerHoverPopup, pos.Y);
+            }
+        }
+
+        private void Joker_Owned_Leave(object sender, MouseEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is JokerCards)
+            {
+                //unanimating the card and removing it 
+                AnimateCard(btn, 0);
+                JokerHoverPopup.Visibility = Visibility.Collapsed;
+            }
         }
         private Grid BuildJokerCardVisual(JokerCards joker)
         {
             Grid jokerGrid = new Grid();
-
+  
             Image baseImage = new Image
             {
                 Source = new BitmapImage(
@@ -1428,7 +1474,7 @@ namespace OOD_project_2026
                 Stretch = Stretch.Fill,
                 IsHitTestVisible = false
             };
-
+            //adding the jokers children to the grid. 
             jokerGrid.Children.Add(baseImage);
 
 
