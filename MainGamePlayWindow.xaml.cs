@@ -1327,6 +1327,7 @@ namespace OOD_project_2026
             //this is to check if the joker cards arent bought or not. 
             if (index < shopJokers.Count)
             {
+                //assinging a joker based off of the index. 
                 button.Tag = shopJokers[index];
                 button.Content = shopJokers[index].ToString();
                 button.IsEnabled = true;
@@ -1336,6 +1337,7 @@ namespace OOD_project_2026
             }
             else
             {
+                //if theirs no jokers left (somewho)
                 button.Tag = null;
                 button.Content = "Sold out";
                 button.IsEnabled = false;
@@ -1348,10 +1350,11 @@ namespace OOD_project_2026
             if (sender is Button jokerCard && jokerCard.Tag is JokerCards joker)
             {
                 AnimateCard(jokerCard, -10);
-
+                //showing jokers text when hovered over. 
                 JokerHoverText.Text =
                     $"{joker.Name}\n\n{joker.Affect}\n\nChance: {joker.ChanceAffect}\nPrice: {joker.Price:c2}";
 
+                //creatinng a new joker position
                 Point pos = jokerCard.TranslatePoint(new Point(0, 0), MainGrid);
 
                 //this is to show the popup and move it based off of the position of the joker card.
@@ -1388,7 +1391,7 @@ namespace OOD_project_2026
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
             //I have to pass in the sender as a button to get said index of the joker card. 
-            if (sender is Button clickedButton && clickedButton.Tag is JokerCards jokerClicked && player.Money >= jokerClicked.Price)
+            if ((sender is Button clickedButton) && (clickedButton.Tag is JokerCards jokerClicked) && (player.Money >= jokerClicked.Price))
             {
                 bool alreadyOwned = player.JokerCardsOwned.Any(j => j.Name == jokerClicked.Name);
 
@@ -1405,6 +1408,11 @@ namespace OOD_project_2026
                     PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
                     //collapse the popup
                     JokerHoverPopup.Visibility = Visibility.Collapsed;
+
+                    //checking that there isint more than 5 joker cards in the shop.
+                }else if(!alreadyOwned && player.JokerCardsOwned.Count > 5) 
+                {
+                    clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
                 }
             }
         }
@@ -1418,6 +1426,7 @@ namespace OOD_project_2026
 
             //creating a list of joker cards to display. 
             List<Button> JokerCardDisplay = JokerCardsOwned.Children.OfType<Button>().ToList();
+           
 
             for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
@@ -1431,11 +1440,17 @@ namespace OOD_project_2026
                 btn.MouseEnter -= Joker_Owned_Enter;
                 btn.MouseLeave -= Joker_Owned_Leave;
 
+                SellJoker.Visibility = Visibility.Collapsed;
+
                 //if the index is less than the amount of joker card owned. 
                 if (i < player.JokerCardsOwned.Count)
                 {
-                    JokerCards joker = player.JokerCardsOwned[i];
+                    //creating a new btn for selling jokers on the grid. 
+                    //based off of the positon of the joker card btn
+                  
 
+
+                    JokerCards joker = player.JokerCardsOwned[i];
                     btn.Tag = joker;
                     btn.Content = BuildJokerCardVisual(joker);
 
@@ -1450,7 +1465,16 @@ namespace OOD_project_2026
         private void Joker_Owned_Enter(object sender, MouseEventArgs e)
         {
             if (sender is Button btn && btn.Tag is JokerCards joker)
-            {
+            { 
+                Button sellJokerBtn = SellJokerBtn;
+
+                //creating a new btn for selling jokers on the grid. 
+                //based off of the positon of the joker card btn
+                Point posSell = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
+                sellJokerBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(sellJokerBtn, posSell.X);
+                Canvas.SetTop(sellJokerBtn, posSell.Y + btn.ActualHeight + 5);
+
                 //animate the card hovered. 
                 AnimateCard(btn, +10);
 
@@ -1468,11 +1492,19 @@ namespace OOD_project_2026
         {
             if (sender is Button btn && btn.Tag is JokerCards)
             {
+                Button sellJokerBtn = SellJokerBtn;
+                sellJokerBtn.Visibility = Visibility.Collapsed;
                 //unanimating the card and removing it 
                 AnimateCard(btn, 0);
                 JokerHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
+
+        private void SellJokerCard_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private Grid BuildJokerCardVisual(JokerCards joker)
         {
             Grid jokerGrid = new Grid();

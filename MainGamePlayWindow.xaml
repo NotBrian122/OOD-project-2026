@@ -326,10 +326,14 @@
             </Border>
             <!--This is the animation layer from the tutorial, this allows all animations to happen on top. -->
             <Canvas x:Name="AnimationCanvas" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="800" IsHitTestVisible="False"/>
+            <!--This is a joker card text/value once hovered over to compare joker card -->
             <Canvas x:Name="OverlayCanvas" IsHitTestVisible="False" Panel.ZIndex="1000" >
                 <Border x:Name="JokerHoverPopup" Background="#DD111111" BorderBrush="White" BorderThickness="1" CornerRadius="6" Padding="8" Visibility="Collapsed">
                     <TextBlock x:Name="JokerHoverText" Foreground="White" TextWrapping="Wrap" Width="180"/>
                 </Border>
+            </Canvas>
+            <Canvas x:Name="SellJoker" Visibility="Collapsed" Width="50"> 
+                <Button x:Name="SellJokerBtn" Width="50" Background="Green" Content="Sell" Click="SellJokerCard_Click" BorderBrush="white"  />
             </Canvas>
         </Grid>
     </Grid>
