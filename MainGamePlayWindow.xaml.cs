@@ -44,6 +44,10 @@ namespace OOD_project_2026
         //its giving out to me for creating the player. 
         Player player;
 
+        //this was set for changing or selling joker cards. 
+        private JokerCards selectedOwnedJokerToSell = null;
+        private Button selectedOwnedJokerButton = null;
+
         #endregion  
         public MainGamePlayWindow()
         {
@@ -1426,7 +1430,11 @@ namespace OOD_project_2026
 
             //creating a list of joker cards to display. 
             List<Button> JokerCardDisplay = JokerCardsOwned.Children.OfType<Button>().ToList();
-           
+
+            //setting the joker btn to be colapsed 
+            SellJokerBtn.Visibility = Visibility.Collapsed;
+            selectedOwnedJokerToSell = null;
+            selectedOwnedJokerButton = null;
 
             for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
@@ -1435,12 +1443,15 @@ namespace OOD_project_2026
                 // clear old state just in case. 
                 btn.Content = null;
                 btn.Tag = null;
+                //chaning the btn thickness. 
+                btn.BorderBrush = Brushes.Black;
+                btn.BorderThickness = new Thickness(1);
 
                 //removing old hover events to prevent stacking.
                 btn.MouseEnter -= Joker_Owned_Enter;
                 btn.MouseLeave -= Joker_Owned_Leave;
-
-                SellJoker.Visibility = Visibility.Collapsed;
+           
+                
 
                 //if the index is less than the amount of joker card owned. 
                 if (i < player.JokerCardsOwned.Count)
@@ -1448,8 +1459,6 @@ namespace OOD_project_2026
                     //creating a new btn for selling jokers on the grid. 
                     //based off of the positon of the joker card btn
                   
-
-
                     JokerCards joker = player.JokerCardsOwned[i];
                     btn.Tag = joker;
                     btn.Content = BuildJokerCardVisual(joker);
@@ -1457,6 +1466,7 @@ namespace OOD_project_2026
                     //attaching hover. 
                     btn.MouseEnter += Joker_Owned_Enter;
                     btn.MouseLeave += Joker_Owned_Leave;
+                   
                 }
             }
 
@@ -1492,17 +1502,45 @@ namespace OOD_project_2026
         {
             if (sender is Button btn && btn.Tag is JokerCards)
             {
-                Button sellJokerBtn = SellJokerBtn;
-                sellJokerBtn.Visibility = Visibility.Collapsed;
                 //unanimating the card and removing it 
                 AnimateCard(btn, 0);
+                //hiding the jokerPopup
                 JokerHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-
+    
         private void SellJokerCard_Click(object sender, RoutedEventArgs e)
         {
+            //if there isint anything to "sell" then returns 
+            if (selectedOwnedJokerToSell == null)
+                return;
 
+            //if the jokerCardOwns contains Jokers to selll. 
+            if (player.JokerCardsOwned.Contains(selectedOwnedJokerToSell))
+            {
+                //setting a half price sell value 
+                int sellValue = Math.Max(1, selectedOwnedJokerToSell.Price / 2);
+
+                //removed the joker
+                player.JokerCardsOwned.Remove(selectedOwnedJokerToSell);
+                //adding the sell value to the player. 
+                player.Money += sellValue;
+
+                //updating money. 
+                PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
+
+                //setting it back to null
+                selectedOwnedJokerToSell = null;
+                selectedOwnedJokerButton = null;
+
+                //collapsing everything 
+                SellJokerBtn.Visibility = Visibility.Collapsed;
+                JokerHoverPopup.Visibility = Visibility.Collapsed;
+
+                //callig the method add joker to grid. and loading jokers into said shop. 
+                AddJokerToGrid();
+                LoadJokersIntoShop();
+            }
         }
 
         private Grid BuildJokerCardVisual(JokerCards joker)
