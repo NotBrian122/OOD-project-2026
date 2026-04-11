@@ -48,6 +48,8 @@ namespace OOD_project_2026
         private JokerCards selectedOwnedJokerToSell = null;
         private Button selectedOwnedJokerButton = null;
 
+        //creating a bool to see if the shop is open or not. 
+        private bool isShopOpen = false;
         #endregion  
         public MainGamePlayWindow()
         {
@@ -1289,19 +1291,31 @@ namespace OOD_project_2026
 
         }
         private void ShowShopVerlay()
-        { 
+        {
             //this is to show the shop overlay when you win. 
             ShopOverlayBackground.Visibility = Visibility.Visible;
             ShopOverLay.Visibility = Visibility.Visible;
 
+            //this makes the background not clickable bar the joker cards. 
+            MainGameplayScreen.IsHitTestVisible = false;
+            OwnedJokerBar.IsHitTestVisible = true;
+            JokerCardsOwned.IsHitTestVisible = true;
+
+            //replaced the mainscreen with this instead as I need some parts to be active still
+            isShopOpen = true;
+
+            //players money. 
             PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
 
+            //getting joker buttons in teh shop and displaying them
             List<Button> jokerSlots = new List<Button>()
-            {
-                Joker1, Joker2, Joker3, Joker4,
-            };
+    {
+        Joker1, Joker2, Joker3, Joker4,
+    };
+
             for (int i = 0; i < jokerSlots.Count; i++)
             {
+                //adding animations for ender or leave. 
                 Button currentJokerButton = jokerSlots[i];
                 currentJokerButton.MouseEnter -= Joker_Shop_Enter;
                 currentJokerButton.MouseLeave -= Joker_Shop_Leave;
@@ -1310,22 +1324,31 @@ namespace OOD_project_2026
                 currentJokerButton.MouseLeave += Joker_Shop_Leave;
 
                 currentJokerButton.Visibility = Visibility.Visible;
-
             }
+
             //loading the jokers into teh shop
             LoadJokersIntoShop();
 
+        } 
+        private void HideShopOverlay()
+        {
+            //this is to hide the shop overlay when you win. 
+            ShopOverlayBackground.Visibility = Visibility.Collapsed;
+            ShopOverLay.Visibility = Visibility.Collapsed;
+            MainGameplayScreen.IsEnabled = true; 
+            //for when the shop is closed. 
+            MainGameplayScreen.IsHitTestVisible = true;
+            OwnedJokerBar.IsHitTestVisible = true;
+            JokerCardsOwned.IsHitTestVisible = true;
 
-            MainGameplayScreen.IsEnabled = false;
-            //popup animation
+            isShopOpen = false;
+            //another code block of fading. 
             var fade = new DoubleAnimation
             {
-                From = 0,
-                To = 1,
+                From = 1,
+                To = 0,
                 Duration = TimeSpan.FromMilliseconds(150)
             };
-
-
         }
         //loading jokers into the shop.
         private void LoadJokersIntoShop()
@@ -1420,7 +1443,35 @@ namespace OOD_project_2026
             //animating the joker cards with affects. 
             AnimateCard(JokerCard, 0);
         }
+        //clicking on a joker card once owned to sell them
+        private void OwnedJoker_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isShopOpen)
+                return;
 
+            if (sender is Button btn && btn.Tag is JokerCards joker)
+            {
+                selectedOwnedJokerToSell = joker;
+                selectedOwnedJokerButton = btn;
+
+                List<Button> jokerCardDisplay = JokerCardsOwned.Children.OfType<Button>().ToList();
+                foreach (Button jokerBtn in jokerCardDisplay)
+                {
+                    jokerBtn.BorderBrush = Brushes.Black;
+                    jokerBtn.BorderThickness = new Thickness(1);
+                }
+
+                btn.BorderBrush = Brushes.Yellow;
+                btn.BorderThickness = new Thickness(3);
+
+                Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
+
+                SellJokerBtn.Tag = joker;
+                SellJokerBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(SellJokerBtn, pos.X);
+                Canvas.SetTop(SellJokerBtn, pos.Y + btn.ActualHeight + 5);
+            }
+        }
         //clicking on the jokerShop
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
@@ -1507,23 +1558,23 @@ namespace OOD_project_2026
         private void Joker_Owned_Enter(object sender, MouseEventArgs e)
         {
             if (sender is Button btn && btn.Tag is JokerCards joker)
-            { 
+            {
+                selectedOwnedJokerToSell = joker;
+                selectedOwnedJokerButton = btn;
+                SellJokerBtn.Tag = joker;
+
                 Button sellJokerBtn = SellJokerBtn;
 
-                //creating a new btn for selling jokers on the grid. 
-                //based off of the positon of the joker card btn
                 Point posSell = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
                 sellJokerBtn.Visibility = Visibility.Visible;
                 Canvas.SetLeft(sellJokerBtn, posSell.X);
                 Canvas.SetTop(sellJokerBtn, posSell.Y + btn.ActualHeight + 5);
 
-                //animate the card hovered. 
-                AnimateCard(btn, +10);
+                AnimateCard(btn, -10);
 
-                JokerHoverText.Text =$"{joker.Name}\n\n{joker.Affect}\n\nChance: {joker.ChanceAffect}";
+                JokerHoverText.Text = $"{joker.Name}\n\n{joker.Affect}\n\nChance: {joker.ChanceAffect}";
 
                 Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
-                //making the popup visible and moving it based off of the position of the joker card.
                 JokerHoverPopup.Visibility = Visibility.Visible;
                 Canvas.SetLeft(JokerHoverPopup, pos.X + btn.ActualWidth + 10);
                 Canvas.SetTop(JokerHoverPopup, pos.Y);
@@ -1604,25 +1655,13 @@ namespace OOD_project_2026
             player.HandsLeft = 3;
             player.DisguardsLeft = 3;
             player.CurrentChips = 0;
-
+            
         }
-        private void HideShopOverlay()
-        {
-            //this is to hide the shop overlay when you win. 
-            ShopOverlayBackground.Visibility = Visibility.Collapsed;
-            ShopOverLay.Visibility = Visibility.Collapsed;
-            MainGameplayScreen.IsEnabled = true;
-            //another code block of fading. 
-            var fade = new DoubleAnimation
-            {
-                From = 1,
-                To = 0,
-                Duration = TimeSpan.FromMilliseconds(150)
-            };
-        }
+     
         private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
         {
             ShowShopVerlay();
+
             InitialWinScreen.Visibility = Visibility.Collapsed;
             //changing the player stats for the next round.
             player.CurrentChips = 0;
