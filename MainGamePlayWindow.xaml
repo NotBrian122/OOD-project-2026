@@ -107,26 +107,29 @@
 
 
                 <!--#region JokerCards-->
-                <Grid Grid.Row="0" Grid.Column="1">
+                <Border Grid.Row="0" Grid.Column="1" Panel.ZIndex="999" Margin="5">
+
                     <Grid x:Name="JokerCardsOwned">
-
-
                         <Grid.ColumnDefinitions >
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
 
                         <Button Grid.Column="0" Content="Joker Card 1"/>
-                        <Button Grid.Column="1" Content="Joker Card 2"/>
-                        <Button Grid.Column="2" Content="Joker Card 3"/>
-                        <Button Grid.Column="3" Content="Joker Card 4"/>
-                        <Button Grid.Column="4" Content="Joker Card 5"/>
-
+                        <Button Grid.Column="2" Content="Joker Card 2"/>
+                        <Button Grid.Column="4" Content="Joker Card 3"/>
+                        <Button Grid.Column="6" Content="Joker Card 4"/>
+                        <Button Grid.Column="8" Content="Joker Card 5"/>
                     </Grid>
-                </Grid>
+                </Border>
+               
 
                 <!--#endregion-->
                 <!--#region Main card selection -->
@@ -328,18 +331,8 @@
             <Canvas x:Name="AnimationCanvas" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Panel.ZIndex="800" IsHitTestVisible="False"/>
             <!--This is a joker card text/value once hovered over to compare joker card -->
             <Canvas x:Name="OverlayCanvas" Panel.ZIndex="1000">
-                <Border x:Name="JokerHoverPopup"
-            Background="#DD111111"
-            BorderBrush="White"
-            BorderThickness="1"
-            CornerRadius="6"
-            Padding="8"
-            Visibility="Collapsed"
-            IsHitTestVisible="False">
-                    <TextBlock x:Name="JokerHoverText"
-                   Foreground="White"
-                   TextWrapping="Wrap"
-                   Width="180"/>
+                <Border x:Name="JokerHoverPopup" Background="#DD111111" BorderBrush="White" BorderThickness="1" CornerRadius="6" Padding="8" Visibility="Collapsed" IsHitTestVisible="False">
+                    <TextBlock x:Name="JokerHoverText"  Foreground="White" TextWrapping="Wrap"  Width="180"/>
                 </Border>
 
                 <Button x:Name="SellJokerBtn"

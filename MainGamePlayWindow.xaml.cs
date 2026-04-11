@@ -520,6 +520,7 @@ namespace OOD_project_2026
         }
         private int GenerateBlindScore(int roundScore)
         {
+            //if 1 is less than the roundscore
             if (roundScore > 1)
             {
                 blindScore += blindScore * (roundScore % 2 + 1);
@@ -705,16 +706,19 @@ namespace OOD_project_2026
             int luckySucessRoll = hasRolling ? 19 : 20;//can be either 19 or 20
             int maxRoll = hasRolling ? 10 : 20;//can be either 10 or 20
 
-
+          
             //im creating a copy as everything will be removed later on. 
             foreach (var joker in jokers.ToList())
             {
+                //Ive added this for joker card animation affects
+                Button ownedJokerButton = FindOwnedJokerButton(joker);
                 //ive thought a new solution for how im going to do the chipscores. 
                 switch (joker.Name)
                 {
                     case "Joker of Masks":
                         if (card.FaceCard && !faceCardPlayed)
                         {
+                            await PopCardWithRotation(ownedJokerButton);
                             //doublind the score
                             multScore *= joker.GameAffect;
                             //updating the dispaly. 
@@ -725,6 +729,7 @@ namespace OOD_project_2026
                     case "Joker of Order":
                         if (card.CardChipValue % 2 == 0)
                         {
+                            await PopCardWithRotation(ownedJokerButton);
                             multScore += joker.GameAffect;
                             HandMultScore.Text = $"{multScore}";
                         }
@@ -737,6 +742,7 @@ namespace OOD_project_2026
 
                             if (roll >= luckySucessRoll)//adding the affect as it will change into 1-10 my mistake for chances. 
                             {
+                                await PopCardWithRotation(ownedJokerButton);
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
                                 player.Money += 20;
                                 multScore += 20;
@@ -744,7 +750,9 @@ namespace OOD_project_2026
                                 await PopCardWithRotation(playedClones);
                             }
                             else if (roll == 10 || roll == 15)
-                            { //just player money
+                            {
+                                await PopCardWithRotation(ownedJokerButton);
+                                //just player money
                                 player.Money += 20;
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
 
@@ -752,6 +760,7 @@ namespace OOD_project_2026
                             }
                             else if (roll == 14 || roll == 16)
                             {
+                                await PopCardWithRotation(ownedJokerButton);
                                 //just player multscore.
                                 multScore += 20;
                                 joker.GameAffect += 0.5;//adding .5 to the cards affect. 
@@ -772,24 +781,29 @@ namespace OOD_project_2026
                         }
                         break;
                     case "Joker of Power":
+                       
                         //this is for higher palying hands. 
                         if (handPlayed == "Flush")
                         {
                             multScore += 5;//adds +5 for each card. thereofre 25 instead of 125
+                            await PopCardWithRotation(ownedJokerButton);
                         }
                         else if (handPlayed == "Straight")
                         {
                             multScore += 7;//adds +7 for each card played. therefore 35
+                            await PopCardWithRotation(ownedJokerButton);
                         }
                         else if (handPlayed == "High card")
                         {
                             multScore += 45;
+                            await PopCardWithRotation(ownedJokerButton);
                         }
                         break;
                     case "Fantom of Opera":
                         if (card.FaceCard && allowOpreaReplay)//checking to make sure its true before changing it 
                         {
                             await ReplaySingleCard(card, playedClones, jokers, handPlayed, rng, false);
+                            await PopCardWithRotation(ownedJokerButton);
                         }
                         break;
                     case "Joker of Blood":
@@ -798,6 +812,7 @@ namespace OOD_project_2026
                             int bloodRoll = rng.Next(1, 4); // 1–3
                             if (bloodRoll == 3)
                             {
+                                await PopCardWithRotation(ownedJokerButton);
                                 multScore *= joker.GameAffect;
                             }
                         }
@@ -869,7 +884,6 @@ namespace OOD_project_2026
         }
 
         //so theres 2 groups of animations one for the hover enter and one for the hover leave is to change 
-
         //animations to enter card aka mouse hovering over
         private void Card_HoverEnter(object sender, MouseEventArgs e)
         {
@@ -1232,8 +1246,19 @@ namespace OOD_project_2026
                 btn.Margin = new Thickness(0);
             }
         }
+
+
+        //this is for joker card animations 
+        //I have to find the buttons firstly to target like the list point. 
+        private Button FindOwnedJokerButton(JokerCards joker)
+        {
+            //this method returns a button of the joker cards I want to target 
+            //this allows me to activate the previous method popcardsWithRoataion
+            return JokerCardsOwned.Children.OfType<Button>().FirstOrDefault(btn => btn.Tag  == joker);
+        }
         #endregion
-        #region ShopPopup and logic 
+        #region ShopPopup and logic and joker card animations. 
+        //popupo of the win screen. 
         private async void WinScreen()
         {
             //this is to show the win screen when you win.
@@ -1257,7 +1282,7 @@ namespace OOD_project_2026
             for (int i = 0; i <= player.CurrentChips; i += 10)
             {
                 RoundScoreDisplay.Text = $"{i}";
-                await Task.Delay(10);
+                await Task.Delay(60);
             }
 
             RoundScoreDisplay.Text = $"{player.CurrentChips}";
@@ -1377,9 +1402,12 @@ namespace OOD_project_2026
         }
         private void Joker_Shop_Leave(object sender, MouseEventArgs e)
         {
+            //getting the same joker card 
             if (sender is Button jokerCard && jokerCard.Tag is JokerCards)
             {
+                //hover affect same as the cards. 
                 AnimateCard(jokerCard, 0);
+                //removing the overlay. 
                 JokerHoverPopup.Visibility = Visibility.Collapsed;
             } 
 
@@ -1389,9 +1417,11 @@ namespace OOD_project_2026
             if (jc == null)
                 return;
 
+            //animating the joker cards with affects. 
             AnimateCard(JokerCard, 0);
         }
 
+        //clicking on the jokerShop
         private void ClickedOnJokerShopCard(object sender, RoutedEventArgs e)
         {
             //I have to pass in the sender as a button to get said index of the joker card. 
@@ -1404,6 +1434,7 @@ namespace OOD_project_2026
                     player.JokerCardsOwned.Add(jokerClicked);//adding the joker card to the player class list
                     //activating the front end ui
                     AddJokerToGrid();
+                    //removing tags and content. 
                     clickedButton.Tag = null;
                     clickedButton.Content = "Bought";
                     clickedButton.IsEnabled = false;
@@ -1472,6 +1503,7 @@ namespace OOD_project_2026
 
 
         }
+        //displaying an animation and joker when the mouyse enters or leaves
         private void Joker_Owned_Enter(object sender, MouseEventArgs e)
         {
             if (sender is Button btn && btn.Tag is JokerCards joker)
@@ -1497,7 +1529,6 @@ namespace OOD_project_2026
                 Canvas.SetTop(JokerHoverPopup, pos.Y);
             }
         }
-
         private void Joker_Owned_Leave(object sender, MouseEventArgs e)
         {
             if (sender is Button btn && btn.Tag is JokerCards)
@@ -1508,7 +1539,7 @@ namespace OOD_project_2026
                 JokerHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-    
+         //sellign the joker card
         private void SellJokerCard_Click(object sender, RoutedEventArgs e)
         {
             //if there isint anything to "sell" then returns 
@@ -1542,24 +1573,38 @@ namespace OOD_project_2026
                 LoadJokersIntoShop();
             }
         }
-
+        //mapping images to the joker cards on the shop anmd grid. 
         private Grid BuildJokerCardVisual(JokerCards joker)
         {
+            //this is a helper method with updating joker cards and images. 
             Grid jokerGrid = new Grid();
   
             Image baseImage = new Image
             {
                 Source = new BitmapImage(
-                    new Uri($"pack://application:,,,/Images/JokerCards/{joker.Name}.png")
+                    new Uri($"pack://application:,,,/Images/JokerCards/{joker.Name}.png")//the image and name are based off of the same thing
                 ),
                 Stretch = Stretch.Fill,
-                IsHitTestVisible = false
+                IsHitTestVisible = false//making it clickable but I removed that featrue. 
             };
             //adding the jokers children to the grid. 
             jokerGrid.Children.Add(baseImage);
 
-
+            //returning the grid. 
             return jokerGrid;
+        }
+       
+        //continue from shop
+        private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
+        {
+            HideShopOverlay();
+            round++;
+            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
+
+            player.HandsLeft = 3;
+            player.DisguardsLeft = 3;
+            player.CurrentChips = 0;
+
         }
         private void HideShopOverlay()
         {
@@ -1574,17 +1619,6 @@ namespace OOD_project_2026
                 To = 0,
                 Duration = TimeSpan.FromMilliseconds(150)
             };
-        }
-        private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
-        {
-            HideShopOverlay();
-            round++;
-            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
-
-            player.HandsLeft = 3;
-            player.DisguardsLeft = 3;
-            player.CurrentChips = 0;
-
         }
         private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
         {
