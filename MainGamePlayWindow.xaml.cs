@@ -1691,8 +1691,8 @@ namespace OOD_project_2026
         private void LoadArcanaCardsIntoShop()
         {
             //this is a variable much simialr to the joker cards to see if they can load into the shop if the palyer doesnt have them. 
-            var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == c.Name)).ToList();
-
+            var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == a.Name)).ToList();
+            shopArcana.Clear();
             //its the same code thats copied. 
             while (shopArcana.Count < 2 && avaiblbeArcanaCards.Count > 0)
             {
@@ -1728,11 +1728,14 @@ namespace OOD_project_2026
             Image baseImage = new Image
             {
                 Source = new BitmapImage(
-                    new Uri($"pack://application:,,,/Images/ArcanaCards/{aranaCards.Name}.png")
+                    new Uri($"pack://application:,,,/Images/ArcanaCards/{aranaCards.CardName}.png")
                 ),
                 Stretch = Stretch.Fill,
                 IsHitTestVisible = false//these arent clickable
             };
+            //adding arcana cards to grid, 
+            arcanaGrid.Children.Add( baseImage );
+
             return arcanaGrid;
         }
         #endregion
