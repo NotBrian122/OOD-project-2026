@@ -32,18 +32,26 @@ namespace OOD_project_2026
         List<Cards> HandPlayed = new List<Cards>();
         List<Cards> HandDiscarded = new List<Cards>();
 
-        List<JokerCards> JokerCardsInPlay = new List<JokerCards>();
-        //creating a new list for joker cards to be aded. 
+        //creating a new list for joker cards and arcana cards to be aded. 
         List<JokerCards> shopJokers = new List<JokerCards>();
+        List<ArcanaCards> shopArcana = new List<ArcanaCards>();
 
         //I want to add a player class to write to a file. This will track your best score.
+
+        //nothing done here yet. 
+
         //I removed the hands and disguards left to the ones in the palyer class to make it better. 
         Random random = new Random();
         List<JokerCards> AllJokers = JokerCards.GenerateJokerCards();
         List<JokerCards> playersJokerCardsOwned = new List<JokerCards>();
+
+         //Generating Arcana Cards
+        List<ArcanaCards> AllArcanaCards = ArcanaCards.GenreatearcanraCards();
+        //creating a list of all arcana cards owned. 
+        List<ArcanaCards> playerArcanaCardsOwned = new List<ArcanaCards>();
+        
         //its giving out to me for creating the player. 
         Player player;
-
         //this was set for changing or selling joker cards. 
         private JokerCards selectedOwnedJokerToSell = null;
         private Button selectedOwnedJokerButton = null;
@@ -55,7 +63,7 @@ namespace OOD_project_2026
         {
             InitializeComponent();
             //creating a new player with the default values.
-            player = new Player(money, currentChips, playersJokerCardsOwned, 3, 3);
+            player = new Player(money, currentChips, playersJokerCardsOwned, playerArcanaCardsOwned, 3, 3);
         }
 
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
@@ -63,7 +71,7 @@ namespace OOD_project_2026
             //creating the deck. it works. 
             deck.CreateDeck();
             //Generating a list of jokers.
-
+            
             //drawing the cards 
             DrawCards(8);
             //refreshing the ui before we start the game. 
@@ -221,7 +229,6 @@ namespace OOD_project_2026
             Cards card = clickedCard?.Tag as Cards;//this check the button clicked, sends it off and check if the correct tag clicked card as a card. 
             //this is to check the hand and creating varibales for said hand checking. 
             bool isFlush = true;
-            int isPair = 0;
 
             if (card == null)
                 return;
@@ -251,7 +258,7 @@ namespace OOD_project_2026
             }
 
             // Using the same method for scoring  but for updating the hands a player could play in this scenario
-            switch (CheckHandTypeMain(selectedHand, isFlush, isPair))
+            switch (CheckHandTypeMain(selectedHand, isFlush))
             {
                 case 0:
                     HandName.Text = "High card";
@@ -346,7 +353,6 @@ namespace OOD_project_2026
             multScore = 0;
             handPlayed = "";
             faceCardPlayed = false;
-            bool allowOpreaReplay = false;
 
             //for lucky cards. 
             Random ranChanceLucky = new Random();
@@ -370,7 +376,7 @@ namespace OOD_project_2026
             List<JokerCards> jokerCardsInEffect = player.JokerCardsOwned.ToList();
             scoringHand.Sort();
             // Score poker hand using sorted copy -- ive moved it as joker cards come after scoring 
-            switch (CheckHandTypeMain(scoringHand, isFlush, isPair))
+            switch (CheckHandTypeMain(scoringHand, isFlush))
             {
                 //a lot of this is self explanitory 
                 case 0:
@@ -575,7 +581,7 @@ namespace OOD_project_2026
             }
             return isFlush;
         }
-        private int CheckPair(List<Cards> selectedHand, int isPair)
+        private int CheckPair(List<Cards> selectedHand)
         {
             //this used to go by my other method but due to so many edgecases 
             //I had to change it via groups. 
@@ -655,7 +661,7 @@ namespace OOD_project_2026
             }
             return fullHouse;
         }
-        private int CheckHandTypeMain(List<Cards> selectedHand, bool isFlush, int isPair)
+        private int CheckHandTypeMain(List<Cards> selectedHand, bool isFlush)
         {
             //the point of this method is a main method ot pass into the other hands
             //checking the hand type and pushing the handNumber out so it makes it easier to 
@@ -667,7 +673,7 @@ namespace OOD_project_2026
                 handNumber = 6;//checking full house first 
             }
             // 2 pair 
-            else if (CheckPair(selectedHand, isPair) == 2)
+            else if (CheckPair(selectedHand) == 2)
             {
                 handNumber = 3;//trying to get 2 pair
 
@@ -687,7 +693,7 @@ namespace OOD_project_2026
             {
                 handNumber = 5;
             }
-            else if (CheckPair(selectedHand, isPair) == 1)
+            else if (CheckPair(selectedHand) == 1)
             {
                 handNumber = 1;//this is for a pair 
             }
@@ -1259,7 +1265,7 @@ namespace OOD_project_2026
             return JokerCardsOwned.Children.OfType<Button>().FirstOrDefault(btn => btn.Tag  == joker);
         }
         #endregion
-        #region ShopPopup and logic and joker card animations. 
+        #region ShopPopup and logic. 
         //popupo of the win screen. 
         private async void WinScreen()
         {
@@ -1309,9 +1315,9 @@ namespace OOD_project_2026
 
             //getting joker buttons in teh shop and displaying them
             List<Button> jokerSlots = new List<Button>()
-    {
-        Joker1, Joker2, Joker3, Joker4,
-    };
+             {
+                Joker1, Joker2, Joker3, Joker4,
+             };
 
             for (int i = 0; i < jokerSlots.Count; i++)
             {
@@ -1328,6 +1334,8 @@ namespace OOD_project_2026
 
             //loading the jokers into teh shop
             LoadJokersIntoShop();
+            //loading arcana cards into the shop
+            LoadArcanaCardsIntoShop();
 
         } 
         private void HideShopOverlay()
@@ -1349,7 +1357,38 @@ namespace OOD_project_2026
                 To = 0,
                 Duration = TimeSpan.FromMilliseconds(150)
             };
+        }     
+        //continue from shop
+        private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
+        {
+            HideShopOverlay();
+            round++;
+            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
+
+            player.HandsLeft = 3;
+            player.DisguardsLeft = 3;
+            player.CurrentChips = 0;
+            
         }
+     
+        private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
+        {
+            ShowShopVerlay();
+
+            InitialWinScreen.Visibility = Visibility.Collapsed;
+            //changing the player stats for the next round.
+            player.CurrentChips = 0;
+            player.HandsLeft = 3;
+            player.DisguardsLeft = 3;
+
+            //updating player score. 
+            PlayerChipScore.Text = $"{player.CurrentChips}";
+            HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
+            DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
+
+        }
+        #endregion
+        #region JokerCards, animation and some logic
         //loading jokers into the shop.
         private void LoadJokersIntoShop()
         {
@@ -1389,7 +1428,7 @@ namespace OOD_project_2026
             }
             else
             {
-                //if theirs no jokers left (somewho)
+                //if theirs no jokers left Ive only made 8 
                 button.Tag = null;
                 button.Content = "Sold out";
                 button.IsEnabled = false;
@@ -1644,35 +1683,57 @@ namespace OOD_project_2026
             //returning the grid. 
             return jokerGrid;
         }
-       
-        //continue from shop
-        private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
-        {
-            HideShopOverlay();
-            round++;
-            BlindScoreDisplay.Text = $"{GenerateBlindScore(round)}";
 
-            player.HandsLeft = 3;
-            player.DisguardsLeft = 3;
-            player.CurrentChips = 0;
-            
+        #endregion
+        #region Arcana Cards
+        //loading arcana cards into shop
+        //most of this area is based off of the work from joker cards. 
+        private void LoadArcanaCardsIntoShop()
+        {
+            //this is a variable much simialr to the joker cards to see if they can load into the shop if the palyer doesnt have them. 
+            var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == c.Name)).ToList();
+
+            //its the same code thats copied. 
+            while (shopArcana.Count < 2 && avaiblbeArcanaCards.Count > 0)
+            {
+                int index = random.Next(avaiblbeArcanaCards.Count);
+                shopArcana.Add(avaiblbeArcanaCards[index]);
+                avaiblbeArcanaCards.RemoveAt(index);
+            }
+
+            AssingArcanaCardToButton(CardPack1, 0);
+            AssingArcanaCardToButton(CardPack2, 1);
+
         }
-     
-        private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
+        ///assinging the card to the shop button based off of the index. 
+        private void AssingArcanaCardToButton(Button button, int index)
         {
-            ShowShopVerlay();
-
-            InitialWinScreen.Visibility = Visibility.Collapsed;
-            //changing the player stats for the next round.
-            player.CurrentChips = 0;
-            player.HandsLeft = 3;
-            player.DisguardsLeft = 3;
-
-            //updating player score. 
-            PlayerChipScore.Text = $"{player.CurrentChips}";
-            HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
-            DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
-
+            if (index < shopArcana.Count)
+            {
+                button.Tag = shopArcana[index];
+                button.Content = shopArcana[index].ToString();
+                button.IsEnabled = true;
+                button.Visibility = Visibility.Visible;
+                button.Content = BuildArcanaCardVisual(shopArcana[index]);
+            }else
+            {
+                button.Tag=null;
+                button.Content = "Sold Out";
+                button.IsEnabled = false;
+            }
+        }
+        private Grid BuildArcanaCardVisual(ArcanaCards aranaCards)
+        {
+            Grid arcanaGrid = new Grid();
+            Image baseImage = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri($"pack://application:,,,/Images/ArcanaCards/{aranaCards.Name}.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false//these arent clickable
+            };
+            return arcanaGrid;
         }
         #endregion
     }

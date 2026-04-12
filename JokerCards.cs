@@ -28,6 +28,8 @@ namespace OOD_project_2026
            
 
         }
+        //for testing and using it for certian things. 
+        //used for the hover function of joker cards. 
         override public string ToString()
         {
             return $"{Name}\nEffect {Affect}\nChance modifiers: {ChanceAffect}\nPrice{Price:c2}";

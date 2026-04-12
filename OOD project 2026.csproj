@@ -185,5 +185,17 @@
     <Resource Include="Images\CardTypeOverlays\Lucky.png" />
     <Resource Include="Images\CardTypeOverlays\Silver.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ArcanaCards\Hanged man.png" />
+    <Resource Include="Images\ArcanaCards\Justice.png" />
+    <Resource Include="Images\ArcanaCards\The Chariot.png" />
+    <Resource Include="Images\ArcanaCards\The Emperor.png" />
+    <Resource Include="Images\ArcanaCards\The Empress.png" />
+    <Resource Include="Images\ArcanaCards\The Magician.png" />
+    <Resource Include="Images\ArcanaCards\The Moon.png" />
+    <Resource Include="Images\ArcanaCards\The Star.png" />
+    <Resource Include="Images\ArcanaCards\The Sun.png" />
+    <Resource Include="Images\ArcanaCards\ZA WORLDA.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

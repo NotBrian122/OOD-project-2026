@@ -12,7 +12,7 @@
     <Grid Background="#0E1621">
         <Grid x:Name="MainGrid" Loaded="MainGrid_Loaded">
 
-            <!--Main Grid Section-->
+           <!--#region  Main Window and groups-->
             <Grid x:Name="MainGameplayScreen" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="2*" />
@@ -28,16 +28,34 @@
                 </Grid.ColumnDefinitions>
                 
                 <!--Changed these to brrders to get rounded edges. -->
-                <Border Grid.Row="0" Grid.Column="0" Background="#1B5E20" />
-                <Border Grid.Row="0" Grid.Column="1" Background="#18364D" Margin="8,8,8,4" CornerRadius="10" />
-                <Border Grid.Row="0" Grid.Column="2" Background="#4B2D1F" Margin="8,8,8,4" CornerRadius="10" />
+                <Border Grid.Row="0" Grid.Column="0" Background="#1B5E20"> 
+                    <!--Main title text-->
+                    <TextBlock Grid.Column="0" Text="Bolatro" FontSize="34" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1" Background="#18364D" Margin="8,8,8,4" CornerRadius="10"/>
+                <Border Grid.Row="0" Grid.Column="2" Background="#4B2D1F" Margin="8,8,8,4" CornerRadius="10"/>
 
-                <!--Main title text-->
-                <TextBlock Grid.Column="0" Text="Bolatro" FontSize="34" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" />
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions> 
+                    
+                    <TextBlock Text="Arcana cards" Grid.ColumnSpan="2" Foreground="White" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" />
+
+                    <Button x:Name="PlayerArcanaCardsOwned1" Grid.Row="1" Margin="15" ></Button>
+                    <Button x:Name="PlayerArcanaCardsOwned2" Grid.Row="1" Grid.Column="1" Margin="14"></Button>
+                    </Grid>  
+               
                 <!-- Changed this but initally this was the joker card grid. -->
                 <TextBlock Grid.Column="1" Grid.Row="0" Foreground="White" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,12,0,0" />
                 <!--This is where you can select the arcana cards, now Ive yet to do them but it should be grand -->
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Arcana cards" Foreground="White" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,12,0,0" />
+               
 
               
                 <!--Quitgame button.-->
@@ -77,7 +95,7 @@
                         </Grid>
                     </Grid>
                 </Border>
-                
+                <!--#endregion-->
                 <!--Sub groups-->
                 <Grid Grid.Column="0" Grid.Row="2" Margin="8">
                     <Border Background="#22354A" CornerRadius="10"/>
@@ -152,12 +170,10 @@
                         <TextBlock Text="X" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" FontWeight="Bold"/>
                     </Grid>
                 </Grid>
-
+                <!--#endregion-->
                 <!--#region Main card selection -->
 
-                <!-- this is the content for the cards given to the player
-            I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing 
-            -->
+                <!-- this is the content for the cards given to the player I really wanted to see what would be a good number to give the player and 8 cards seems the best out of testing -->
                 <Border Grid.Column="1"
                         Grid.Row="2"
                         Background="#1D3142"
