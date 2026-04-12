@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace OOD_project_2026
 {
@@ -12,14 +13,16 @@ namespace OOD_project_2026
         public string CardName { get; set; }
         public string EffectDiscription { get; set; }
         public int NoCardsAffected { get; set; }    
+        public int CardPrice { get; set; }
        
         public ArcanaCards() { }
 
-        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected)
+        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,int cardPrice)
         {
             CardName = cardName;
             EffectDiscription = effectDiscription;
             NoCardsAffected = noCardsAffected;
+            CardPrice = cardPrice;
         }
         //this is just a generating method to generate all of the cards in said class. 
         public static List<ArcanaCards> GenreatearcanraCards()
@@ -63,13 +66,25 @@ namespace OOD_project_2026
                 3,//Star
                 3//World
             };
+            int[] cardPrice = {
+                3,//magician
+                4,//emperess
+                2,//emperor
+                2,//charoit
+                3,//Justice
+                3,//Hanged Man
+                1,//Moon
+                1,//Sun
+                1,//Star
+                1//World
+            };
 
             //genereating the cards and adding them to a list based off of the strings
             //yes they are hard coded but so are the joker cards. 
             for(int i = 0; i < CardName.Length;i++)
             {
                 ArcanaCards.Add(
-                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i]));
+                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i], cardPrice[i]));
             }
             return ArcanaCards;
         }

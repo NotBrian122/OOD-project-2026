@@ -56,6 +56,9 @@ namespace OOD_project_2026
         private JokerCards selectedOwnedJokerToSell = null;
         private Button selectedOwnedJokerButton = null;
 
+        //the same for arcana cards. 
+        private ArcanaCards selectedArcanaCardsOwned = null;
+        private Button selectedOwnedArcanaCardButton = null;
         //creating a bool to see if the shop is open or not. 
         private bool isShopOpen = false;
         #endregion  
@@ -1626,7 +1629,7 @@ namespace OOD_project_2026
                 //unanimating the card and removing it 
                 AnimateCard(btn, 0);
                 //hiding the jokerPopup
-                JokerHoverPopup.Visibility = Visibility.Collapsed;
+                ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
          //sellign the joker card
@@ -1737,6 +1740,43 @@ namespace OOD_project_2026
             arcanaGrid.Children.Add( baseImage );
 
             return arcanaGrid;
+        }
+
+        private void Arcana_Shop_Enter(object sender, EventArgs e)
+        {
+           
+            if (sender is Button btn && btn.Tag is ArcanaCards arcanaCard)
+            {
+                selectedArcanaCardsOwned = arcanaCard;
+                selectedOwnedJokerButton = btn;
+                SellJokerBtn.Tag = arcanaCard;
+
+                Button sellJokerBtn = SellJokerBtn;
+
+                Point posSell = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
+                sellJokerBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(sellJokerBtn, posSell.X);
+                Canvas.SetTop(sellJokerBtn, posSell.Y + btn.ActualHeight + 5);
+
+                AnimateCard(btn, -10);
+
+                ArcanaHoverText.Text = $"{arcanaCard.Name}\n\n{arcanaCard.EffectDiscription}\n\nNumber of cards Affected:{arcanaCard.NoCardsAffected}";
+
+                Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
+                Canvas.SetLeft(ArcanaHoverPopup, pos.X + btn.ActualWidth + 10);
+                Canvas.SetTop(ArcanaHoverPopup, pos.Y);
+            }
+        }
+        private void Arcana_Shop_Leave(object sender, EventArgs e) 
+        {
+            if (sender is Button btn && btn.Tag is ArcanaCards)
+            {
+                //unanimating the card and removing it 
+                AnimateCard(btn, 0);
+                //hiding the aarcana popup
+                ArcanaHoverPopup.Visibility = Visibility.Collapsed;
+            }
         }
         #endregion
     }
