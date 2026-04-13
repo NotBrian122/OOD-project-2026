@@ -67,16 +67,9 @@ namespace OOD_project_2026
         {
             //ive used the image from the cards folder to generate the 
             //the card image for each spesific card. 
-            string cardImageString = "";
-            cardImageString = $"{SuitName[0]}{CardName}.png";
-
+            string cardImageString = $"{SuitName[0]}{CardName}.png";
 
           return cardImageString;
-        }
-        public void CardEffectAdd()
-        {
-            string[] effect = { "4Mult", "Glass", "Gold", "Silver", "Lucky" };
-
         }
         public int CompareTo(Cards other)
         {

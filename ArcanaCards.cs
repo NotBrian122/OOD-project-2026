@@ -13,16 +13,19 @@ namespace OOD_project_2026
         public string CardName { get; set; }
         public string EffectDiscription { get; set; }
         public int NoCardsAffected { get; set; }    
+        public string Effection { get; set; }
         public int CardPrice { get; set; }
+
        
         public ArcanaCards() { }
 
-        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,int cardPrice)
+        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,string effect,int cardPrice)
         {
             CardName = cardName;
             EffectDiscription = effectDiscription;
             NoCardsAffected = noCardsAffected;
             CardPrice = cardPrice;
+            Effection = effect;
         }
         //this is just a generating method to generate all of the cards in said class. 
         public static List<ArcanaCards> GenreatearcanraCards()
@@ -47,6 +50,7 @@ namespace OOD_project_2026
                 "Creates up to 2 random Taroh Cards",
                 "Creates 1 selected card into steel\n(If the card is left in the hand, it adds 1.5 X mult to the final score)",
                 "Creates 1 card into Glass(x2 Mult but 1 in 4 chance of breaking once played)",
+                "Creates 1 gold card \n Leaving it in your hand it gives the player €1",
                 "Removes up to 3 selected cards from your hand",
                 "Turns 3 selected cards to clubs",
                 "Turns 3 selected cards to hearts",
@@ -78,13 +82,28 @@ namespace OOD_project_2026
                 1,//Star
                 1//World
             };
+            string[] Effection = 
+            {
+                "Lucky",
+                "4Mult",
+                "Random",
+                "Silver",
+                "Glass",
+                "Gold",
+                "Hanged",
+                "Clubs",
+                "Hearts",
+                "Diamonds",
+                "Spades"
+            };
+
 
             //genereating the cards and adding them to a list based off of the strings
             //yes they are hard coded but so are the joker cards. 
-            for(int i = 0; i < CardName.Length;i++)
+            for (int i = 0; i < CardName.Length;i++)
             {
                 ArcanaCards.Add(
-                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i], cardPrice[i]));
+                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i],Effection[i], cardPrice[i]));
             }
             return ArcanaCards;
         }
