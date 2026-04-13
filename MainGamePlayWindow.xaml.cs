@@ -149,8 +149,11 @@ namespace OOD_project_2026
             HandsLeft.Text = $"Hands Left:{player.HandsLeft}";
             DisguardsLeft.Text = $"Disguards Left:{player.DisguardsLeft}";
         }
+        //this is to change the overlay, I made this a while ago and wanted to see if it works, had to do some other
+        //joker card stuff before hand but now I guess it works?
         private void AddCardEffectOverlay(Grid cardGrid, Cards card)
         {
+            /*removed the old code as it doesnt support newer cards
             //this is just for testing 
             if (card.Effect == "Lucky")
             {
@@ -224,6 +227,80 @@ namespace OOD_project_2026
                 cardGrid.Children.Add(overlay);
 
             }
+            */
+            switch (card.Effect)
+            {
+                case "Lucky":
+                    //creating a new overlay image. 
+                    Image overlayL = new Image
+                    {
+                        //mapping a new source. 
+                        Source = new BitmapImage(
+                            new Uri("pack://application:,,,/Images/CardTypeOverlays/Lucky.png")
+                        ),
+                        Stretch = Stretch.Fill,//I had to make this stretch like the other card
+                        IsHitTestVisible = false//making it so I can click said card. 
+                    };
+
+                    cardGrid.Children.Add(overlayL);
+                    //beyond this its copy and paste. 
+                    break;
+                case "Glass":
+
+                    Image overlayG = new Image
+                    {
+                        Source = new BitmapImage(
+                            new Uri("pack://application:,,,/Images/CardTypeOverlays/Glass.png")
+                        ),
+                        Stretch = Stretch.Fill,
+                        IsHitTestVisible = false
+                    };
+
+                    cardGrid.Children.Add(overlayG);
+                    break;
+                case "Silver":
+                    Image overlay = new Image
+                    {
+                        Source = new BitmapImage(
+                       new Uri("pack://application:,,,/Images/CardTypeOverlays/Silver.png")
+                   ),
+                        Stretch = Stretch.Fill,
+                        IsHitTestVisible = false
+                    };
+
+                    cardGrid.Children.Add(overlay);
+                    break;
+                case "Gold":
+
+                    Image overlayGo = new Image
+                    {
+                        Source = new BitmapImage(
+                            new Uri("pack://application:,,,/Images/CardTypeOverlays/Gold.png")
+                        ),
+                        Stretch = Stretch.Fill,
+                        IsHitTestVisible = false
+                    };
+
+                    cardGrid.Children.Add(overlayGo);
+                    break;
+                case "4Mult":
+                    Image overlay4m = new Image
+                    {
+                        Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/CardTypeOverlays/4Mult.png")
+                        ),
+                        Stretch = Stretch.Fill,
+                        IsHitTestVisible = false
+                    };
+
+                    cardGrid.Children.Add(overlay4m);
+                    break;
+
+
+
+
+            }
+
         }
         //playing cards method. 
         private void Card_Click(object sender, RoutedEventArgs e)
@@ -1539,7 +1616,8 @@ namespace OOD_project_2026
                     JokerHoverPopup.Visibility = Visibility.Collapsed;
 
                     //checking that there isint more than 5 joker cards in the shop.
-                } else if (!alreadyOwned && player.JokerCardsOwned.Count > 5)
+                }
+                else if (!alreadyOwned && player.JokerCardsOwned.Count > 5)
                 {
                     clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
                 }
@@ -1692,76 +1770,94 @@ namespace OOD_project_2026
         #region Arcana Cards
         //loading arcana cards into shop
         //most of this area is based off of the work from joker cards. 
+
+        // Loading arcana cards into shop
         private void LoadArcanaCardsIntoShop()
         {
-            //this is a variable much simialr to the joker cards to see if they can load into the shop if the palyer doesnt have them. 
-            var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == a.Name)).ToList();
+            var availableArcanaCards = AllArcanaCards
+                .Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == a.Name))
+                .ToList();
+
             shopArcana.Clear();
-            //its the same code thats copied. 
-            while (shopArcana.Count < 2 && avaiblbeArcanaCards.Count > 0)
+
+            while (shopArcana.Count < 2 && availableArcanaCards.Count > 0)
             {
-                int index = random.Next(avaiblbeArcanaCards.Count);
-                shopArcana.Add(avaiblbeArcanaCards[index]);
-                avaiblbeArcanaCards.RemoveAt(index);
+                int index = random.Next(availableArcanaCards.Count);
+                shopArcana.Add(availableArcanaCards[index]);
+                availableArcanaCards.RemoveAt(index);
             }
 
-            AssingArcanaCardToButton(CardPack1, 0);
-            AssingArcanaCardToButton(CardPack2, 1);
-
+            AssignArcanaCardToButton(CardPack1, 0);
+            AssignArcanaCardToButton(CardPack2, 1);
         }
-        ///assinging the card to the shop button based off of the index. 
-        private void AssingArcanaCardToButton(Button button, int index)
+
+        // Assigning the card to the shop button based on index
+        private void AssignArcanaCardToButton(Button button, int index)
         {
             if (index < shopArcana.Count)
             {
-                button.Tag = shopArcana[index];
-                button.Content = shopArcana[index].ToString();
+                ArcanaCards arcanaCard = shopArcana[index];
+
+                button.Tag = arcanaCard;
+                button.Content = BuildArcanaCardVisual(arcanaCard);
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
-                button.Content = BuildArcanaCardVisual(shopArcana[index]);
-            } else
-            {
+
+                // Prevent duplicate events like before
+                button.MouseEnter -= Arcana_Shop_Enter;
+                button.MouseLeave -= Arcana_Shop_Leave;
+
+                button.MouseEnter += Arcana_Shop_Enter;
+                button.MouseLeave += Arcana_Shop_Leave;
+            }
+            else
+            {   //else if said event is like so. 
                 button.Tag = null;
                 button.Content = "Sold Out";
                 button.IsEnabled = false;
+                button.Visibility = Visibility.Visible;
+
+                button.MouseEnter -= Arcana_Shop_Enter;
+                button.MouseLeave -= Arcana_Shop_Leave;
             }
         }
-        private Grid BuildArcanaCardVisual(ArcanaCards aranaCards)
+
+        //again this is coppy pasted from said shop. 
+        private Grid BuildArcanaCardVisual(ArcanaCards arcanaCard)
         {
             Grid arcanaGrid = new Grid();
+
             Image baseImage = new Image
             {
                 Source = new BitmapImage(
-                    new Uri($"pack://application:,,,/Images/ArcanaCards/{aranaCards.CardName}.png")
+                    new Uri($"pack://application:,,,/Images/ArcanaCards/{arcanaCard.CardName}.png")
                 ),
                 Stretch = Stretch.Fill,
-                IsHitTestVisible = false//these arent clickable
+                IsHitTestVisible = false
             };
-            //adding arcana cards to grid, 
+
             arcanaGrid.Children.Add(baseImage);
 
             return arcanaGrid;
         }
-      
+
         private void Arcana_Shop_Enter(object sender, MouseEventArgs e)
         {
-
             if (sender is Button btn && btn.Tag is ArcanaCards arcanaCard)
             {
                 selectedArcanaCardsOwned = arcanaCard;
-                selectedArcanaCardsOwned = btn;
+                selectedOwnedArcanaCardButton = btn;
                 SellArcanaBtn.Tag = arcanaCard;
 
-                Button sellArcanaBtn = SellArcanaBtn;
-
                 Point posSell = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
-                sellArcanaBtn.Visibility = Visibility.Visible;
-                Canvas.SetLeft(sellArcanaBtn, posSell.X);
-                Canvas.SetTop(sellArcanaBtn, posSell.Y + btn.ActualHeight + 5);
+                Canvas.SetLeft(SellArcanaBtn, posSell.X);
+                Canvas.SetTop(SellArcanaBtn, posSell.Y + btn.ActualHeight + 10);
 
                 AnimateCard(btn, -10);
 
-                ArcanaHoverText.Text = $"{arcanaCard.Name}\n\n{arcanaCard.EffectDiscription}\n\nNumber of cards Affected:{arcanaCard.NoCardsAffected}";
+                ArcanaHoverText.Text =
+                  $"{arcanaCard.Name}\n\n{arcanaCard.EffectDiscription}\n\nChance: {arcanaCard.ChanceAffect}\nPrice: {arcanaCard.Price:c2}";
+              
 
                 Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
                 ArcanaHoverPopup.Visibility = Visibility.Visible;
@@ -1769,65 +1865,188 @@ namespace OOD_project_2026
                 Canvas.SetTop(ArcanaHoverPopup, pos.Y);
             }
         }
-        private void Arcana_Shop_Leave(object sender, EventArgs e)
+
+        private void Arcana_Shop_Leave(object sender, MouseEventArgs e)
         {
             if (sender is Button btn && btn.Tag is ArcanaCards)
             {
-                //unanimating the card and removing it 
                 AnimateCard(btn, 0);
-                //hiding the aarcana popup
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-        private void Sell_Arcana_Card(Object sender, RoutedEventArgs e)
-        {  //this is just an edgecase
+
+        private void Sell_Arcana_Card(object sender, RoutedEventArgs e)
+        {
             if (player.ArcanaCardsOwned == null)
-            {
                 return;
-            }
 
-            //creating a list of joker cards to display. 
-            List<Button> ArcanaCardDisplay = ArcanaCardsOwned.Children.OfType<Button>().ToList();
+            List<Button> arcanaCardDisplay = ArcanaCardsOwned.Children.OfType<Button>().ToList();
 
-            //setting the joker btn to be colapsed 
             SellArcanaBtn.Visibility = Visibility.Collapsed;
             selecteArcanaCardsToSell = null;
             selectedOwnedArcanaCardButton = null;
 
-            for (int i = 0; i < ArcanaCardDisplay.Count; i++)
+            for (int i = 0; i < arcanaCardDisplay.Count; i++)
             {
-                Button btn = ArcanaCardDisplay[i];
+                Button btn = arcanaCardDisplay[i];
 
-                // clear old state just in case. 
                 btn.Content = null;
                 btn.Tag = null;
-                //chaning the btn thickness. 
                 btn.BorderBrush = Brushes.Black;
                 btn.BorderThickness = new Thickness(1);
 
-                //removing old hover events to prevent stacking.
-                btn.MouseEnter -= Joker_Owned_Enter;
-                btn.MouseLeave -= Joker_Owned_Leave;
+                btn.MouseEnter -= Arcana_Owned_Enter;
+                btn.MouseLeave -= Arcana_Owned_Leave;
 
-
-
-                //if the index is less than the amount of joker card owned. 
-                if (i < player.JokerCardsOwned.Count)
+                if (i < player.ArcanaCardsOwned.Count)
                 {
-                    //creating a new btn for selling jokers on the grid. 
-                    //based off of the positon of the joker card btn
-
                     ArcanaCards arcanaCard = player.ArcanaCardsOwned[i];
                     btn.Tag = arcanaCard;
-                    btn.Content = BuildJokerCardVisual(arcanaCard);
+                    btn.Content = BuildArcanaCardVisual(arcanaCard);
 
-                    //attaching hover. 
-                    btn.MouseEnter += Joker_Owned_Enter;
-                    btn.MouseLeave += Joker_Owned_Leave;
-
+                    btn.MouseEnter += Arcana_Owned_Enter;
+                    btn.MouseLeave += Arcana_Owned_Leave;
                 }
             }
-        #endregion
         }
+
+        private void AddArcanaCardToGrid()
+        {
+            if (player.ArcanaCardsOwned == null)
+                return;
+
+            List<Button> arcanaCardDisplay = ArcanaCardsOwned.Children.OfType<Button>().ToList();
+
+            SellArcanaBtn.Visibility = Visibility.Collapsed;
+            selecteArcanaCardsToSell = null;
+            selectedOwnedArcanaCardButton = null;
+
+            for (int i = 0; i < arcanaCardDisplay.Count; i++)
+            {
+                Button btn = arcanaCardDisplay[i];
+
+                btn.Content = null;
+                btn.Tag = null;
+                btn.BorderBrush = Brushes.Black;
+                btn.BorderThickness = new Thickness(1);
+
+                btn.MouseEnter -= Arcana_Owned_Enter;
+                btn.MouseLeave -= Arcana_Owned_Leave;
+
+                if (i < player.ArcanaCardsOwned.Count)
+                {
+                    ArcanaCards arcanaCard = player.ArcanaCardsOwned[i];
+                    btn.Tag = arcanaCard;
+                    btn.Content = BuildArcanaCardVisual(arcanaCard);
+
+                    btn.MouseEnter += Arcana_Owned_Enter;
+                    btn.MouseLeave += Arcana_Owned_Leave;
+                }
+            }
+        }
+
+        private void Arcana_Owned_Enter(object sender, MouseEventArgs e)
+        {
+            if (sender is Button arcanaButton && arcanaButton.Tag is ArcanaCards arcanaCard)
+            {
+                AnimateCard(arcanaButton, -10);
+
+                ArcanaHoverText.Text =
+                     $"{arcanaCard.Name}\n\n{arcanaCard.EffectDiscription}\n\nNumber of cards affected: {arcanaCard.NoCardsAffected}";
+
+                Point pos = arcanaButton.TranslatePoint(new Point(0, 0), OverlayCanvas);
+                //for the hover popup ive changed this to be the other side of teh arcana card side. 
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
+                Canvas.SetLeft(ArcanaHoverPopup, pos.X - arcanaButton.ActualWidth - 10);
+                Canvas.SetTop(ArcanaHoverPopup, pos.Y);
+
+                //this is for the sell button 
+                SellArcanaBtn.Tag = arcanaCard;
+                SellArcanaBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(SellArcanaBtn, pos.X);
+                Canvas.SetTop(SellArcanaBtn, pos.Y + arcanaButton.ActualHeight + 10);
+
+                //this is for the use button and seeing if it will work. 
+                UseArcanaBtn.Tag = arcanaCard;
+                UseArcanaBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(UseArcanaBtn, pos.X );
+                Canvas.SetTop(UseArcanaBtn, pos.Y + arcanaButton.ActualHeight + 10);
+            }
+        }
+
+        private void Arcana_Owned_Leave(object sender, MouseEventArgs e)
+        {
+            //jsut resetting the animations. 
+            if (sender is Button arcanaButton && arcanaButton.Tag is ArcanaCards)
+            {
+                AnimateCard(arcanaButton, 0);
+               //I removed this as it was to use the cards. 
+            }
+        }
+
+        private void ClickedOnArcanaShopCard(object sender, RoutedEventArgs e)
+        {
+            //I have to pass in the sender as a button to get said index of the joker card. 
+            if ((sender is Button clickedButton) && (clickedButton.Tag is ArcanaCards ArcanaClicked) && (player.Money >= ArcanaClicked.Price))
+            {
+                bool alreadyOwned = player.ArcanaCardsOwned.Any(a => a.Name == ArcanaClicked.Name);
+
+                if (!alreadyOwned)
+                {
+                    player.ArcanaCardsOwned.Add(ArcanaClicked);//adding the joker card to the player class list
+                    //activating the front end ui
+                    AddArcanaCardToGrid();
+                    //removing tags and content. 
+                    clickedButton.Tag = null;
+                    clickedButton.Content = "Bought";
+                    clickedButton.IsEnabled = false;
+                    //updating the player money and ui
+                    player.Money -= ArcanaClicked.Price;
+                    PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
+                    //collapse the popup
+                    ArcanaHoverPopup.Visibility = Visibility.Collapsed;
+
+                    //checking that there isint more than 5 joker cards in the shop.
+                }
+                else if (!alreadyOwned && player.ArcanaCardsOwned.Count > 2)
+                {
+                    clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
+                }
+            }
+        }
+        private void Use_ArcanaCard(object sender, RoutedEventArgs e)
+        {
+            //now this is new, I have to add the affects of the arcana cards to this section. 
+            if(sender is Button clickedButton && clickedButton.Tag is ArcanaCards ArcanaClicked && selectedHand.Count <= ArcanaClicked.NoCardsAffected)
+            {
+                foreach (var card in selectedHand)
+                {
+                    card.Effect = ArcanaClicked.Affect;
+                    Button matchingEffectButton = GetButtonForCard(card);
+                    if(matchingEffectButton?.Content is Grid cardGrid)
+                    {
+                        AddCardEffectOverlay(cardGrid, card);
+                    }
+                }
+                player.ArcanaCardsOwned.Remove(ArcanaClicked);
+
+            }else
+            {
+                ArcanaHoverText.Visibility = Visibility.Visible;
+                ArcanaHoverText.Text = $"You cant change on more than the set requirements of the card. ";
+            }
+        }
+        //Trying to target a spesific cards for the arcana affects to take place. 
+        private Button GetButtonForCard(Cards Targetedcards)
+        {
+            List<Button> handButtons = new List<Button>
+            {
+                 HandCard1, HandCard2, HandCard3, HandCard4,
+                 HandCard5, HandCard6, HandCard7, HandCard8
+            };
+            return handButtons.FirstOrDefault(btn => btn.Tag == Targetedcards);
+        }
+        #endregion
     }
 }
+
