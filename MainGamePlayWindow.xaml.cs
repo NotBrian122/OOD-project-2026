@@ -45,11 +45,11 @@ namespace OOD_project_2026
         List<JokerCards> AllJokers = JokerCards.GenerateJokerCards();
         List<JokerCards> playersJokerCardsOwned = new List<JokerCards>();
 
-         //Generating Arcana Cards
+        //Generating Arcana Cards
         List<ArcanaCards> AllArcanaCards = ArcanaCards.GenreatearcanraCards();
         //creating a list of all arcana cards owned. 
         List<ArcanaCards> playerArcanaCardsOwned = new List<ArcanaCards>();
-        
+
         //its giving out to me for creating the player. 
         Player player;
         //this was set for changing or selling joker cards. 
@@ -58,6 +58,7 @@ namespace OOD_project_2026
 
         //the same for arcana cards. 
         private ArcanaCards selectedArcanaCardsOwned = null;
+        private ArcanaCards selecteArcanaCardsToSell = null;
         private Button selectedOwnedArcanaCardButton = null;
         //creating a bool to see if the shop is open or not. 
         private bool isShopOpen = false;
@@ -74,7 +75,7 @@ namespace OOD_project_2026
             //creating the deck. it works. 
             deck.CreateDeck();
             //Generating a list of jokers.
-            
+
             //drawing the cards 
             DrawCards(8);
             //refreshing the ui before we start the game. 
@@ -503,7 +504,7 @@ namespace OOD_project_2026
                 // Remove played cards from actual hand
                 foreach (var card in HandPlayed.ToList())
                 {
-                   //removing the palyed hand 
+                    //removing the palyed hand 
                     HandPlayed.Remove(card);
                     //adding the played hand back into the deck.
                     deck.FullDeck.Add(card);
@@ -514,7 +515,7 @@ namespace OOD_project_2026
                 //win window; this will allow you to go to the shop. 
                 WinScreen();
                 //resetting current chip score of player.
-                
+
 
                 //im going to put the shop menu window into this.
                 //from the win screen. 
@@ -717,7 +718,7 @@ namespace OOD_project_2026
             int luckySucessRoll = hasRolling ? 19 : 20;//can be either 19 or 20
             int maxRoll = hasRolling ? 10 : 20;//can be either 10 or 20
 
-          
+
             //im creating a copy as everything will be removed later on. 
             foreach (var joker in jokers.ToList())
             {
@@ -792,7 +793,7 @@ namespace OOD_project_2026
                         }
                         break;
                     case "Joker of Power":
-                       
+
                         //this is for higher palying hands. 
                         if (handPlayed == "Flush")
                         {
@@ -1265,7 +1266,7 @@ namespace OOD_project_2026
         {
             //this method returns a button of the joker cards I want to target 
             //this allows me to activate the previous method popcardsWithRoataion
-            return JokerCardsOwned.Children.OfType<Button>().FirstOrDefault(btn => btn.Tag  == joker);
+            return JokerCardsOwned.Children.OfType<Button>().FirstOrDefault(btn => btn.Tag == joker);
         }
         #endregion
         #region ShopPopup and logic. 
@@ -1280,7 +1281,7 @@ namespace OOD_project_2026
             for (int i = 0; i < player.HandsLeft; i++)
             {
                 //adding the round and how hard it is. 
-                player.Money += round+5;
+                player.Money += round + 5;
                 //then adding hands left as a bonus to the money earned.
                 player.Money += player.HandsLeft;
                 MoneyEarnedDisplay.Text = $"{player.Money}";
@@ -1340,13 +1341,13 @@ namespace OOD_project_2026
             //loading arcana cards into the shop
             LoadArcanaCardsIntoShop();
 
-        } 
+        }
         private void HideShopOverlay()
         {
             //this is to hide the shop overlay when you win. 
             ShopOverlayBackground.Visibility = Visibility.Collapsed;
             ShopOverLay.Visibility = Visibility.Collapsed;
-            MainGameplayScreen.IsEnabled = true; 
+            MainGameplayScreen.IsEnabled = true;
             //for when the shop is closed. 
             MainGameplayScreen.IsHitTestVisible = true;
             OwnedJokerBar.IsHitTestVisible = true;
@@ -1360,7 +1361,7 @@ namespace OOD_project_2026
                 To = 0,
                 Duration = TimeSpan.FromMilliseconds(150)
             };
-        }     
+        }
         //continue from shop
         private void ContinueFromShop_Click(object sender, RoutedEventArgs e)
         {
@@ -1371,9 +1372,9 @@ namespace OOD_project_2026
             player.HandsLeft = 3;
             player.DisguardsLeft = 3;
             player.CurrentChips = 0;
-            
+
         }
-     
+
         private void ContinueFromWinScreen_Click(object sender, RoutedEventArgs e)
         {
             ShowShopVerlay();
@@ -1460,7 +1461,7 @@ namespace OOD_project_2026
             Button JokerCard = sender as Button;
             JokerCards jc = JokerCard?.Tag as JokerCards;
 
-            if (jc == null) 
+            if (jc == null)
                 return;
 
             AnimateCard(JokerCard, -10);
@@ -1474,7 +1475,7 @@ namespace OOD_project_2026
                 AnimateCard(jokerCard, 0);
                 //removing the overlay. 
                 JokerHoverPopup.Visibility = Visibility.Collapsed;
-            } 
+            }
 
             Button JokerCard = sender as Button;
             JokerCards jc = JokerCard?.Tag as JokerCards;
@@ -1538,7 +1539,7 @@ namespace OOD_project_2026
                     JokerHoverPopup.Visibility = Visibility.Collapsed;
 
                     //checking that there isint more than 5 joker cards in the shop.
-                }else if(!alreadyOwned && player.JokerCardsOwned.Count > 5) 
+                } else if (!alreadyOwned && player.JokerCardsOwned.Count > 5)
                 {
                     clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
                 }
@@ -1574,15 +1575,15 @@ namespace OOD_project_2026
                 //removing old hover events to prevent stacking.
                 btn.MouseEnter -= Joker_Owned_Enter;
                 btn.MouseLeave -= Joker_Owned_Leave;
-           
-                
+
+
 
                 //if the index is less than the amount of joker card owned. 
                 if (i < player.JokerCardsOwned.Count)
                 {
                     //creating a new btn for selling jokers on the grid. 
                     //based off of the positon of the joker card btn
-                  
+
                     JokerCards joker = player.JokerCardsOwned[i];
                     btn.Tag = joker;
                     btn.Content = BuildJokerCardVisual(joker);
@@ -1590,7 +1591,7 @@ namespace OOD_project_2026
                     //attaching hover. 
                     btn.MouseEnter += Joker_Owned_Enter;
                     btn.MouseLeave += Joker_Owned_Leave;
-                   
+
                 }
             }
 
@@ -1632,7 +1633,7 @@ namespace OOD_project_2026
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-         //sellign the joker card
+        //sellign the joker card
         private void SellJokerCard_Click(object sender, RoutedEventArgs e)
         {
             //if there isint anything to "sell" then returns 
@@ -1671,7 +1672,7 @@ namespace OOD_project_2026
         {
             //this is a helper method with updating joker cards and images. 
             Grid jokerGrid = new Grid();
-  
+
             Image baseImage = new Image
             {
                 Source = new BitmapImage(
@@ -1718,9 +1719,9 @@ namespace OOD_project_2026
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
                 button.Content = BuildArcanaCardVisual(shopArcana[index]);
-            }else
+            } else
             {
-                button.Tag=null;
+                button.Tag = null;
                 button.Content = "Sold Out";
                 button.IsEnabled = false;
             }
@@ -1737,14 +1738,14 @@ namespace OOD_project_2026
                 IsHitTestVisible = false//these arent clickable
             };
             //adding arcana cards to grid, 
-            arcanaGrid.Children.Add( baseImage );
+            arcanaGrid.Children.Add(baseImage);
 
             return arcanaGrid;
         }
-
+      
         private void Arcana_Shop_Enter(object sender, MouseEventArgs e)
         {
-           
+
             if (sender is Button btn && btn.Tag is ArcanaCards arcanaCard)
             {
                 selectedArcanaCardsOwned = arcanaCard;
@@ -1768,7 +1769,7 @@ namespace OOD_project_2026
                 Canvas.SetTop(ArcanaHoverPopup, pos.Y);
             }
         }
-        private void Arcana_Shop_Leave(object sender, EventArgs e) 
+        private void Arcana_Shop_Leave(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.Tag is ArcanaCards)
             {
@@ -1778,11 +1779,55 @@ namespace OOD_project_2026
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-        private void Sell_Arcana_Card(Object sender, RoutedEventArgs e) 
-        {
+        private void Sell_Arcana_Card(Object sender, RoutedEventArgs e)
+        {  //this is just an edgecase
+            if (player.ArcanaCardsOwned == null)
+            {
+                return;
+            }
 
-        }
+            //creating a list of joker cards to display. 
+            List<Button> ArcanaCardDisplay = ArcanaCardsOwned.Children.OfType<Button>().ToList();
+
+            //setting the joker btn to be colapsed 
+            SellArcanaBtn.Visibility = Visibility.Collapsed;
+            selecteArcanaCardsToSell = null;
+            selectedOwnedArcanaCardButton = null;
+
+            for (int i = 0; i < ArcanaCardDisplay.Count; i++)
+            {
+                Button btn = ArcanaCardDisplay[i];
+
+                // clear old state just in case. 
+                btn.Content = null;
+                btn.Tag = null;
+                //chaning the btn thickness. 
+                btn.BorderBrush = Brushes.Black;
+                btn.BorderThickness = new Thickness(1);
+
+                //removing old hover events to prevent stacking.
+                btn.MouseEnter -= Joker_Owned_Enter;
+                btn.MouseLeave -= Joker_Owned_Leave;
+
+
+
+                //if the index is less than the amount of joker card owned. 
+                if (i < player.JokerCardsOwned.Count)
+                {
+                    //creating a new btn for selling jokers on the grid. 
+                    //based off of the positon of the joker card btn
+
+                    ArcanaCards arcanaCard = player.ArcanaCardsOwned[i];
+                    btn.Tag = arcanaCard;
+                    btn.Content = BuildJokerCardVisual(arcanaCard);
+
+                    //attaching hover. 
+                    btn.MouseEnter += Joker_Owned_Enter;
+                    btn.MouseLeave += Joker_Owned_Leave;
+
+                }
+            }
         #endregion
+        }
     }
-
 }
