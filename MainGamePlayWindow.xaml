@@ -397,7 +397,8 @@
                 <Border x:Name="ArcanaHoverPopup" Background="#DD111111" BorderBrush="White" BorderThickness="1"  CornerRadius="6" Padding="8" Visibility="Collapsed" IsHitTestVisible="False">
                     <TextBlock x:Name="ArcanaHoverText" Foreground="White" TextWrapping="Wrap" Width="180" />
                 </Border>
-                <Button x:Name="SellJokerBtn" Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="SellJokerCard_Click" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True" />
+                <Button x:Name="SellArcanaBtn"  Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="SellJokerCard_Click" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True"/>
+                <Button x:Name="SellJokerBtn" Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="SellJokerCard_Click" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True"/>
             </Canvas>
 
         </Grid>

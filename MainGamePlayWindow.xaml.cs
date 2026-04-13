@@ -1742,21 +1742,21 @@ namespace OOD_project_2026
             return arcanaGrid;
         }
 
-        private void Arcana_Shop_Enter(object sender, EventArgs e)
+        private void Arcana_Shop_Enter(object sender, MouseEventArgs e)
         {
            
             if (sender is Button btn && btn.Tag is ArcanaCards arcanaCard)
             {
                 selectedArcanaCardsOwned = arcanaCard;
-                selectedOwnedJokerButton = btn;
-                SellJokerBtn.Tag = arcanaCard;
+                selectedArcanaCardsOwned = btn;
+                SellArcanaBtn.Tag = arcanaCard;
 
-                Button sellJokerBtn = SellJokerBtn;
+                Button sellArcanaBtn = SellArcanaBtn;
 
                 Point posSell = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
-                sellJokerBtn.Visibility = Visibility.Visible;
-                Canvas.SetLeft(sellJokerBtn, posSell.X);
-                Canvas.SetTop(sellJokerBtn, posSell.Y + btn.ActualHeight + 5);
+                sellArcanaBtn.Visibility = Visibility.Visible;
+                Canvas.SetLeft(sellArcanaBtn, posSell.X);
+                Canvas.SetTop(sellArcanaBtn, posSell.Y + btn.ActualHeight + 5);
 
                 AnimateCard(btn, -10);
 
@@ -1777,6 +1777,10 @@ namespace OOD_project_2026
                 //hiding the aarcana popup
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
+        }
+        private void Sell_Arcana_Card(Object sender, RoutedEventArgs e) 
+        {
+
         }
         #endregion
     }
