@@ -123,22 +123,11 @@ namespace OOD_project_2026
                     currentButton.Tag = currentCard;
 
                     Grid cardGrid = new Grid();
+                     //adding card affects to certian cards if they contain said affect. 
+                    cardGrid = BuildMainCardVisuals(currentCard);
+                    currentButton.Content = cardGrid ;
 
-                    Image baseImage = new Image
-                    {
-                        Source = new BitmapImage(
-                            new Uri($"pack://application:,,,/Images/Cards/{currentCard}")
-                        ),
-                        Stretch = Stretch.Fill,
-                        IsHitTestVisible = false
-                    };
-
-                    cardGrid.Children.Add(baseImage);
-
-                    //addomg card affects to certian cards if they contain said affect. 
-                    
-                    AddCardEffectOverlay(cardGrid, currentCard, selectedArcanaCardsOwned);
-                    currentButton.Content = cardGrid;
+                   
 
                     //I moved this down here to make it easier  for comprehension
                     currentButton.Click += Card_Click;
@@ -152,148 +141,143 @@ namespace OOD_project_2026
         }
         //this is to change the overlay, I made this a while ago and wanted to see if it works, had to do some other
         //joker card stuff before hand but now I guess it works?
-        private void AddCardEffectOverlay(Grid cardGrid, Cards card,ArcanaCards arcanaCards)
+        private void AddCardEffectOverlay(Grid cardGrid, Cards card)
         {
-            if (arcanaCards == null)
+            if (card == null)
                 return;
-            Image overLayImage = null;
-            /*removed the old code as it doesnt support newer cards
-            //this is just for testing 
-            if (card.Effect == "Lucky")
-            {
-                //creating a new overlay image. 
-                Image overlay = new Image
-                {
-                    //mapping a new source. 
-                    Source = new BitmapImage(
-                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Lucky.png")
-                    ),
-                    Stretch = Stretch.Fill,//I had to make this stretch like the other card
-                    IsHitTestVisible = false//making it so I can click said card. 
-                };
 
-                cardGrid.Children.Add(overlay);
-                //beyond this its copy and paste. 
+            var oldOverlays = cardGrid.Children
+                .OfType<FrameworkElement>()
+                .Where(x => x.Tag != null && x.Tag.ToString() == "EffectOverlay")
+                .ToList();
+
+            foreach (var oldOverlay in oldOverlays)
+            {
+                cardGrid.Children.Remove(oldOverlay);
             }
-            else if (card.Effect == "Glass")
+
+            if (string.IsNullOrWhiteSpace(card.Effect))
+                return;
+
+            Image overlayImage = null;
+
+            switch (card.Effect)
             {
-                Image overlay = new Image
-                {
-                    Source = new BitmapImage(
-                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Glass.png")
-                    ),
-                    Stretch = Stretch.Fill,
-                    IsHitTestVisible = false
-                };
-
-                cardGrid.Children.Add(overlay);
-
-            }
-            else if (card.Effect == "Silver")
-            {
-                Image overlay = new Image
-                {
-                    Source = new BitmapImage(
-                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Silver.png")
-                    ),
-                    Stretch = Stretch.Fill,
-                    IsHitTestVisible = false
-                };
-
-                cardGrid.Children.Add(overlay);
-
-            }
-            else if (card.Effect == "Gold")
-            {
-                Image overlay = new Image
-                {
-                    Source = new BitmapImage(
-                        new Uri("pack://application:,,,/Images/CardTypeOverlays/Gold.png")
-                    ),
-                    Stretch = Stretch.Fill,
-                    IsHitTestVisible = false
-                };
-
-                cardGrid.Children.Add(overlay);
-
-            }
-            else if (card.Effect == "4Mult")
-            {
-                Image overlay = new Image
-                {
-                    Source = new BitmapImage(
-                        new Uri("pack://application:,,,/Images/CardTypeOverlays/4Mult.png")
-                    ),
-                    Stretch = Stretch.Fill,
-                    IsHitTestVisible = false
-                };
-
-                cardGrid.Children.Add(overlay);
-
-            }
-            */
-            switch (arcanaCards.Effection)
-            {
-                //creating a new overlay I changed the method as it was a pain to set. 
                 case "Lucky":
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    //beyond this its copy and paste. 
-                    break;
-                case "Glass":
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Silver":
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Gold":
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "4Mult":
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Random":
-                    //gives the palyer 2 random arcana cards
-                    random.Next(2);
-                    break;
-                case "Hanged":
-                    //removed 2 cards from the deck.
-                    deck.FullDeck.Remove(card);
-                    DrawCards(1);
-                    break;
-                case "Clubs":
-                    card.SuitName = "Clubs";
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Hearts":
-                    //converts to hearts
-                    card.SuitName = "Hearts";
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Diamonds":
-                    //converts to diamonds
-                    card.SuitName = "Diamonds";
-                    overLayImage = CreateOverLayImage(card.ToString());
-                    break;
-                case "Spades":
-                    //converts to Spades
-                    card.SuitName = "Spades";
-                    overLayImage = CreateOverLayImage(card.ToString());
+                    overlayImage = CreateEffectOverlayImage("Lucky.png");
                     break;
 
-                   
+                case "Glass":
+                    overlayImage = CreateEffectOverlayImage("Glass.png");
+                    break;
+
+                case "Silver":
+                    overlayImage = CreateEffectOverlayImage("Silver.png");
+                    break;
+
+                case "Gold":
+                    overlayImage = CreateEffectOverlayImage("Gold.png");
+                    break;
+
+                case "4Mult":
+                    overlayImage = CreateEffectOverlayImage("4Mult.png");
+                    break;
+
+                // suit changes do not need to load a second full card image as overlay
+                case "Clubs":
+                case "Hearts":
+                case "Diamonds":
+                case "Spades":
+                    break;
             }
-            if(overLayImage != null)
+
+            if (overlayImage != null)
             {
-               cardGrid.Children.Add(overLayImage);
+                cardGrid.Children.Add(overlayImage);
             }
+        }
+        /*removed the old code as it doesnt support newer cards
+        //this is just for testing 
+        if (card.Effect == "Lucky")
+        {
+            //creating a new overlay image. 
+            Image overlay = new Image
+            {
+                //mapping a new source. 
+                Source = new BitmapImage(
+                    new Uri("pack://application:,,,/Images/CardTypeOverlays/Lucky.png")
+                ),
+                Stretch = Stretch.Fill,//I had to make this stretch like the other card
+                IsHitTestVisible = false//making it so I can click said card. 
+            };
+
+            cardGrid.Children.Add(overlay);
+            //beyond this its copy and paste. 
+        }
+        else if (card.Effect == "Glass")
+        {
+            Image overlay = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri("pack://application:,,,/Images/CardTypeOverlays/Glass.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(overlay);
 
         }
-        private Image CreateOverLayImage(string fileName)
+        else if (card.Effect == "Silver")
+        {
+            Image overlay = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri("pack://application:,,,/Images/CardTypeOverlays/Silver.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(overlay);
+
+        }
+        else if (card.Effect == "Gold")
+        {
+            Image overlay = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri("pack://application:,,,/Images/CardTypeOverlays/Gold.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(overlay);
+
+        }
+        else if (card.Effect == "4Mult")
+        {
+            Image overlay = new Image
+            {
+                Source = new BitmapImage(
+                    new Uri("pack://application:,,,/Images/CardTypeOverlays/4Mult.png")
+                ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(overlay);
+
+        }
+        */
+
+        private Image CreateEffectOverlayImage(string fileName)
         {
             return new Image
             {
                 Source = new BitmapImage(
-            new Uri($"pack://application:,,,/Images/CardTypeOverlays/{fileName}")
+                    new Uri($"pack://application:,,,/Images/CardTypeOverlays/{fileName}")
                 ),
                 Stretch = Stretch.Fill,
                 IsHitTestVisible = false,
@@ -1334,7 +1318,25 @@ namespace OOD_project_2026
             }
         }
 
+        private Grid BuildMainCardVisuals(Cards card)
+        {
+            Grid cardGrid = new Grid();
 
+            Image baseImage = new Image
+            {
+                Source = new BitmapImage(
+           new Uri($"pack://application:,,,/Images/Cards/{card}")
+       ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(baseImage);
+
+            AddCardEffectOverlay(cardGrid, card);
+
+            return cardGrid;
+        }
         //this is for joker card animations 
         //I have to find the buttons firstly to target like the list point. 
         private Button FindOwnedJokerButton(JokerCards joker)
@@ -1943,7 +1945,7 @@ namespace OOD_project_2026
             }
         }
         
-    #endregion
+  
         //clikcin on the shop card
         private void ClickedOnArcanaShopCard(object sender, RoutedEventArgs e)
         {
@@ -2013,43 +2015,142 @@ namespace OOD_project_2026
                //I removed this as it was to use the cards. 
             }
         }
-        
-        //using the arcana cards. 
 
+        //using the arcana cards. 
         private void Use_ArcanaCard(object sender, RoutedEventArgs e)
         {
-            //now this is new, I have to add the affects of the arcana cards to this section. 
-            if(sender is Button clickedButton && clickedButton.Tag is ArcanaCards ArcanaClicked && selectedHand.Count <= ArcanaClicked.NoCardsAffected)
-            {
-                foreach (var card in selectedHand)
-                {
-                    card.Effect = ArcanaClicked.Effection;
-                    Button matchingEffectButton = GetButtonForCard(card);
-                    if(matchingEffectButton?.Content is Grid cardGrid)
-                    {
-                        AddCardEffectOverlay(cardGrid, card, ArcanaClicked);
-                    }
-                }
-                player.ArcanaCardsOwned.Remove(ArcanaClicked);
+            Button clickedButton = sender as Button;
+            if (clickedButton == null)
+                return;
 
-            }else
+            ArcanaCards arcanaClicked = clickedButton.Tag as ArcanaCards;
+            if (arcanaClicked == null)
+                return;
+
+            if (selectedHand.Count == 0)
             {
-                ArcanaHoverText.Visibility = Visibility.Visible;
-                ArcanaHoverText.Text = $"You cant change on more than the set requirements of the card. ";
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
+                ArcanaHoverText.Text = "Select at least one card first.";
+                return;
             }
+
+            if (selectedHand.Count > arcanaClicked.NoCardsAffected)
+            {
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
+                ArcanaHoverText.Text = "You selected too many cards.";
+                return;
+            }
+
+            Debug.WriteLine("Arcana clicked: " + arcanaClicked.CardName);
+            Debug.WriteLine("Arcana effect: " + arcanaClicked.Effection);
+
+            foreach (Cards card in selectedHand.ToList())
+            {
+                ApplyArcanaToCard(card, arcanaClicked);
+
+                Button handButton = GetButtonForCard(card);
+                if (handButton != null)
+                {
+                    handButton.Content = BuildMainCardVisuals(card);
+                    handButton.Tag = card;
+                }
+            }
+
+            player.ArcanaCardsOwned.Remove(arcanaClicked);
+
+            selectedHand.Clear();
+            ArcanaHoverPopup.Visibility = Visibility.Collapsed;
+            UseArcanaBtn.Visibility = Visibility.Collapsed;
+            SellArcanaBtn.Visibility = Visibility.Collapsed;
+
+            AddArcanaCardToGrid();
+            RefreshHandUI();
         }
         //Trying to target a spesific cards for the arcana affects to take place. 
         private Button GetButtonForCard(Cards Targetedcards)
         {
-            //getting the list
             List<Button> handButtons = new List<Button>
-            {
+             {
                  HandCard1, HandCard2, HandCard3, HandCard4,
                  HandCard5, HandCard6, HandCard7, HandCard8
-            };
-            return handButtons.FirstOrDefault(btn => btn.Tag == Targetedcards);//returning the new list of cards. 
+             };
+
+            return handButtons.FirstOrDefault(btn => btn.Tag == Targetedcards);
         }
-    
+        //applying the arcana 
+        private void ApplyArcanaToCard(Cards card, ArcanaCards arcana)
+        {
+            if (card == null || arcana == null)
+                return;
+
+            switch (arcana.Effection)
+            {
+                case "Lucky":
+                    card.Effect = "Lucky";
+                    break;
+
+                case "Glass":
+                    card.Effect = "Glass";
+                    break;
+
+                case "Silver":
+                    card.Effect = "Silver";
+                    break;
+
+                case "Gold":
+                    card.Effect = "Gold";
+                    break;
+
+                case "4Mult":
+                    card.Effect = "4Mult";
+                    break;
+
+                case "Clubs":
+                    card.SuitName = "Clubs";
+                    card.Effect = "Clubs";
+                    break;
+
+                case "Hearts":
+                    card.SuitName = "Hearts";
+                    card.Effect = "Hearts";
+                    break;
+
+                case "Diamonds":
+                    card.SuitName = "Diamonds";
+                    card.Effect = "Diamonds";
+                    break;
+
+                case "Spades":
+                    card.SuitName = "Spades";
+                    card.Effect = "Spades";
+                    break;
+
+                case "Hanged":
+                    hand.Remove(card);
+                    HandDiscarded.Add(card);
+                    break;
+
+                case "Random":
+                    AddRandomArcanaCards(2);
+                    break;
+            }
+
+            Debug.WriteLine("Updated card image path: " + card.ToString());
+        }
+        private void AddRandomArcanaCards(int amount)
+        {
+            var availableArcana = AllArcanaCards
+                .Where(a => !player.ArcanaCardsOwned.Any(p => p.CardName == a.CardName))
+                .OrderBy(x => random.Next())
+                .Take(amount)
+                .ToList();
+
+            foreach (var arcana in availableArcana)
+            {
+                player.ArcanaCardsOwned.Add(arcana);
+            }
+        }  
+        #endregion
     }
 }
 

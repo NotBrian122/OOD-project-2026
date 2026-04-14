@@ -28,86 +28,28 @@ namespace OOD_project_2026
             Effection = effect;
         }
         //this is just a generating method to generate all of the cards in said class. 
-        public static List<ArcanaCards> GenreatearcanraCards()
+      
+          public static List<ArcanaCards> GenreatearcanraCards()
         {
-            List<ArcanaCards> ArcanaCards = new List<ArcanaCards>();
+            return new List<ArcanaCards>
+    {
+        new ArcanaCards("The Magician", "Enhances up to 2 selected cards into Lucky cards", 2, "Lucky", 3),
+        new ArcanaCards("The Empress", "Enhances up to 2 selected cards into Mult cards (+4 mult)", 2, "4Mult", 4),
+        new ArcanaCards("The Emperor", "Creates up to 2 random Tarot cards", 2, "Random", 2),
+        new ArcanaCards("The Chariot", "Turns 1 selected card into steel", 1, "Silver", 2),
+        new ArcanaCards("Justice", "Turns 1 selected card into glass", 1, "Glass", 3),
+        new ArcanaCards("The Sun", "Turns up to 3 selected cards into Gold cards", 3, "Gold", 3),
+        new ArcanaCards("Hanged Man", "Removes up to 3 selected cards from your hand", 3, "Hanged", 3),
+        new ArcanaCards("The Moon", "Turns up to 3 selected cards into clubs", 3, "Clubs", 1),
+        new ArcanaCards("The Star", "Turns up to 3 selected cards into hearts", 3, "Hearts", 1),
+        new ArcanaCards("The Tower", "Turns up to 3 selected cards into diamonds", 3, "Diamonds", 1),
+        new ArcanaCards("The World", "Turns up to 3 selected cards into spades", 3, "Spades", 1)
 
-            string[] CardName = {
-                "The Magician",
-                "The Empress",
-                "The Emperor",
-                "The Chariot", 
-                "Justice",
-                "Hanged man",
-                "The Moon",
-                "The Sun", 
-                "The Star",
-                "ZA WORLDA"
             };
-            string[] cardDiscription = { 
-                "Enchances 2 selected cards to Lucky Cards",
-                "Enchaces 2 selected cards to Mult Cards(+4 mult)",
-                "Creates up to 2 random Taroh Cards",
-                "Creates 1 selected card into steel\n(If the card is left in the hand, it adds 1.5 X mult to the final score)",
-                "Creates 1 card into Glass(x2 Mult but 1 in 4 chance of breaking once played)",
-                "Creates 1 gold card \n Leaving it in your hand it gives the player €1",
-                "Removes up to 3 selected cards from your hand",
-                "Turns 3 selected cards to clubs",
-                "Turns 3 selected cards to hearts",
-                "Turns 3 selected cards to diamonds",
-                "Turns 3 selected cards to Spades"
-            };
-            int[] cardsAffected =
-            {
-                2,//magician
-                2,//emperess
-                2,//emperor
-                1,//charoit
-                1,//Justice
-                3,//Hanged Man
-                3,//Moon
-                3,//Sun
-                3,//Star
-                3//World
-            };
-            int[] cardPrice = {
-                3,//magician
-                4,//emperess
-                2,//emperor
-                2,//charoit
-                3,//Justice
-                3,//Hanged Man
-                1,//Moon
-                1,//Sun
-                1,//Star
-                1//World
-            };
-            string[] Effection = 
-            {
-                "Lucky",
-                "4Mult",
-                "Random",
-                "Silver",
-                "Glass",
-                "Gold",
-                "Hanged",
-                "Clubs",
-                "Hearts",
-                "Diamonds",
-                "Spades"
-            };
-
-
-            //genereating the cards and adding them to a list based off of the strings
-            //yes they are hard coded but so are the joker cards. 
-            for (int i = 0; i < CardName.Length;i++)
-            {
-                ArcanaCards.Add(
-                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i],Effection[i], cardPrice[i]));
-            }
-            return ArcanaCards;
         }
 
-
     }
+
+
 }
+
