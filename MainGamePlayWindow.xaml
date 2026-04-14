@@ -325,15 +325,10 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="You Win!" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FFF1E240" />
-
                     <TextBlock Grid.Row="1" Text="Money Earned: " FontSize="18" HorizontalAlignment="Left"  Foreground="#FFD0B224" />
-
                     <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MoneyEarnedDisplay"  Text="0" FontSize="18" HorizontalAlignment="Right" Foreground="#FFE29E0A" />
-
                     <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="Round Score:" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFD0B224" />
-
                     <TextBlock Grid.Row="2" Grid.Column="1" x:Name="RoundScoreDisplay" Text="0" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFE29E0A" />
-
                     <Button Grid.Row="2" Grid.Column="1" Content="Continue" Width="120" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,20,0,0" Click="ContinueFromWinScreen_Click" />
                 </Grid>
             </Border>
@@ -366,8 +361,8 @@
                             <StackPanel>
                                 <TextBlock Text="Packs and cards" Foreground="White" Margin="0,0,0,8" />
                                 <WrapPanel HorizontalAlignment="Center">
-                                    <Button x:Name="CardPack1" Content="Buy Pack 1" Width="90" Height="145" Margin="8" />
-                                    <Button x:Name="CardPack2" Content="Buy Pack 2" Width="90" Height="145" Margin="8" />
+                                    <Button x:Name="CardPack1" Content="Buy Pack 1" Width="90" Height="145" Margin="8" Click="ClickedOnArcanaShopCard" />
+                                    <Button x:Name="CardPack2" Content="Buy Pack 2" Width="90" Height="145" Margin="8" Click="ClickedOnArcanaShopCard"/>
                                 </WrapPanel>
                             </StackPanel>
                         </Border>
@@ -397,7 +392,8 @@
                 <Border x:Name="ArcanaHoverPopup" Background="#DD111111" BorderBrush="White" BorderThickness="1"  CornerRadius="6" Padding="8" Visibility="Collapsed" IsHitTestVisible="False">
                     <TextBlock x:Name="ArcanaHoverText" Foreground="White" TextWrapping="Wrap" Width="180" />
                 </Border>
-                <Button x:Name="SellArcanaBtn"  Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="SellJokerCard_Click" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True"/>
+                <Button x:Name="SellArcanaBtn"  Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="Sell_Arcana_Card" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True"/>
+                <Button x:Name="UseArcanaCardBtn" Width ="60" Height="28" Background="Yellow" Foreground="White" Content="Use" Click="Use_ArcanaCard" BorderBrush="Black" Visibility="Collapsed" IsHitTestVisible="true"/>
                 <Button x:Name="SellJokerBtn" Width="60" Height="28" Background="Green" Foreground="White" Content="Sell" Click="SellJokerCard_Click" BorderBrush="White" Visibility="Collapsed" IsHitTestVisible="True"/>
             </Canvas>
 
