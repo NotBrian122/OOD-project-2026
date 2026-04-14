@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -1444,6 +1445,7 @@ namespace OOD_project_2026
                 button.Tag = shopJokers[index];
                 button.Content = shopJokers[index].ToString();
                 button.IsEnabled = true;
+                //changing the content of the button to be the joker card visual.
                 button.Visibility = Visibility.Visible;
                 button.Content = BuildJokerCardVisual(shopJokers[index]);
 
@@ -1874,7 +1876,7 @@ namespace OOD_project_2026
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
-        private void Sell_Arcana_Card(Object sender, RoutedEventArgs e)
+        private void Sell_Arcana_Card(object sender, RoutedEventArgs e)
         {  //this is just an edgecase
             if (player.ArcanaCardsOwned == null)
             {
@@ -1922,7 +1924,7 @@ namespace OOD_project_2026
 
                 }
             }
-        #endregion
+       
         } 
         private void Use_ArcanaCard(object sender, RoutedEventArgs e)
         {
@@ -1969,7 +1971,7 @@ namespace OOD_project_2026
 
             //hiding popups. 
             ArcanaHoverPopup.Visibility = Visibility.Collapsed;
-            UseArcanaBtn.Visibility = Visibility.Collapsed;
+            UseArcanaCardBtn.Visibility = Visibility.Collapsed;
             SellArcanaBtn.Visibility = Visibility.Collapsed;
 
             AddArcanaCardToGrid();
@@ -2021,6 +2023,7 @@ namespace OOD_project_2026
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
+ #endregion
         //getting and returning the card for the button. 
         private Button GetButtonForArcCard(Cards card)
         {
@@ -2031,15 +2034,31 @@ namespace OOD_project_2026
                  HandCard5, HandCard6, HandCard7, HandCard8
              };
             //returning the hand buttons for cars that are based of off the target cards. 
-            return handButtons.FirstOrDefault(card => card.Tag == Targetedcards);
+            return handButtons.FirstOrDefault(btn => btn.Tag == card);
         }
+
         private void ApplyArcanaToCard(Cards cards, ArcanaCards arcana)
         {
-
+            
         }
         private Grid BuildMainCardVisuals(Cards card)
         {
             Grid cardGrid = new Grid();
+
+            Image baseImage = new Image
+            {
+                Source = new BitmapImage(
+                 new Uri($"pack://application:,,,/Images/Cards/{card}")
+                 ),
+                Stretch = Stretch.Fill,
+                IsHitTestVisible = false
+            };
+
+            cardGrid.Children.Add(baseImage);
+
+            AddCardEffectOverlay(cardGrid, card);
+
+            return cardGrid;
 
 
         }

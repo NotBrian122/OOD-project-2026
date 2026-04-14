@@ -179,11 +179,11 @@
     <Resource Include="Images\JokerCards\Joker of Rolling.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Cards\4Mult.png" />
-    <Resource Include="Images\Cards\Glass.png" />
-    <Resource Include="Images\Cards\Gold.png" />
-    <Resource Include="Images\Cards\Lucky.png" />
-    <Resource Include="Images\Cards\Silver.png" />
+    <Resource Include="Images\OverLay\4Mult.png" />
+    <Resource Include="Images\OverLay\Glass.png" />
+    <Resource Include="Images\OverLay\Gold.png" />
+    <Resource Include="Images\OverLay\Lucky.png" />
+    <Resource Include="Images\OverLay\Silver.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\ArcanaCards\Hanged man.png" />
