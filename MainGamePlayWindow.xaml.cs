@@ -454,6 +454,7 @@ namespace OOD_project_2026
             // Remove played cards from actual hand
             foreach (var card in playedOrderHand)
             {
+                //
                 hand.Remove(card);
                 HandPlayed.Add(card);
             }
@@ -1260,8 +1261,6 @@ namespace OOD_project_2026
                 btn.Margin = new Thickness(0);
             }
         }
-
-
         //this is for joker card animations 
         //I have to find the buttons firstly to target like the list point. 
         private Button FindOwnedJokerButton(JokerCards joker)
@@ -1949,7 +1948,7 @@ namespace OOD_project_2026
                 ArcanaHoverText.Text = "You selected too many cards.";
                 return;
             }
-
+            //this is for debugging as I need to find out if everything ampps together correctly. 
             Debug.WriteLine("Arcana clicked: " + arcanaClicked.CardName);
             Debug.WriteLine("Arcana effect: " + arcanaClicked.Effection);
 
@@ -2023,7 +2022,7 @@ namespace OOD_project_2026
             }
         }
         //getting and returning the card for the button. 
-        private Button GetButtonForArcCard(Button btn)
+        private Button GetButtonForArcCard(Cards card)
         {
             //creating a new list of handbuttons that have been used. 
             List<Button> handButtons = new List<Button>
@@ -2032,7 +2031,17 @@ namespace OOD_project_2026
                  HandCard5, HandCard6, HandCard7, HandCard8
              };
             //returning the hand buttons for cars that are based of off the target cards. 
-            return handButtons.FirstOrDefault(btn => btn.Tag == Targetedcards);
+            return handButtons.FirstOrDefault(card => card.Tag == Targetedcards);
+        }
+        private void ApplyArcanaToCard(Cards cards, ArcanaCards arcana)
+        {
+
+        }
+        private Grid BuildMainCardVisuals(Cards card)
+        {
+            Grid cardGrid = new Grid();
+
+
         }
     }
 }

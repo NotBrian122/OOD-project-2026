@@ -14,15 +14,17 @@ namespace OOD_project_2026
         public string EffectDiscription { get; set; }
         public int NoCardsAffected { get; set; }    
         public int CardPrice { get; set; }
-       
+
+        public string Effection {  get; set; }
         public ArcanaCards() { }
 
-        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,int cardPrice)
+        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,string effection,int cardPrice)
         {
             CardName = cardName;
             EffectDiscription = effectDiscription;
             NoCardsAffected = noCardsAffected;
             CardPrice = cardPrice;
+            Effection = effection;
         }
         //this is just a generating method to generate all of the cards in said class. 
         public static List<ArcanaCards> GenreatearcanraCards()
@@ -78,13 +80,27 @@ namespace OOD_project_2026
                 1,//Star
                 1//World
             };
+            string[] effection =
+            {
+                "Lucky",//magician
+                "4Mult",//emperess
+                "Random",//emperor
+                "Silver",//charoit
+                "Glass",//Justice
+                "Hanged",//Hanged Man
+                "Clubs",//Moon
+                "Hearts",//Sun
+                "Diamonds",//Star
+                "Spades"//World
+
+            };
 
             //genereating the cards and adding them to a list based off of the strings
             //yes they are hard coded but so are the joker cards. 
             for(int i = 0; i < CardName.Length;i++)
             {
                 ArcanaCards.Add(
-                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i], cardPrice[i]));
+                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i],effection[i], cardPrice[i]));
             }
             return ArcanaCards;
         }

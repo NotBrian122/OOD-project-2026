@@ -75,7 +75,7 @@ namespace OOD_project_2026
         }
         public void CardEffectAdd()
         {
-            string[] effect = { "4Mult", "Glass", "Gold", "Silver", "Lucky" };
+            string[] effect = { "4Mult", "Glass", "Silver", "Lucky" };
 
         }
         public int CompareTo(Cards other)
