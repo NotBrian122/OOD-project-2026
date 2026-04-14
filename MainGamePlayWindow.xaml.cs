@@ -1925,40 +1925,43 @@ namespace OOD_project_2026
                 }
             }
        
-        } 
+        }
         private void Use_ArcanaCard(object sender, RoutedEventArgs e)
         {
-            //edgecase for clickedbutton
-            Button clickedButton = sender as Button;
-            if (clickedButton == null)
+            // Use the tracked selected arcana card, not the button's tag
+            if (selecteArcanaCardsToSell == null)
+            {
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
+                ArcanaHoverText.Text = "No arcana card selected.";
                 return;
-            //edgecase for arcanacards that arent clicked 
-            ArcanaCards arcanaClicked = clickedButton.Tag as ArcanaCards;
-            if (arcanaClicked == null)
-                return;
-            //if the selected hand count 
+            }
+
+            ArcanaCards arcanaClicked = selecteArcanaCardsToSell;
+
+            // Check if any cards are selected
             if (selectedHand.Count == 0)
             {
                 ArcanaHoverPopup.Visibility = Visibility.Visible;
                 ArcanaHoverText.Text = "Select at least one card first.";
                 return;
             }
-            //selecting too many cards. 
+
+            // Check if too many cards are selected
             if (selectedHand.Count > arcanaClicked.NoCardsAffected)
             {
                 ArcanaHoverPopup.Visibility = Visibility.Visible;
-                ArcanaHoverText.Text = "You selected too many cards.";
+                ArcanaHoverText.Text = $"Select up to {arcanaClicked.NoCardsAffected} card(s).";
                 return;
             }
-            //this is for debugging as I need to find out if everything ampps together correctly. 
+
             Debug.WriteLine("Arcana clicked: " + arcanaClicked.CardName);
             Debug.WriteLine("Arcana effect: " + arcanaClicked.Effection);
 
-            //appling affects to the arcana cards and the cards. 
+            // Apply effects to selected cards
             foreach (Cards card in selectedHand.ToList())
             {
                 ApplyArcanaToCard(card, arcanaClicked);
-                //passing in the hand button to get the button for the cards. 
+
                 Button handButton = GetButtonForArcCard(card);
                 if (handButton != null)
                 {
@@ -1966,17 +1969,27 @@ namespace OOD_project_2026
                     handButton.Tag = card;
                 }
             }
-            //removing the arcana card. 
+
+            // Remove the used arcana card from player's inventory
             player.ArcanaCardsOwned.Remove(arcanaClicked);
 
-            //hiding popups. 
+            // Clear selection state
+            selecteArcanaCardsToSell = null;
+            selectedOwnedArcanaCardButton = null;
+
+            // Hide popups
             ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             UseArcanaCardBtn.Visibility = Visibility.Collapsed;
             SellArcanaBtn.Visibility = Visibility.Collapsed;
 
+            // Clear the selected hand after using the arcana
+            selectedHand.Clear();
+
+            // Refresh UI
             AddArcanaCardToGrid();
             RefreshHandUI();
         }
+
         private void Arcana_Owned_Enter(object sender, MouseEventArgs e)
         {
             //again its ripped stright from the joker owned enter method. 
@@ -1985,6 +1998,7 @@ namespace OOD_project_2026
                 selecteArcanaCardsToSell = ArcCard;
                 selectedOwnedArcanaCardButton = btn;
                 SellArcanaBtn.Tag = ArcCard;
+                UseArcanaCardBtn.Tag = ArcCard;//added this for the use button. 
 
                 Button sellArcBtn = SellArcanaBtn;
                 Button useArcBtn = UseArcanaCardBtn;
@@ -2039,7 +2053,45 @@ namespace OOD_project_2026
 
         private void ApplyArcanaToCard(Cards cards, ArcanaCards arcana)
         {
-            
+            switch (arcana.Effection)
+            {
+                case "Lucky":
+                    cards.Effect = "Lucky";
+                    break;
+                case "4Mult":
+                    cards.Effect = "4Mult";
+                    break;
+                case "Random":
+                    //giving 2 new cards to the user. 
+                    player.ArcanaCardsOwned.Clear();
+
+                    break;
+                case "Silver":
+                    cards.Effect = "Silver";
+                    break;
+                case "Glass":
+                    cards.Effect = "Glass";
+                    break;
+                case "Hanged":
+                    //removed the card. 
+                    break;
+                case "Clubs":
+                    //changing the suitname to clubs. 
+                    cards.SuitName = "Clubs";
+                    break;
+                case "Hearts":
+                    //Hearts suit
+                    cards.SuitName = "Hearts";
+                    break;
+                case "Diamonds":
+                    //diamonds suit
+                    cards.SuitName = "Diamonds";
+                    break;
+                case "Spades":
+                    //world
+                    cards.SuitName = "Spades";
+                    break;
+            }
         }
         private Grid BuildMainCardVisuals(Cards card)
         {
