@@ -71,13 +71,9 @@ namespace OOD_project_2026
             cardImageString = $"{SuitName[0]}{CardName}.png";
 
 
-          return cardImageString;
+            return cardImageString;
         }
-        public void CardEffectAdd()
-        {
-            string[] effect = { "4Mult", "Glass", "Silver", "Lucky" };
 
-        }
         public int CompareTo(Cards other)
         {
             //we start with comparing chip values then suit names 
