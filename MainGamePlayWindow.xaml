@@ -123,6 +123,7 @@
                         <TextBlock x:Name="DisguardsLeft" Grid.Row="3" Grid.Column="2" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" Padding="8,4" FontWeight="Bold"/>
                         <TextBlock Text="Hands left" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#C62828" Foreground="White" Padding="8,4" FontSize="12" FontWeight="Bold"/>
                         <TextBlock Text="Disguards left" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#1565C0"  Foreground="White" Padding="8,4" FontSize="12" FontWeight="Bold"/>
+                       
                     </Grid>
                 </Grid>
 

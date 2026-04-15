@@ -8,22 +8,57 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Start">
 
-    <Grid>
-        <TextBlock Text="The House always Wins" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" FontStyle="Italic">
-            <TextBlock.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FFED1010" Offset="1"/>
-                </LinearGradientBrush>
-            </TextBlock.Foreground></TextBlock>
-        <TextBlock Text="Bolatro" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" FontWeight="Bold">
-            <TextBlock.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FFED1010" Offset="1"/>
-                </LinearGradientBrush>
-            </TextBlock.Foreground>
-        </TextBlock>
-        <Button x:Name="StartGame" Background="#FFEAE21D" HorizontalAlignment="Center" VerticalAlignment="Top" Content="Start Game" Margin="0,381,0,0" Click="StartGame_Click" Height="34" Width="97"/>
+    <Grid x:Name="StartWindow">
+
+        <Grid Background="White">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <!--Title and setting -->
+            <Border Grid.Column="0" Grid.ColumnSpan ="2" Background="DarkGreen" BorderBrush="Black" BorderThickness="5">
+                <TextBlock Text="Bolatro" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" FontWeight="Bold">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black"/>
+                            <GradientStop Color="#FFED1010" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </Border>
+            <Border Grid.Column="0" Grid.ColumnSpan ="2">
+                <TextBlock Text="The House always Wins" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" FontStyle="Italic" Margin="0,107,0,0">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black"/>
+                            <GradientStop Color="#FFED1010" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground></TextBlock>
+            </Border>
+
+            <Grid>
+                
+            </Grid>
+            <!--Submitting a name to continue-->
+            <Grid Grid.Column="1" Grid.Row="2">
+                <TextBox x:Name="PlayerNameSubmission"  Text="Enter a name to continue" Height="20" Width="240" MouseDown="PlayerNameSubmission_MouseDown"/>
+                <Button Content="Submit" Height="20" Width="120" Margin="140,90,140,40" Click="SumbitName"/>
+            </Grid>
+            
+                
+         
+            <!--Leaving this as non clickable until the player has inputted their name-->
+            <Button Grid.Column="0" Grid.Row="1" x:Name="StartGame" Background="#FFEAE21D"  Content="Start Game" Click="StartGame_Click" Height="34" Width="97" IsHitTestVisible="False"/>
+        </Grid>
+
+
     </Grid>
 </Page>

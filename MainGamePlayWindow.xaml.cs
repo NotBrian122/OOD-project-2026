@@ -104,6 +104,7 @@ namespace OOD_project_2026
             // Hide Joker and Arcana slots until the player owns some
             foreach (Button btn in JokerCardsOwned.Children.OfType<Button>())
             {
+                //intelisense did this, im surpised how powerful it is 
                 btn.Visibility = player.JokerCardsOwned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
             //same for arcana cards.
@@ -440,11 +441,28 @@ namespace OOD_project_2026
             //Ive added jokers to this level instad of a method as I think its easier to compute them 
             //here before checking the hand type. 
 
-            foreach (var j in jokerCardsInEffect)
+            //im going to add the cards left in hand for effect. 
+            /*
+            foreach (Cards card in scoringHand)
             {
-                Debug.WriteLine($"Active Joker: {j.Name}");
-            }
+                if (card.Effect == null)
+                {
+                    return;
+                }
+                else
+                {
+                    //luck cards have been accounted for already 
+                    switch (card.Effect)
+                    {
+                        case "4Mult":
+                            multScore += 10;
+                            break;
 
+                    }
+                }
+
+            };
+        */
             //ive changed this to make the fantom of opera card to work
 
             for (int i = 0; i < playedOrderHand.Count && i < playedClones.Count; i++)
@@ -464,9 +482,11 @@ namespace OOD_project_2026
             // Remove played cards from actual hand
             foreach (var card in playedOrderHand)
             {
-                //
+                //remving the hand played and then adde it to hand played
                 hand.Remove(card);
                 HandPlayed.Add(card);
+                //adding the cards back into the deck for the next round. 
+                deck.FullDeck.Add(card);
             }
 
             int cardsToReplace = playedOrderHand.Count;
@@ -486,6 +506,7 @@ namespace OOD_project_2026
             HandName.Text = "";
             HandChipScore.Text = "0";
             HandMultScore.Text = "0";
+
             CheckWin(player.CurrentChips, player.HandsLeft, player.DisguardsLeft, blindScore);
         }
         #endregion
@@ -1247,7 +1268,7 @@ namespace OOD_project_2026
 
             Canvas.SetLeft(clone, pos.X);
             Canvas.SetTop(clone, pos.Y);
-            Panel.SetZIndex(clone, 999);
+            Panel.SetZIndex(clone, 999);//moving the z index to nearly the max height 
 
             AnimationCanvas.Children.Add(clone);
 
@@ -1336,7 +1357,7 @@ namespace OOD_project_2026
 
             //getting the list of arcana cards
             List<Button> ArcanaSlots = new List<Button>()
-            { 
+            {
                 CardPack1,CardPack2
             };
 
@@ -1355,9 +1376,9 @@ namespace OOD_project_2026
             }
             //for the arcana slots 
 
-            for(int i= 0; i < ArcanaSlots.Count; i++)
+            for (int i = 0; i < ArcanaSlots.Count; i++)
             {
-                Button currentArcanaButton  = ArcanaSlots[i];
+                Button currentArcanaButton = ArcanaSlots[i];
                 currentArcanaButton.MouseEnter -= Arcana_Shop_Enter;
                 currentArcanaButton.MouseLeave -= Arcana_Shop_Leave;
 
@@ -1568,7 +1589,8 @@ namespace OOD_project_2026
                     JokerHoverPopup.Visibility = Visibility.Collapsed;
 
                     //checking that there isint more than 5 joker cards in the shop.
-                } else if (!alreadyOwned && player.JokerCardsOwned.Count > 5)
+                }
+                else if (!alreadyOwned && player.JokerCardsOwned.Count > 5)
                 {
                     clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
                 }
@@ -1592,7 +1614,7 @@ namespace OOD_project_2026
 
             for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
-                
+
 
                 Button btn = JokerCardDisplay[i];
                 //showing the players owned joker cards on the grid. 
@@ -1752,13 +1774,15 @@ namespace OOD_project_2026
                 button.IsEnabled = true;
                 button.Visibility = Visibility.Visible;
                 button.Content = BuildArcanaCardVisual(shopArcana[index]);
-            } else
+            }
+            else
             {
                 button.Tag = null;
                 button.Content = "Sold Out";
                 button.IsEnabled = false;
             }
         }
+        //applying a png to the arcana cards. 
         private Grid BuildArcanaCardVisual(ArcanaCards aranaCards)
         {
             Grid arcanaGrid = new Grid();
@@ -1831,6 +1855,7 @@ namespace OOD_project_2026
                 }
                 else
                 {
+                    //the hover popup for edgecases. 
                     ArcanaHoverPopup.Visibility = Visibility.Visible;
                     ArcanaHoverText.Text = "Arcana slots full! Use or sell one first.";
                 }
@@ -1889,20 +1914,20 @@ namespace OOD_project_2026
         }
         private void Arcana_Shop_Enter(object sender, MouseEventArgs e)
         {
-
+            //the exsact same as the joker class
             if (sender is Button btn && btn.Tag is ArcanaCards arcanaCard)
             {
                 selectedArcanaCardsOwned = arcanaCard;
-                selectedOwnedArcanaCardButton= btn;
-              
-               ArcanaHoverText.Visibility = Visibility.Visible;
-               ArcanaHoverPopup.Visibility = Visibility.Visible;
+                selectedOwnedArcanaCardButton = btn;
+
+                ArcanaHoverText.Visibility = Visibility.Visible;
+                ArcanaHoverPopup.Visibility = Visibility.Visible;
                 AnimateCard(btn, -10);
 
                 ArcanaHoverText.Text = $"{arcanaCard.Name}\n\n{arcanaCard.EffectDiscription}\n\nNumber of cards Affected:{arcanaCard.NoCardsAffected}\n\n{arcanaCard.CardPrice:C2}";
 
                 Point pos = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
-               
+
                 //I want to bring this to the other side of the card unlike the joker as 
                 //the arcana cards are right on the edge. 
                 Canvas.SetLeft(ArcanaHoverPopup, pos.X - (btn.ActualWidth + 125));
@@ -1967,7 +1992,7 @@ namespace OOD_project_2026
 
                 }
             }
-       
+
         }
         private void Use_ArcanaCard(object sender, RoutedEventArgs e)
         {
@@ -2081,7 +2106,7 @@ namespace OOD_project_2026
                 ArcanaHoverPopup.Visibility = Visibility.Collapsed;
             }
         }
- #endregion
+
         //getting and returning the card for the button. 
         private Button GetButtonForArcCard(Cards card)
         {
@@ -2109,13 +2134,13 @@ namespace OOD_project_2026
                     //giving 2 new cards to the user. 
                     player.ArcanaCardsOwned.Clear();
                     var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == a.Name)).ToList();
-                     while (player.ArcanaCardsOwned.Count < 2 && avaiblbeArcanaCards.Count > 0)
-                     {
+                    while (player.ArcanaCardsOwned.Count < 2 && avaiblbeArcanaCards.Count > 0)
+                    {
                         int index = random.Next(avaiblbeArcanaCards.Count);
                         player.ArcanaCardsOwned.Add(avaiblbeArcanaCards[index]);
                         avaiblbeArcanaCards.RemoveAt(index);
-                     }
-                        AddArcanaCardToGrid();
+                    }
+                    AddArcanaCardToGrid();
                     break;
                 case "Silver":
                     cards.Effect = "Silver";
@@ -2124,7 +2149,7 @@ namespace OOD_project_2026
                     cards.Effect = "Glass";
                     break;
                 case "Hanged":
-                    foreach(Cards card in selectedHand.ToList())
+                    foreach (Cards card in selectedHand.ToList())
                     {
                         hand.Remove(card);
                         deck.FullDeck.Remove(card);
@@ -2166,8 +2191,39 @@ namespace OOD_project_2026
             AddCardEffectOverlay(cardGrid, card);
 
             return cardGrid;
-
-
         }
+        #endregion
+
+        #region logging player info into a db
+        //getting player info, ie name 
+
+        //connecting to the db
+
+        //updating the score for each round, 
+        //if the score is higher than the round previous.
+        //win screen at round 6. 
+
+        //can go endless mode or quit the game. 
+        //I have to log the score here 
+
+        //once failed the screen ends. 
+        //displaying playerscore on the screen of the other monitor. 
+        //I need todays date/ the date of the run on the screen. 
+        #endregion
+        /*
+        private void SaveToDBOnFinish()
+        {
+
+            HighScoreData db = new HighScoreData();
+
+            Leaderboard newData = new Leaderboard() { PlayerName = "aaa" };
+
+            db.LeaderBoard.add(newData);
+            db.SaveChange();
+
+            //calling it to a list. 
+            var query = db.LeaderBoard.ToList();
+        }
+        */
     }
 }
