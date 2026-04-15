@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Data.Entity;
 
 namespace OOD_project_2026
 {
@@ -28,12 +19,12 @@ namespace OOD_project_2026
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
-          NavigationService.Navigate(new MainGamePlayWindow());
+            NavigationService.Navigate(new MainGamePlayWindow());
         }
 
         private void SumbitName(object sender, RoutedEventArgs e)
         {
-          if(PlayerNameSubmission.Text == "")
+            if (PlayerNameSubmission.Text == "")
             {
                 PlayerNameSubmission.Text = "You must input a name to start the game.";
             }

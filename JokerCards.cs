@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace OOD_project_2026
 {
@@ -25,7 +22,7 @@ namespace OOD_project_2026
             this.ChanceAffect = ChanceAffect;
 
             this.Price = price;
-           
+
 
         }
         //for testing and using it for certian things. 
@@ -82,7 +79,7 @@ namespace OOD_project_2026
                 100
             };
 
-            int[] price = { 5, 3, 5, 9, 15, 6,8,10 };//preset price for each card
+            int[] price = { 5, 3, 5, 9, 15, 6, 8, 10 };//preset price for each card
 
 
             //this just adds them all to the list of joker cards inside the player class. I could have done this in the constructor but I wanted to keep it separate for ease of use and readability.
@@ -90,7 +87,7 @@ namespace OOD_project_2026
             {
                 JokerCards.Add(
                     new JokerCards(JokerCardNames[i], JokerCardAffectText[i], cardAffect[i], chanceAffect[i], price[i]));
-            } 
+            }
             return JokerCards;
         }
     }

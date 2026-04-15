@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OOD_project_2026
 {
-    internal class Deck 
+    internal class Deck
     {
         public List<Cards> FullDeck { get; set; }
 

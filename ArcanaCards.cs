@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
-
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 namespace OOD_project_2026
+
 {
-    internal class ArcanaCards :JokerCards //The Idea is to inherit the arcana cards from jokers to reuse the same methods which would be handier. 
+    internal class ArcanaCards : JokerCards //The Idea is to inherit the arcana cards from jokers to reuse the same methods which would be handier. 
     {
         public string CardName { get; set; }
         public string EffectDiscription { get; set; }
-        public int NoCardsAffected { get; set; }    
+        public int NoCardsAffected { get; set; }
         public int CardPrice { get; set; }
 
-        public string Effection {  get; set; }
+        public string Effection { get; set; }
         public ArcanaCards() { }
 
-        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected,string effection,int cardPrice)
+        public ArcanaCards(string cardName, string effectDiscription, int noCardsAffected, string effection, int cardPrice)
         {
             CardName = cardName;
             EffectDiscription = effectDiscription;
@@ -35,15 +30,15 @@ namespace OOD_project_2026
                 "The Magician",
                 "The Empress",
                 "The Emperor",
-                "The Chariot", 
+                "The Chariot",
                 "Justice",
                 "Hanged man",
                 "The Moon",
-                "The Sun", 
+                "The Sun",
                 "The Star",
                 "ZA WORLDA"
             };
-            string[] cardDiscription = { 
+            string[] cardDiscription = {
                 "Enchances 2 selected cards to Lucky Cards",
                 "Enchaces 2 selected cards to Mult Cards(+4 mult)",
                 "Creates up to 2 random Taroh Cards",
@@ -97,10 +92,10 @@ namespace OOD_project_2026
 
             //genereating the cards and adding them to a list based off of the strings
             //yes they are hard coded but so are the joker cards. 
-            for(int i = 0; i < CardName.Length;i++)
+            for (int i = 0; i < CardName.Length; i++)
             {
                 ArcanaCards.Add(
-                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i],effection[i], cardPrice[i]));
+                    new ArcanaCards(CardName[i], cardDiscription[i], cardsAffected[i], effection[i], cardPrice[i]));
             }
             return ArcanaCards;
         }
