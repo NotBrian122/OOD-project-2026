@@ -2069,6 +2069,7 @@ namespace OOD_project_2026
                 Canvas.SetLeft(ArcanaHoverPopup, pos.X - (btn.ActualWidth + 55));
                 Canvas.SetTop(ArcanaHoverPopup, pos.Y);
             }
+
         }
         private void Arcana_Owned_Leave(object sender, MouseEventArgs e)
         {
