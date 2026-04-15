@@ -75,8 +75,6 @@ namespace OOD_project_2026
         {
             //creating the deck. it works. 
             deck.CreateDeck();
-            //Generating a list of jokers.
-
             //drawing the cards 
             DrawCards(8);
             //refreshing the ui before we start the game. 
@@ -102,6 +100,17 @@ namespace OOD_project_2026
             {
                 Joker1, Joker2, Joker3, Joker4,
             };
+
+            // Hide Joker and Arcana slots until the player owns some
+            foreach (Button btn in JokerCardsOwned.Children.OfType<Button>())
+            {
+                btn.Visibility = player.JokerCardsOwned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            //same for arcana cards.
+            foreach (Button btn in ArcanaCardsOwned.Children.OfType<Button>())
+            {
+                btn.Visibility = player.ArcanaCardsOwned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             for (int i = 0; i < cardSlots.Count; i++)
             {
@@ -1583,8 +1592,11 @@ namespace OOD_project_2026
 
             for (int i = 0; i < JokerCardDisplay.Count; i++)
             {
-                Button btn = JokerCardDisplay[i];
+                
 
+                Button btn = JokerCardDisplay[i];
+                //showing the players owned joker cards on the grid. 
+                btn.Visibility = Visibility.Visible;
                 // clear old state just in case. 
                 btn.Content = null;
                 btn.Tag = null;
@@ -1766,31 +1778,61 @@ namespace OOD_project_2026
         //im going back on this branch as I didnt like the messy code that I produced. 
         private void ClickedOnArcanaShopCard(object sender, RoutedEventArgs e)
         {
-            //I have to pass in the sender as a button to get said index of the joker card. 
-            if ((sender is Button clickedButton) && (clickedButton.Tag is ArcanaCards ArcanaCardClicked) && (player.Money >= ArcanaCardClicked.CardPrice))
+            if ((sender is Button clickedButton)
+                && (clickedButton.Tag is ArcanaCards ArcanaCardClicked)
+                && (player.Money >= ArcanaCardClicked.CardPrice))
             {
-                bool alreadyOwned = player.ArcanaCardsOwned.Any(a => a.Name == ArcanaCardClicked.Name);
-
-                if (!alreadyOwned)
+                if (player.ArcanaCardsOwned.Count <= 2)
                 {
-                    player.ArcanaCardsOwned.Add(ArcanaCardClicked);//adding the joker card to the player class list
-                    //activating the front end ui
+                    player.ArcanaCardsOwned.Add(ArcanaCardClicked);
                     AddArcanaCardToGrid();
-                    //removing tags and content. 
+
+                    // Mark this specific slot as bought rather than reloading all slots
                     clickedButton.Tag = null;
                     clickedButton.Content = "Bought";
                     clickedButton.IsEnabled = false;
-                    //updating the player money and ui
+
                     player.Money -= ArcanaCardClicked.CardPrice;
                     PlayerMoneyDisplay.Text = $"Money:{player.Money:c2}";
-                    //collapse the popup
                     ArcanaHoverPopup.Visibility = Visibility.Collapsed;
 
-                    //checking that there isint more than 5 joker cards in the shop.
+                    // Remove from shopArcana so it isn't re-offered
+                    shopArcana.Remove(ArcanaCardClicked);
+
+                    // Find which slot index this button corresponds to and
+                    // refresh only that slot with a new card
+                    List<Button> arcanaSlots = new List<Button> { CardPack1, CardPack2 };
+                    int boughtIndex = arcanaSlots.IndexOf(clickedButton);
+
+                    if (boughtIndex >= 0)
+                    {
+                        // Pull a replacement that the player doesn't already own
+                        // and isn't already shown in the other slot
+                        var available = AllArcanaCards
+                            .Where(a => !player.ArcanaCardsOwned.Any(o => o.Name == a.Name)
+                                     && !shopArcana.Any(s => s.Name == a.Name))
+                            .ToList();
+
+                        if (available.Count > 0)
+                        {
+                            int index = random.Next(available.Count);
+                            ArcanaCards replacement = available[index];
+                            shopArcana.Add(replacement);
+                            AssingArcanaCardToButton(clickedButton, shopArcana.IndexOf(replacement));
+                        }
+                        else
+                        {
+                            // Nothing left to offer in this slot
+                            clickedButton.Tag = null;
+                            clickedButton.Content = "Sold Out";
+                            clickedButton.IsEnabled = false;
+                        }
+                    }
                 }
-                else if (!alreadyOwned && player.ArcanaCardsOwned.Count > 2)
+                else
                 {
-                    clickedButton.IsEnabled = false;//the player cant have more than 5 buttons. 
+                    ArcanaHoverPopup.Visibility = Visibility.Visible;
+                    ArcanaHoverText.Text = "Arcana slots full! Use or sell one first.";
                 }
             }
         }
@@ -1813,6 +1855,7 @@ namespace OOD_project_2026
             for (int i = 0; i < ArcnaCardDisplay.Count; i++)
             {
                 Button btn = ArcnaCardDisplay[i];
+                btn.Visibility = Visibility.Visible;
 
                 // clear old state just in case. 
                 btn.Content = null;
@@ -2012,7 +2055,7 @@ namespace OOD_project_2026
                 Point posUse = btn.TranslatePoint(new Point(0, 0), OverlayCanvas);
                 UseArcanaCardBtn.Visibility = Visibility.Visible;
                 //trying to moove this onto the canvas so it shows both buttons for use and sell. 
-                Canvas.SetLeft(useArcBtn, posUse.X + 55);
+                Canvas.SetLeft(useArcBtn, posUse.X + 75);
                 Canvas.SetTop(useArcBtn, posUse.Y + btn.ActualHeight + 5);
 
                 AnimateCard(btn, -10);
@@ -2064,7 +2107,14 @@ namespace OOD_project_2026
                 case "Random":
                     //giving 2 new cards to the user. 
                     player.ArcanaCardsOwned.Clear();
-
+                    var avaiblbeArcanaCards = AllArcanaCards.Where(a => !player.ArcanaCardsOwned.Any(c => c.Name == a.Name)).ToList();
+                     while (player.ArcanaCardsOwned.Count < 2 && avaiblbeArcanaCards.Count > 0)
+                     {
+                        int index = random.Next(avaiblbeArcanaCards.Count);
+                        player.ArcanaCardsOwned.Add(avaiblbeArcanaCards[index]);
+                        avaiblbeArcanaCards.RemoveAt(index);
+                     }
+                        AddArcanaCardToGrid();
                     break;
                 case "Silver":
                     cards.Effect = "Silver";
@@ -2073,7 +2123,11 @@ namespace OOD_project_2026
                     cards.Effect = "Glass";
                     break;
                 case "Hanged":
-                    //removed the card. 
+                    foreach(Cards card in selectedHand.ToList())
+                    {
+                        hand.Remove(card);
+                        deck.FullDeck.Remove(card);
+                    }
                     break;
                 case "Clubs":
                     //changing the suitname to clubs. 
