@@ -27,17 +27,22 @@ namespace OOD_project_2026
             if (PlayerNameSubmission.Text == "")
             {
                 PlayerNameSubmission.Text = "You must input a name to start the game.";
+                return;
             }
             else
             {
                 //allowing you to input a name.
                 StartGame.IsHitTestVisible = true;
+                StartGame.Visibility = Visibility.Visible;
                 //disabling the name. 
-                SumbitName.IsHitTestVisible = false;
+                SubmitContent.IsHitTestVisible = false;
+                SubmitContent.Visibility = Visibility.Collapsed;
+                PlayerNameSubmission.IsHitTestVisible = false;
+                PlayerNameSubmission.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void PlayerNameSubmission_MouseDown(object sender, MouseButtonEventArgs e)
+        private void PlayerNameSubmission_GotFocus(object sender, RoutedEventArgs e)
         {
             PlayerNameSubmission.Text = "";
         }

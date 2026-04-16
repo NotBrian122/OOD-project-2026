@@ -15,7 +15,10 @@ namespace OOD_project_2026
     }
    public class HighScoreData : DbContext
     {
-        public HighScoreData() : base("LB_Data");
+        public HighScoreData() : base("LB_Data") 
+        { 
+            Database.SetInitializer<HighScoreData>(new CreateDatabaseIfNotExists<HighScoreData>());
+        }
         public DbSet<Leaderboard> LeaderBoard { get; set; }
     }
 }
