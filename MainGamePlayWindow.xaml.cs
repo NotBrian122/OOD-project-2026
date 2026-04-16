@@ -362,7 +362,6 @@ namespace OOD_project_2026
             //some nessesiary
             //variabels to be set 
             bool isFlush = true;
-            int isPair = 0;
             //resetting the vars here 
             chipScore = 0;
             multScore = 0;
