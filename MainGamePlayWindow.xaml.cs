@@ -546,7 +546,7 @@ namespace OOD_project_2026
                 //win window; this will allow you to go to the shop. 
                 WinScreen();
                 //resetting current chip score of player.
-
+                
 
                 //im going to put the shop menu window into this.
                 //from the win screen. 
@@ -554,10 +554,12 @@ namespace OOD_project_2026
             else if (comparingScore > 0 && player.HandsLeft == 0)
             {
                 //loose as you have no hands left. Restting the game and going back into the game.
+                SaveToDBOnFinish();
             }
             else
             {
                 //continue playing aka nothing happens. 
+                SaveToDBOnFinish();
             }
             //I need to reset blind score after the player is defeated or advance it if they win. 
         }
@@ -2209,7 +2211,7 @@ namespace OOD_project_2026
         //displaying playerscore on the screen of the other monitor. 
         //I need todays date/ the date of the run on the screen. 
         #endregion
-        /*
+        
         private void SaveToDBOnFinish()
         {
 
@@ -2217,12 +2219,12 @@ namespace OOD_project_2026
 
             Leaderboard newData = new Leaderboard() { PlayerName = "aaa" };
 
-            db.LeaderBoard.add(newData);
-            db.SaveChange();
+            db.LeaderBoard.Add(newData);
+            db.SaveChanges();
 
             //calling it to a list. 
             var query = db.LeaderBoard.ToList();
         }
-        */
+        
     }
 }

@@ -23,6 +23,7 @@
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
 
+            
             <!--Title and setting -->
             <Border Grid.Column="0" Grid.ColumnSpan ="2" Background="#0F2518" BorderBrush="Black" BorderThickness="5">
                 <TextBlock Text="Bolatro" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" FontWeight="Bold">
