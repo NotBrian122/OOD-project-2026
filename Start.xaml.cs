@@ -58,6 +58,7 @@ namespace OOD_project_2026
                         select b;
 
             PlayerNameList.ItemsSource = query.ToList();
+     
         }
     }
 }
