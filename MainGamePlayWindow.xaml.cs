@@ -554,12 +554,12 @@ namespace OOD_project_2026
             else if (comparingScore > 0 && player.HandsLeft == 0)
             {
                 //loose as you have no hands left. Restting the game and going back into the game.
-                SaveToDBOnFinish();
+                //SaveToDBOnFinish();
             }
             else
             {
                 //continue playing aka nothing happens. 
-                SaveToDBOnFinish();
+               // SaveToDBOnFinish();
             }
             //I need to reset blind score after the player is defeated or advance it if they win. 
         }
@@ -2212,19 +2212,23 @@ namespace OOD_project_2026
         //I need todays date/ the date of the run on the screen. 
         #endregion
         
+        /*
         private void SaveToDBOnFinish()
         {
 
-            HighScoreData db = new HighScoreData();
+            LeaderBoard db = new LeaderBoard();
 
-            Leaderboard newData = new Leaderboard() { PlayerName = "aaa" };
+            LeaderBoard newData = new LeaderBoard() { 
+         
+            };
 
-            db.LeaderBoard.Add(newData);
+            db.HighScoreData.Add(newData);
             db.SaveChanges();
 
             //calling it to a list. 
             var query = db.LeaderBoard.ToList();
         }
+        */
         
     }
 }

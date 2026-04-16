@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,10 +39,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.6.0-preview1-final\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.6.0-preview1-final\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -72,6 +72,19 @@
     <Compile Include="MainGamePlayWindow.xaml.cs">
       <DependentUpon>MainGamePlayWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202604162300584_InitialCreate.cs" />
+    <Compile Include="Migrations\202604162300584_InitialCreate.Designer.cs">
+      <DependentUpon>202604162300584_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202604162316567_RoundsLasted.cs" />
+    <Compile Include="Migrations\202604162316567_RoundsLasted.Designer.cs">
+      <DependentUpon>202604162316567_RoundsLasted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202604162356066_Rank.cs" />
+    <Compile Include="Migrations\202604162356066_Rank.Designer.cs">
+      <DependentUpon>202604162356066_Rank.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Start.xaml.cs">
       <DependentUpon>Start.xaml</DependentUpon>
@@ -112,6 +125,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Migrations\202604162300584_InitialCreate.resx">
+      <DependentUpon>202604162300584_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604162316567_RoundsLasted.resx">
+      <DependentUpon>202604162316567_RoundsLasted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604162356066_Rank.resx">
+      <DependentUpon>202604162356066_Rank.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -125,7 +147,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\Cards\C10.png" />
     <Resource Include="Images\Cards\C2.png" />
@@ -214,8 +235,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Import Project="packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.6.0-preview1-final\build\EntityFramework.targets')" />
 </Project>

@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:OOD_project_2026"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Start">
+      Title="Start"
+      Loaded="Window_Loaded">
 
     <Grid x:Name="StartWindow">
 
@@ -57,11 +58,24 @@
             <Button Grid.Column="0" Grid.Row="1" x:Name="StartGame" Background="#FFEAE21D"  Content="Start Game" Click="StartGame_Click" Height="34" Width="97" IsHitTestVisible="False" Visibility="Visible"/>
 
             <TextBlock Grid.Column="1" Grid.Row="1" Text="HighScores" FontWeight="Bold" HorizontalAlignment="Center"/>
-            <ListBox Grid.Column="1" Grid.Row="1" Margin="10,20,10,0" x:Name="PlayerNameList" Background="DarkGreen" FontSize="14" FontWeight="Bold" Width="480">
-                <ListBoxItem Content="Player 1:    Score:   Date:" x:Name="Player1" Background="Red"></ListBoxItem>
-                <ListBoxItem Content="Player 2:    Score:   Date:" x:Name="Player2" Background="Green"></ListBoxItem>
-                <ListBoxItem Content="Player 3:    Score:   Date:" x:Name="Player3" Background="Blue"></ListBoxItem>
-                <ListBoxItem Content="Player 4:    Score:   Date:" x:Name="Player4" Background="Yellow"></ListBoxItem>
+            <ListBox Name="PlayerNameList" Grid.Column="1" Grid.Row="1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding PlayerName}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding HighScore}" Grid.Column="1"/>
+                            <TextBlock Text="{Binding RoundsLasted}" Grid.Column="2"/>
+                            <TextBlock Text="{Binding Date, StringFormat=d}" Grid.Column="3"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
 

@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Data.Entity;
+using System.Linq;
 
 namespace OOD_project_2026
 {
@@ -11,6 +12,9 @@ namespace OOD_project_2026
     /// </summary>
     public partial class Start : Page
     {
+        LeaderBoard db = new LeaderBoard();
+
+
         public Start()
         {
             InitializeComponent();
@@ -45,6 +49,15 @@ namespace OOD_project_2026
         private void PlayerNameSubmission_GotFocus(object sender, RoutedEventArgs e)
         {
             PlayerNameSubmission.Text = "";
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var query = from b in db.HighScoreData
+                        orderby b.HighScore descending
+                        select b;
+
+            PlayerNameList.ItemsSource = query.ToList();
         }
     }
 }
