@@ -26,7 +26,7 @@
 
             
             <!--Title and setting -->
-            <Border Grid.Column="0" Grid.ColumnSpan ="2" Background="#0F2518" BorderBrush="Black" BorderThickness="5">
+            <Border Grid.Column="0" Background="#0F2518" BorderBrush="Black" BorderThickness="5">
                 <TextBlock Text="Bolatro" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" FontWeight="Bold">
                     <TextBlock.Foreground>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -36,7 +36,7 @@
                     </TextBlock.Foreground>
                 </TextBlock>
             </Border>
-            <Border Grid.Column="0" Grid.ColumnSpan ="2">
+            <Border Grid.Column="0">
                 <TextBlock Text="The House always Wins" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" FontStyle="Italic" Margin="0,107,0,0">
                     <TextBlock.Foreground>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -50,15 +50,19 @@
 
             </Grid>
             <!--Submitting a name to continue-->
-            <Grid Grid.Column="1" Grid.Row="2">
+            <Grid Grid.Column="1" Grid.Row="2" Panel.ZIndex="999">
                 <TextBox x:Name="PlayerNameSubmission" Text ="Enter a name to continue" Height="20" Width="240"  GotFocus="PlayerNameSubmission_GotFocus"/>
                 <Button x:Name="SubmitContent" Content="Submit" Height="40" Width="120" Margin="140,100,140,10" Click="SumbitName"/>
             </Grid>
             <!--Leaving this as non clickable until the player has inputted their name-->
             <Button Grid.Column="0" Grid.Row="1" x:Name="StartGame" Background="#FFEAE21D"  Content="Start Game" Click="StartGame_Click" Height="34" Width="97" IsHitTestVisible="False" Visibility="Visible"/>
 
-            <TextBlock Grid.Column="1" Grid.Row="1" Text="HighScores" FontWeight="Bold" HorizontalAlignment="Center"/>
-            <ListBox Grid.Column="1" Grid.Row="1" Name="PlayerNameList" Margin="10,20,10,0" Background="#18364D" Width="580">
+            <Border Grid.Column="1" Grid.Row="2" Background="#4B2D1F" Margin="8,4" CornerRadius="10" BorderBrush="AliceBlue" BorderThickness="2"/>
+            <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Background="#1D3142"  Margin="5,4,10,10" CornerRadius="10" BorderBrush="AliceBlue" BorderThickness="2" />
+
+            <!--HighScores-->
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="HighScores" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <ListBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Name="PlayerNameList" Margin="10,50,30,20" Background="#18364D" Width="580" Panel.ZIndex="999">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Foreground" Value="White"/>

@@ -71,7 +71,8 @@ namespace OOD_project_2026
                     .ToList()
                     .Select((x, index) => new HighScoreData
                     {
-                        Rank = index + 1,
+                        //logging new highscore data. 
+                        Rank = index + 1,//index +1 to make it easier on ranking teh system. 
                         PlayerName = x.PlayerName,
                         HighScore = x.HighScore,
                         RoundsLasted = x.RoundsLasted,
