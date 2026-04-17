@@ -20,7 +20,8 @@ namespace OOD_project_2026
         //setting up max cards in hands left. 
         int maxCardsInHand = 5;
         //setting up some variables to be used when checking hands, and generating mult. 
-        double chipScore = 299, multScore = 0, currentChips = 0;
+        double chipScore = 0, multScore = 0, currentChips = 0;
+        double HighestHandPlayed = 0;
         string handPlayed = "";
         bool faceCardPlayed = false;
         //setting the blindscore. 
@@ -64,11 +65,12 @@ namespace OOD_project_2026
         //creating a bool to see if the shop is open or not. 
         private bool isShopOpen = false;
         #endregion  
-        public MainGamePlayWindow()
+        public MainGamePlayWindow(string playerName)
         {
             InitializeComponent();
+            string PlayerName = playerName;
             //creating a new player with the default values.
-            player = new Player(money, currentChips, playersJokerCardsOwned, playerArcanaCardsOwned, 3, 3);
+            player = new Player(PlayerName,money, currentChips, playersJokerCardsOwned, playerArcanaCardsOwned, 3, 3);
         }
 
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
@@ -506,6 +508,12 @@ namespace OOD_project_2026
             HandChipScore.Text = "0";
             HandMultScore.Text = "0";
 
+            //checking for current chips to see if its geater than the previous hand played. 
+            if(player.CurrentChips > HighestHandPlayed)
+            {
+                HighestHandPlayed = player.CurrentChips;
+            };
+
             CheckWin(player.CurrentChips, player.HandsLeft, player.DisguardsLeft, blindScore);
         }
         #endregion
@@ -555,11 +563,13 @@ namespace OOD_project_2026
             {
                 //loose as you have no hands left. Restting the game and going back into the game.
                 //SaveToDBOnFinish();
+                EndGame();
             }
             else
             {
                 //continue playing aka nothing happens. 
-               // SaveToDBOnFinish();
+                // SaveToDBOnFinish();
+                EndGame();
             }
             //I need to reset blind score after the player is defeated or advance it if they win. 
         }
@@ -575,7 +585,7 @@ namespace OOD_project_2026
                 return blindScore;
         }
         #endregion
-        #region checking hands 
+        #region checking hands
         private bool CheckStraight(List<Cards> selectedHand)
         {
             if (selectedHand.Count != 5)
@@ -2199,36 +2209,63 @@ namespace OOD_project_2026
         //getting player info, ie name 
 
         //connecting to the db
+        private void SaveHighScore(int score, int roundsLasted)
+        {
+            using (var db = new LeaderBoard())
+            {
+
+                var newScore = new HighScoreData()
+                {
+                    PlayerName = player.PlayerName,
+                    HighScore = score,
+                    RoundsLasted = roundsLasted,
+                    Date = DateTime.Now
+                };
+
+                //saving the score to the db 
+                db.HighScoreData.Add(newScore);
+                db.SaveChanges();
+            }
+
+        }
+        private void EndGame()
+        {
+            //converting to an into to save into the db. Rounding to make my life easier. 
+            int finalscore = Convert.ToInt32(HighestHandPlayed);
+            int roundsLasted = round;
+
+            SaveHighScore(finalscore, roundsLasted);
+        }
 
         //updating the score for each round, 
         //if the score is higher than the round previous.
         //win screen at round 6. 
 
-        //can go endless mode or quit the game. 
-        //I have to log the score here 
+                //can go endless mode or quit the game. 
+                //I have to log the score here 
 
-        //once failed the screen ends. 
-        //displaying playerscore on the screen of the other monitor. 
-        //I need todays date/ the date of the run on the screen. 
-        #endregion
-        
-        /*
-        private void SaveToDBOnFinish()
-        {
+                //once failed the screen ends. 
+                //displaying playerscore on the screen of the other monitor. 
+                //I need todays date/ the date of the run on the screen. 
+                #endregion
 
-            LeaderBoard db = new LeaderBoard();
+                /*
+                private void SaveToDBOnFinish()
+                {
 
-            LeaderBoard newData = new LeaderBoard() { 
-         
-            };
+                    LeaderBoard db = new LeaderBoard();
 
-            db.HighScoreData.Add(newData);
-            db.SaveChanges();
+                    LeaderBoard newData = new LeaderBoard() { 
 
-            //calling it to a list. 
-            var query = db.LeaderBoard.ToList();
-        }
-        */
-        
+                    };
+
+                    db.HighScoreData.Add(newData);
+                    db.SaveChanges();
+
+                    //calling it to a list. 
+                    var query = db.LeaderBoard.ToList();
+                }
+                */
+
     }
-}
+    }

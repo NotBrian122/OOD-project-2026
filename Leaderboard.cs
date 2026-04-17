@@ -10,6 +10,7 @@ namespace OOD_project_2026
     {
         [Key]
         public int PlayerID { get; set; }
+        //ranking to make it easier to see whos on the top. 
         public int Rank { get; set; }
         public string PlayerName { get; set; }
         public int HighScore { get; set; }

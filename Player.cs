@@ -5,6 +5,7 @@ namespace OOD_project_2026
     internal class Player
     {
         //players properties. 
+        public string PlayerName { get; set; }
         //hands and disguards left. 
         public int HandsLeft { get; set; }
         public int DisguardsLeft { get; set; }
@@ -13,8 +14,9 @@ namespace OOD_project_2026
         public List<JokerCards> JokerCardsOwned { get; set; }
         public List<ArcanaCards> ArcanaCardsOwned { get; set; }
         public Player() { }
-        public Player(int money, double currentChips, List<JokerCards> jokerCardsOwned, List<ArcanaCards> arcanaCardsOwned, int handsLeft, int disguardsLeft)
+        public Player(string playerName,int money, double currentChips, List<JokerCards> jokerCardsOwned, List<ArcanaCards> arcanaCardsOwned, int handsLeft, int disguardsLeft)
         {
+            this.PlayerName = playerName;
             this.Money = money;
             this.JokerCardsOwned = jokerCardsOwned;
             this.CurrentChips = currentChips;
