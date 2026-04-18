@@ -2046,8 +2046,7 @@ namespace OOD_project_2026
                 return;
             }
 
-            Debug.WriteLine("Arcana clicked: " + arcanaClicked.CardName);
-            Debug.WriteLine("Arcana effect: " + arcanaClicked.Effection);
+            
 
             // Apply effects to selected cards
             foreach (Cards card in selectedHand.ToList())
@@ -2383,6 +2382,7 @@ namespace OOD_project_2026
                     .ToList()
                     .Select((x, index) => new HighScoreData
                     {
+
                         //logging new highscore data. 
                         Rank = index + 1,//index +1 to make it easier on ranking teh system. 
                         PlayerName = x.PlayerName,
