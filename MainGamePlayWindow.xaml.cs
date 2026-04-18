@@ -539,42 +539,79 @@ namespace OOD_project_2026
         private void CheckWin(double PlayerChipScore, int handsLeft, int disguardsLeft, double BlindScore)
         {
             double comparingScore = BlindScore - PlayerChipScore;
-            if (comparingScore <= 0 && player.HandsLeft >= 0)
+            if(keptPlaying == true)
             {
-                // Remove played cards from actual hand
-                foreach (var card in HandPlayed.ToList())
+                if (comparingScore <= 0 && player.HandsLeft > 0)
                 {
-                    //removing the palyed hand 
-                    HandPlayed.Remove(card);
-                    //adding the played hand back into the deck.
-                    deck.FullDeck.Add(card);
+                    // Remove played cards from actual hand
+                    foreach (var card in HandPlayed.ToList())
+                    {
+                        //removing the palyed hand 
+                        HandPlayed.Remove(card);
+                        //adding the played hand back into the deck.
+                        deck.FullDeck.Add(card);
+                    }
+                    //you win
+                    player.CurrentChips = 0;
+                    //win window; this will allow you to go to the shop. 
+                    WinScreen();
+                    //resetting current chip score of player.
+                    MainGameplayScreen.IsHitTestVisible = false;
+                    //im going to put the shop menu window into this.
+                    //from the win screen. 
                 }
-
-                //you win
-                player.CurrentChips = 0;
-                //win window; this will allow you to go to the shop. 
-                WinScreen();
-                //resetting current chip score of player.
-                MainGameplayScreen.IsHitTestVisible = false;
-
-                //im going to put the shop menu window into this.
-                //from the win screen. 
+                else if (comparingScore > 0 && player.HandsLeft == 0 && round < 3)
+                {
+                    //loose as you have no hands left. Restting the game and going back into the game.
+                    //SaveToDBOnFinish();
+                    EndGame();
+                    ShowLooseScreen();
+                    MainGameplayScreen.IsHitTestVisible = false;
+                }
+                else if (comparingScore <= 0 && player.HandsLeft >= 0 && round == 3)
+                {
+                    ShowWinScreen();
+                    LoadLeaderboard();
+                    MainGameplayScreen.IsHitTestVisible = false;
+                }
             }
-            else if (comparingScore > 0 && player.HandsLeft == 0 && round < 3)
+            else if(keptPlaying == false)
             {
-                //loose as you have no hands left. Restting the game and going back into the game.
-                //SaveToDBOnFinish();
-                EndGame();
-                ShowLooseScreen();
-                MainGameplayScreen.IsHitTestVisible = false;
-
+                if (comparingScore <= 0 && player.HandsLeft > 0)
+                {
+                    // Remove played cards from actual hand
+                    foreach (var card in HandPlayed.ToList())
+                    {
+                        //removing the palyed hand 
+                        HandPlayed.Remove(card);
+                        //adding the played hand back into the deck.
+                        deck.FullDeck.Add(card);
+                    }
+                    //you win
+                    player.CurrentChips = 0;
+                    //win window; this will allow you to go to the shop. 
+                    WinScreen();
+                    //resetting current chip score of player.
+                    MainGameplayScreen.IsHitTestVisible = false;
+                    //im going to put the shop menu window into this.
+                    //from the win screen. 
+                }
+                else if (comparingScore > 0 && player.HandsLeft == 0 && round < 3)
+                {
+                    //loose as you have no hands left. Restting the game and going back into the game.
+                    //SaveToDBOnFinish();
+                    EndGame();
+                    ShowLooseScreen();
+                    MainGameplayScreen.IsHitTestVisible = false;
+                }
+                else if (comparingScore <= 0 && player.HandsLeft >= 0 && round == 3)
+                {
+                    ShowWinScreen();
+                    LoadLeaderboard();
+                    MainGameplayScreen.IsHitTestVisible = false;
+                }
             }
-            else if (comparingScore <= 0 && player.HandsLeft >= 0 && round == 3)
-            {
-                ShowWinScreen();
-                LoadLeaderboard();
-                MainGameplayScreen.IsHitTestVisible = false;
-            }
+            
             
         }
         private int GenerateBlindScore(int roundScore)
@@ -2294,12 +2331,19 @@ namespace OOD_project_2026
         */
         private void ShowWinScreen()
         {
+            //displaying the win screen and showing playerscore on the screen
+            SaveHighScore(Convert.ToInt32(HighestHandPlayed), round);
+            LoadLeaderboard();
+           
             PlayersFinalTotalScoreTxt.Text += $"{TotalPlayerScore}";
             ShopOverlayBackground.Visibility = Visibility.Visible;
             FinalWinScreen.Visibility = Visibility.Visible;
         }
         private void ShowLooseScreen()
         {
+            //displaying the lose screen and showing playerscore on the screen 
+            SaveHighScore(Convert.ToInt32(HighestHandPlayed), round);
+            LoadLeaderboard();
             FinalLooseScoreTxt.Text += $"{TotalPlayerScore}";
             LoseScreen.Visibility =Visibility.Visible;  
             ShopOverlayBackground.Visibility = Visibility.Visible;
@@ -2315,11 +2359,13 @@ namespace OOD_project_2026
             //this was intelisense ngl
             var result = MessageBox.Show("Are you sure you want to quit?","Exit Game",MessageBoxButton.YesNo,MessageBoxImage.Question);
 
+            SaveHighScore(Convert.ToInt32(HighestHandPlayed), round);
             if (result == MessageBoxResult.Yes)
             {
                 Application.Current.Shutdown();
             }
         }
+        //This is to load the leaderboard on the win/lose screen.
         private void LoadLeaderboard()
         {
             using (var db = new LeaderBoard())
