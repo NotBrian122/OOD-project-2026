@@ -60,7 +60,7 @@
               
                 <!--Quitgame button.-->
                 <Border Grid.Row="3"  Grid.Column="0"  Background="#1B5E20" Margin="8" CornerRadius="10">
-                    <TextBlock Text="Quit Game" Foreground="White"  FontWeight="Bold"  FontSize="16"  HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                    <Button x:Name="QuitButton" Content="Quit Game" Foreground="White"  FontWeight="Bold"  FontSize="16"  HorizontalAlignment="Center" Click="QuitButton_Click" VerticalAlignment="Center" Background="#00A5A5A5" />
                 </Border>
                 <!--#region Joker Cards Owned-->
                 <!-- Owned joker row -->
@@ -378,6 +378,358 @@
                         <TextBlock Grid.Column="0" x:Name="PlayerMoneyDisplay"  Text="Money:"  FontSize="16"  VerticalAlignment="Center"  HorizontalAlignment="Left" Foreground="#FFFFEA00" />
 
                         <Button Grid.Column="1" Content="Continue"  Width="120" HorizontalAlignment="Right" Click="ContinueFromShop_Click" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!--WinScreen overlay-->
+
+            <!-- WIN SCREEN -->
+            <Border x:Name="FinalWinScreen" Width="650" Height="720" Background="#FF17182D" BorderBrush="#FF2E3E52" BorderThickness="2" CornerRadius="12" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="Collapsed" Panel.ZIndex="1100" Padding="20" Margin="0,0,0,12">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                        <TextBlock Text="YOU WIN"
+                       Foreground="#FF6EF7A7"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"/>
+                        <TextBlock Text="Outstanding job! Here are your final results."
+                       Foreground="#FFB8C7D9"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <!-- Score Summary -->
+                    <Border Grid.Row="1"
+                Background="#FF1F2638"
+                BorderBrush="#FF32445B"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="16"
+                Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock x:Name="PlayersFinalTotalScoreTxt" Text="Your Final Total Score :"
+                               Foreground="#FFD6E4F0"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                                <Button x:Name="QuitGame" Content="Leave the game" Background="#FF671F1F" Click="QuitGame_Click"/>
+                                <Button x:Name="KeepPlaying" Content="Keep Playing (momma didnt raise a quitter)" Background="#FF29B131" Click="KeepPlaying_Click"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="1"
+                        Background="#22344A"
+                        CornerRadius="8"
+                        Padding="12,6"
+                        VerticalAlignment="Center">
+                                <TextBlock Text="Leaderboard"
+                               Foreground="#FF9ED0FF"
+                               FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Leaderboard -->
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Column Headers -->
+                        <Border Grid.Row="0"
+                    Background="#FF20283A"
+                    CornerRadius="8"
+                    Padding="10"
+                    Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="Rank" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="Player" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="2" Text="Score" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="3" Text="Rounds" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="4" Text="Date" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                            </Grid>
+                        </Border>
+
+                        <ListBox Grid.Row="1"
+                     x:Name="PlayerNameList"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Foreground="White"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#FF243247"/>
+                                    <Setter Property="Margin" Value="0,0,0,8"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Rank}" Value="1">
+                                            <Setter Property="Background" Value="#FFD4AF37"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Rank}" Value="2">
+                                            <Setter Property="Background" Value="#FFC0C0C0"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Rank}" Value="3">
+                                            <Setter Property="Background" Value="#FFB87333"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Background}"
+                                CornerRadius="10"
+                                Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="55"/>
+                                                <ColumnDefinition Width="170"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="120"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                           Text="{Binding Rank}"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1"
+                                           Text="{Binding PlayerName}"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                            <TextBlock Grid.Column="2"
+                                           Text="{Binding HighScore}"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="3"
+                                           Text="{Binding RoundsLasted}"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="4"
+                                           Text="{Binding Date, StringFormat=d}"
+                                           VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Grid>
+            </Border>
+
+
+            <!-- LOSE SCREEN -->
+            <Border x:Name="LoseScreen"
+        Width="650"
+        Height="420"
+        Background="#FF17182D"
+        BorderBrush="#FF2E3E52"
+        BorderThickness="2"
+        CornerRadius="12"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
+        Visibility="Collapsed"
+        Panel.ZIndex="1100"
+        Padding="20"
+        Margin="0,0,0,12">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                        <TextBlock Text="GAME OVER"
+                       Foreground="#FFFF6B6B"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"/>
+                        <TextBlock Text="Better luck next time. Here are your final results."
+                       Foreground="#FFB8C7D9"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <!-- Score Summary -->
+                    <Border Grid.Row="1"
+                Background="#FF1F2638"
+                BorderBrush="#FF32445B"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="16"
+                Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock x:Name="FinalLooseScoreTxt" Text="Your Final Score:"
+                               Foreground="#FFD6E4F0"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                                <Button x:Name="NewGame" Content="NewGame"  Background="#FFAF3232"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="1"
+                        Background="#22344A"
+                        CornerRadius="8"
+                        Padding="12,6"
+                        VerticalAlignment="Center">
+                                <TextBlock Text="Leaderboard"
+                               Foreground="#FF9ED0FF"
+                               FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Leaderboard -->
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Column Headers -->
+                        <Border Grid.Row="0"
+                    Background="#FF20283A"
+                    CornerRadius="8"
+                    Padding="10"
+                    Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="Rank" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="Player" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="2" Text="Score" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="3" Text="Rounds" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="4" Text="Date" Foreground="#FF9FB3C8" FontWeight="SemiBold"/>
+                            </Grid>
+                        </Border>
+
+                        <ListBox Grid.Row="1"
+                     x:Name="LosePlayerNameList"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Foreground="White"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="#FF243247"/>
+                                    <Setter Property="Margin" Value="0,0,0,8"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Rank}" Value="1">
+                                            <Setter Property="Background" Value="#FFD4AF37"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Rank}" Value="2">
+                                            <Setter Property="Background" Value="#FFC0C0C0"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Rank}" Value="3">
+                                            <Setter Property="Background" Value="#FFB87333"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Background}"
+                                CornerRadius="10"
+                                Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="55"/>
+                                                <ColumnDefinition Width="170"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="120"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                           Text="{Binding Rank}"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1"
+                                           Text="{Binding PlayerName}"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                            <TextBlock Grid.Column="2"
+                                           Text="{Binding HighScore}"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="3"
+                                           Text="{Binding RoundsLasted}"
+                                           VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="4"
+                                           Text="{Binding Date, StringFormat=d}"
+                                           VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
                 </Grid>
             </Border>

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Data.Entity;
 using System.Linq;
+using System.Windows.Media;
 
 namespace OOD_project_2026
 {
@@ -39,6 +40,9 @@ namespace OOD_project_2026
                 playerName = PlayerNameSubmission.Text;
                 //allowing you to input a name.
                 StartGame.IsHitTestVisible = true;
+                //changing colour using hex for the origonal button. 
+                StartGame.Background = (Brush)new BrushConverter().ConvertFrom("#F0D824");
+                StartGame.Foreground = (Brush)new BrushConverter().ConvertFrom("#F00000");
                 StartGame.Visibility = Visibility.Visible;
                 //disabling the name. 
                 SubmitContent.IsHitTestVisible = false;

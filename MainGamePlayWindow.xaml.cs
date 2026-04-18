@@ -21,12 +21,12 @@ namespace OOD_project_2026
         int maxCardsInHand = 5;
         //setting up some variables to be used when checking hands, and generating mult. 
         double chipScore = 0, multScore = 0, currentChips = 0;
-        double HighestHandPlayed = 0;
+        double HighestHandPlayed = 0,TotalPlayerScore = 0;
         string handPlayed = "";
-        bool faceCardPlayed = false;
+        bool faceCardPlayed = false,keptPlaying = false;
         //setting the blindscore. 
         int blindScore = 300, round = 0, money = 0;
-
+     
         //Loading classes such as deck hands selected cards and cards disguarded. 
         Deck deck = new Deck();
         List<Cards> hand = new List<Cards>();
@@ -513,6 +513,7 @@ namespace OOD_project_2026
             {
                 HighestHandPlayed = player.CurrentChips;
             };
+            TotalPlayerScore += player.CurrentChips;
 
             CheckWin(player.CurrentChips, player.HandsLeft, player.DisguardsLeft, blindScore);
         }
@@ -554,24 +555,27 @@ namespace OOD_project_2026
                 //win window; this will allow you to go to the shop. 
                 WinScreen();
                 //resetting current chip score of player.
-                
+                MainGameplayScreen.IsHitTestVisible = false;
 
                 //im going to put the shop menu window into this.
                 //from the win screen. 
             }
-            else if (comparingScore > 0 && player.HandsLeft == 0)
+            else if (comparingScore > 0 && player.HandsLeft == 0 && round < 3)
             {
                 //loose as you have no hands left. Restting the game and going back into the game.
                 //SaveToDBOnFinish();
                 EndGame();
+                ShowLooseScreen();
+                MainGameplayScreen.IsHitTestVisible = false;
+
             }
-            else
+            else if (comparingScore <= 0 && player.HandsLeft >= 0 && round == 3)
             {
-                //continue playing aka nothing happens. 
-                // SaveToDBOnFinish();
-                EndGame();
+                ShowWinScreen();
+                LoadLeaderboard();
+                MainGameplayScreen.IsHitTestVisible = false;
             }
-            //I need to reset blind score after the player is defeated or advance it if they win. 
+            
         }
         private int GenerateBlindScore(int roundScore)
         {
@@ -2208,7 +2212,7 @@ namespace OOD_project_2026
         #region logging player info into a db
         //getting player info, ie name 
 
-        //connecting to the db
+     
         private void SaveHighScore(int score, int roundsLasted)
         {
             using (var db = new LeaderBoard())
@@ -2237,35 +2241,107 @@ namespace OOD_project_2026
             SaveHighScore(finalscore, roundsLasted);
         }
 
+        private void QuitGame_Click(object sender, RoutedEventArgs e)
+        {  
+            //this was intelisense ngl
+            var result = MessageBox.Show("Are you sure you want to quit?", "Exit Game", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                //saving the games data. 
+                EndGame();
+                Application.Current.Shutdown();
+            }
+
+        }
+
+        private void KeepPlaying_Click(object sender, RoutedEventArgs e)
+        {
+            keptPlaying = true;
+            FinalWinScreen.Visibility = Visibility.Collapsed;
+            ShopOverlayBackground.Visibility = Visibility.Collapsed;
+
+        }
+
         //updating the score for each round, 
         //if the score is higher than the round previous.
         //win screen at round 6. 
 
-                //can go endless mode or quit the game. 
-                //I have to log the score here 
+        //can go endless mode or quit the game. 
+        //I have to log the score here 
 
-                //once failed the screen ends. 
-                //displaying playerscore on the screen of the other monitor. 
-                //I need todays date/ the date of the run on the screen. 
-                #endregion
+        //once failed the screen ends. 
+        //displaying playerscore on the screen of the other monitor. 
+        //I need todays date/ the date of the run on the screen. 
+        #endregion
 
-                /*
-                private void SaveToDBOnFinish()
-                {
+        /*
+        private void SaveToDBOnFinish()
+        {
 
-                    LeaderBoard db = new LeaderBoard();
+            LeaderBoard db = new LeaderBoard();
 
-                    LeaderBoard newData = new LeaderBoard() { 
+            LeaderBoard newData = new LeaderBoard() { 
 
-                    };
+            };
 
-                    db.HighScoreData.Add(newData);
-                    db.SaveChanges();
+            db.HighScoreData.Add(newData);
+            db.SaveChanges();
 
-                    //calling it to a list. 
-                    var query = db.LeaderBoard.ToList();
-                }
-                */
+            //calling it to a list. 
+            var query = db.LeaderBoard.ToList();
+        }
+        */
+        private void ShowWinScreen()
+        {
+            PlayersFinalTotalScoreTxt.Text += $"{TotalPlayerScore}";
+            ShopOverlayBackground.Visibility = Visibility.Visible;
+            FinalWinScreen.Visibility = Visibility.Visible;
+        }
+        private void ShowLooseScreen()
+        {
+            FinalLooseScoreTxt.Text += $"{TotalPlayerScore}";
+            LoseScreen.Visibility =Visibility.Visible;  
+            ShopOverlayBackground.Visibility = Visibility.Visible;
+        }
+        private void NewGame_Click(object sender, RoutedEventArgs e)
+        {
+                NavigationService?.Navigate(new Start());
+            
+        }
+        //adding this in for if a player just want to rage quit. --- (moreso for testing the db)
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            //this was intelisense ngl
+            var result = MessageBox.Show("Are you sure you want to quit?","Exit Game",MessageBoxButton.YesNo,MessageBoxImage.Question);
 
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+        private void LoadLeaderboard()
+        {
+            using (var db = new LeaderBoard())
+            {
+                //loaing the leaderbaord by ordring by the highscore then by rounds lasted. 
+                var data = db.HighScoreData
+                    .OrderByDescending(x => x.HighScore)
+                    .ThenByDescending(x => x.RoundsLasted)
+                    .ToList()
+                    .Select((x, index) => new HighScoreData
+                    {
+                        //logging new highscore data. 
+                        Rank = index + 1,//index +1 to make it easier on ranking teh system. 
+                        PlayerName = x.PlayerName,
+                        HighScore = x.HighScore,
+                        RoundsLasted = x.RoundsLasted,
+                        Date = x.Date
+                    })
+                    .ToList();
+
+                PlayerNameList.ItemsSource = data;
+            }
+        }
     }
-    }
+}
