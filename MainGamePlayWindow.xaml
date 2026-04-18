@@ -557,7 +557,7 @@
             <!-- LOSE SCREEN -->
             <Border x:Name="LoseScreen"
         Width="650"
-        Height="420"
+        Height="720"
         Background="#FF17182D"
         BorderBrush="#FF2E3E52"
         BorderThickness="2"
@@ -611,7 +611,7 @@
                                Foreground="#FFD6E4F0"
                                FontSize="16"
                                FontWeight="SemiBold"/>
-                                <Button x:Name="NewGame" Content="NewGame"  Background="#FFAF3232"/>
+                                <Button x:Name="NewGame" Content="New Game" Click="NewGame_Click" Background="#FFAF3232"/>
                             </StackPanel>
 
                             <Border Grid.Column="1"
